@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+compileJava.options.encoding = 'UTF-8'
+targetCompatibility = 11
+sourceCompatibility = 11
+
+group = 'net.hellheim'
+version = '0.1'
+description = 'SpongeUtils'
+
+repositories {
+    jcenter()
+    maven {
+        name = 'sponge-repo'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+    maven {
+        name = "sonatype-oss-snapshots1"
+        url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.spongepowered:spongeapi:8.2.0'
+
+    // This dependency is exported to consumers, that is to say found on their compile classpath.
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:29.0-jre'
+}
+
+jar {
+    archiveBaseName = "SpongeUtils"
+}

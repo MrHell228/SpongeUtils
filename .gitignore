@@ -1,7 +1,20 @@
-# Compiled class file
+# Project
+.gradle
+.settings
+.project
+.classpath
+.idea
+
+# Ignore Gradle build output directory
+build
+
+# Binary files
+bin
+
+# Compiled class files
 *.class
 
-# Log file
+# Log files
 *.log
 
 # BlueJ files
