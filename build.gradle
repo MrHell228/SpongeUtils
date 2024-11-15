@@ -7,7 +7,7 @@ targetCompatibility = 11
 sourceCompatibility = 11
 
 group = 'net.hellheim'
-version = '0.1'
+version = '0.2'
 description = 'SpongeUtils'
 
 repositories {
