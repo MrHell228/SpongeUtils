@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import net.hellheim.spongeutils.function.TriConsumer;
 
@@ -78,6 +79,10 @@ public final class CollectionUtil {
 	
 	public static <T> void forEachNew(final Collection<T> col, final Consumer<? super T> action) {
 		new ArrayList<>(col).forEach(action);
+	}
+	
+	public static <T> Iterable<T> iterable(final Stream<T> stream) {
+		return stream::iterator;
 	}
 	
 	private CollectionUtil() {
