@@ -442,6 +442,20 @@ public final class EntityUtil {
 	
 	
 	
+	public static double pitch(final Entity entity) {
+		return entity.rotation().x();
+	}
+	
+	public static double yaw(final Entity entity) {
+		return entity.rotation().y();
+	}
+	
+	public static double roll(final Entity entity) {
+		return entity.rotation().z();
+	}
+	
+	
+	
 	public static void setCooldown(final ServerPlayer player, final IItemSource type, final Ticks cooldown) {
 		setCooldown(player, type.getAsItemType(), cooldown);
 	}
