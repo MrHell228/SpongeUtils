@@ -8,12 +8,13 @@ import java.util.function.Supplier;
 
 import org.spongepowered.api.util.Axis;
 import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.util.mirror.Mirror;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
 
 public final class RotationUtil {
 	
-	// Relies on implementation in which these are enum values meaning they should always be available.
+	// Relies on implementation where these are enum values meaning they should always be available.
 	public static final Rotation NONE = Rotations.NONE.get();
 	public static final Rotation CLOCKWISE_90 = Rotations.CLOCKWISE_90.get();
 	public static final Rotation CLOCKWISE_180 = Rotations.CLOCKWISE_180.get();
@@ -31,6 +32,18 @@ public final class RotationUtil {
 	
 	public static boolean is(final Rotation r1, final Rotation r2) {
 		return r1 == r2;
+	}
+	
+	public static boolean is(final Supplier<Mirror> m1, final Mirror m2) {
+		return RotationUtil.is(m1.get(), m2);
+	}
+	
+	public static boolean is(final Mirror m1, final Supplier<Mirror> m2) {
+		return RotationUtil.is(m1, m2.get());
+	}
+	
+	public static boolean is(final Mirror m1, final Mirror m2) {
+		return m1 == m2;
 	}
 	
 	public static boolean is(final Axis a1, final Axis a2) {
@@ -51,6 +64,46 @@ public final class RotationUtil {
 	
 	public static List<Rotation> rotations() {
 		return ROTATION_VALUES;
+	}
+	
+	public static Optional<Rotation> rotation(final Direction from, final Direction to) {
+		if (!RotationUtil.isHorizontal(from)) {
+			throw new IllegalArgumentException("'from' direction must be horizontal");
+		}
+		
+		if (!RotationUtil.isHorizontal(to)) {
+			throw new IllegalArgumentException("'to' direction must be horizontal");
+		}
+		
+		if (RotationUtil.is(from, to)) {
+			return Optional.of(RotationUtil.NONE);
+		} else if (from.isOpposite(to)) {
+			return Optional.of(RotationUtil.CLOCKWISE_180);
+		} else if (DIR_CLOCKWISE_90.get(from) == to) {
+			return Optional.of(RotationUtil.CLOCKWISE_90);
+		} else if (DIR_COUNTERCLOCKWISE_90.get(from) == to) {
+			return Optional.of(RotationUtil.COUNTERCLOCKWISE_90);
+		}
+		
+		return Optional.empty();
+	}
+	
+	public static Direction rotate(final Direction direction, final Rotation rotation) {
+		if (!RotationUtil.isHorizontal(direction)) {
+			throw new IllegalArgumentException("direction must be horizontal");
+		}
+		
+		if (RotationUtil.is(rotation, RotationUtil.NONE)) {
+			return direction;
+		} else if (RotationUtil.is(rotation, RotationUtil.CLOCKWISE_180)) {
+			return direction.opposite();
+		} else if (RotationUtil.is(rotation, RotationUtil.CLOCKWISE_90)) {
+			return DIR_CLOCKWISE_90.get(direction);
+		} else if (RotationUtil.is(rotation, RotationUtil.COUNTERCLOCKWISE_90)) {
+			return DIR_COUNTERCLOCKWISE_90.get(direction);
+		}
+		
+		throw new AssertionError();
 	}
 	
 	private static final Map<Direction, Direction> DIR_CLOCKWISE_90 = new EnumMap<>(Direction.class);
@@ -97,46 +150,6 @@ public final class RotationUtil {
 		DIR_COUNTERCLOCKWISE_90.put(Direction.WEST_NORTHWEST,  Direction.SOUTH_SOUTHWEST);
 		DIR_COUNTERCLOCKWISE_90.put(Direction.NORTHWEST,       Direction.SOUTHWEST);
 		DIR_COUNTERCLOCKWISE_90.put(Direction.NORTH_NORTHWEST, Direction.WEST_SOUTHWEST);
-	}
-	
-	public static Optional<Rotation> rotation(Direction from, Direction to) {
-		if (!RotationUtil.isHorizontal(from)) {
-			throw new IllegalArgumentException("'from' direction must be horizontal");
-		}
-		
-		if (!RotationUtil.isHorizontal(to)) {
-			throw new IllegalArgumentException("'to' direction must be horizontal");
-		}
-		
-		if (RotationUtil.is(from, to)) {
-			return Optional.of(RotationUtil.NONE);
-		} else if (from.isOpposite(to)) {
-			return Optional.of(RotationUtil.CLOCKWISE_180);
-		} else if (DIR_CLOCKWISE_90.get(from) == to) {
-			return Optional.of(RotationUtil.CLOCKWISE_90);
-		} else if (DIR_COUNTERCLOCKWISE_90.get(from) == to) {
-			return Optional.of(RotationUtil.COUNTERCLOCKWISE_90);
-		}
-		
-		return Optional.empty();
-	}
-	
-	public static Direction rotate(Direction direction, Rotation rotation) {
-		if (!RotationUtil.isHorizontal(direction)) {
-			throw new IllegalArgumentException("direction must be horizontal");
-		}
-		
-		if (RotationUtil.is(rotation, RotationUtil.NONE)) {
-			return direction;
-		} else if (RotationUtil.is(rotation, RotationUtil.CLOCKWISE_180)) {
-			return direction.opposite();
-		} else if (RotationUtil.is(rotation, RotationUtil.CLOCKWISE_90)) {
-			return DIR_CLOCKWISE_90.get(direction);
-		} else if (RotationUtil.is(rotation, RotationUtil.COUNTERCLOCKWISE_90)) {
-			return DIR_COUNTERCLOCKWISE_90.get(direction);
-		}
-		
-		throw new AssertionError();
 	}
 	
 	private RotationUtil() {
