@@ -1,5 +1,6 @@
 package net.hellheim.spongeutils.function;
 
+@FunctionalInterface
 public interface QuinPredicate<F, S, T, E, H> {
 	
 	boolean test(F f, S s, T t, E e, H h);
