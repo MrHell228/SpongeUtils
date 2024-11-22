@@ -40,31 +40,31 @@ public final class Box {
 	
 	
 	public void forEach(final Entity entity, final Consumer<Vector3i> action) {
-		this.forEach(entity, intToVec(action));
+		this.forEach(entity, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final Vector3i position, final Entity entity, final Consumer<Vector3i> action) {
-		this.forEach(position, entity, intToVec(action));
+		this.forEach(position, entity, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final int x, final int y, final int z, final Entity entity, final Consumer<Vector3i> action) {
-		this.forEach(x, y, z, entity, intToVec(action));
+		this.forEach(x, y, z, entity, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final Vector3i position, final Vector3d rotation, final Consumer<Vector3i> action) {
-		this.forEach(position, rotation, intToVec(action));
+		this.forEach(position, rotation, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final Vector3i position, final double yaw, final double pitch, final Consumer<Vector3i> action) {
-		this.forEach(position, yaw, pitch, intToVec(action));
+		this.forEach(position, yaw, pitch, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final int x, final int y, final int z, final Vector3d rotation, final Consumer<Vector3i> action) {
-		this.forEach(x, y, z, rotation, intToVec(action));
+		this.forEach(x, y, z, rotation, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final int x, final int y, final int z, final double yaw, final double pitch, final Consumer<Vector3i> action) {
-		this.forEach(x, y, z, yaw, pitch, intToVec(action));
+		this.forEach(x, y, z, yaw, pitch, IntTriConsumer.fromVector3i(action));
 	}
 	
 	public void forEach(final Entity entity, final IntTriConsumer action) {
@@ -176,9 +176,5 @@ public final class Box {
 			case EAST: return Direction.NORTH;
 			default: return Direction.NONE;
 		}
-	}
-	
-	private IntTriConsumer intToVec(final Consumer<Vector3i> action) {
-		return (x, y, z) -> action.accept(new Vector3i(x, y, z));
 	}
 }

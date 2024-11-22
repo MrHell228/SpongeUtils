@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.spongepowered.api.util.Axis;
@@ -11,23 +12,28 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.mirror.Mirror;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
+import org.spongepowered.math.vector.Vector2i;
+import org.spongepowered.math.vector.Vector3i;
 
-public final class RotationUtil {
+import net.hellheim.spongeutils.function.IntBiConsumer;
+import net.hellheim.spongeutils.function.IntTriConsumer;
+
+public final class GeomUtil {
 	
 	// Relies on implementation where these are enum values meaning they should always be available.
-	public static final Rotation NONE = Rotations.NONE.get();
-	public static final Rotation CLOCKWISE_90 = Rotations.CLOCKWISE_90.get();
-	public static final Rotation CLOCKWISE_180 = Rotations.CLOCKWISE_180.get();
-	public static final Rotation COUNTERCLOCKWISE_90 = Rotations.COUNTERCLOCKWISE_90.get();
+	public static final Rotation ROT_0 = Rotations.NONE.get();
+	public static final Rotation ROT_90 = Rotations.CLOCKWISE_90.get();
+	public static final Rotation ROT_180 = Rotations.CLOCKWISE_180.get();
+	public static final Rotation ROT_270 = Rotations.COUNTERCLOCKWISE_90.get();
 	private static final List<Rotation> ROTATION_VALUES =
-			List.of(NONE, CLOCKWISE_90, CLOCKWISE_180, COUNTERCLOCKWISE_90);
+			List.of(ROT_0, ROT_90, ROT_180, ROT_270);
 	
 	public static boolean is(final Supplier<Rotation> r1, final Rotation r2) {
-		return RotationUtil.is(r1.get(), r2);
+		return GeomUtil.is(r1.get(), r2);
 	}
 	
 	public static boolean is(final Rotation r1, final Supplier<Rotation> r2) {
-		return RotationUtil.is(r1, r2.get());
+		return GeomUtil.is(r1, r2.get());
 	}
 	
 	public static boolean is(final Rotation r1, final Rotation r2) {
@@ -35,11 +41,11 @@ public final class RotationUtil {
 	}
 	
 	public static boolean is(final Supplier<Mirror> m1, final Mirror m2) {
-		return RotationUtil.is(m1.get(), m2);
+		return GeomUtil.is(m1.get(), m2);
 	}
 	
 	public static boolean is(final Mirror m1, final Supplier<Mirror> m2) {
-		return RotationUtil.is(m1, m2.get());
+		return GeomUtil.is(m1, m2.get());
 	}
 	
 	public static boolean is(final Mirror m1, final Mirror m2) {
@@ -55,11 +61,11 @@ public final class RotationUtil {
 	}
 	
 	public static boolean isHorizontal(final Axis axis) {
-		return  RotationUtil.is(axis, Axis.X) || RotationUtil.is(axis, Axis.Z);
+		return  GeomUtil.is(axis, Axis.X) || GeomUtil.is(axis, Axis.Z);
 	}
 	
 	public static boolean isHorizontal(final Direction direction) {
-		return !direction.isUpright() && !RotationUtil.is(direction, Direction.NONE);
+		return !direction.isUpright() && !GeomUtil.is(direction, Direction.NONE);
 	}
 	
 	public static List<Rotation> rotations() {
@@ -67,39 +73,39 @@ public final class RotationUtil {
 	}
 	
 	public static Optional<Rotation> rotation(final Direction from, final Direction to) {
-		if (!RotationUtil.isHorizontal(from)) {
+		if (!GeomUtil.isHorizontal(from)) {
 			throw new IllegalArgumentException("'from' direction must be horizontal");
 		}
 		
-		if (!RotationUtil.isHorizontal(to)) {
+		if (!GeomUtil.isHorizontal(to)) {
 			throw new IllegalArgumentException("'to' direction must be horizontal");
 		}
 		
-		if (RotationUtil.is(from, to)) {
-			return Optional.of(RotationUtil.NONE);
+		if (GeomUtil.is(from, to)) {
+			return Optional.of(GeomUtil.ROT_0);
 		} else if (from.isOpposite(to)) {
-			return Optional.of(RotationUtil.CLOCKWISE_180);
+			return Optional.of(GeomUtil.ROT_180);
 		} else if (DIR_CLOCKWISE_90.get(from) == to) {
-			return Optional.of(RotationUtil.CLOCKWISE_90);
+			return Optional.of(GeomUtil.ROT_90);
 		} else if (DIR_COUNTERCLOCKWISE_90.get(from) == to) {
-			return Optional.of(RotationUtil.COUNTERCLOCKWISE_90);
+			return Optional.of(GeomUtil.ROT_270);
 		}
 		
 		return Optional.empty();
 	}
 	
 	public static Direction rotate(final Direction direction, final Rotation rotation) {
-		if (!RotationUtil.isHorizontal(direction)) {
+		if (!GeomUtil.isHorizontal(direction)) {
 			throw new IllegalArgumentException("direction must be horizontal");
 		}
 		
-		if (RotationUtil.is(rotation, RotationUtil.NONE)) {
+		if (GeomUtil.is(rotation, GeomUtil.ROT_0)) {
 			return direction;
-		} else if (RotationUtil.is(rotation, RotationUtil.CLOCKWISE_180)) {
+		} else if (GeomUtil.is(rotation, GeomUtil.ROT_180)) {
 			return direction.opposite();
-		} else if (RotationUtil.is(rotation, RotationUtil.CLOCKWISE_90)) {
+		} else if (GeomUtil.is(rotation, GeomUtil.ROT_90)) {
 			return DIR_CLOCKWISE_90.get(direction);
-		} else if (RotationUtil.is(rotation, RotationUtil.COUNTERCLOCKWISE_90)) {
+		} else if (GeomUtil.is(rotation, GeomUtil.ROT_270)) {
 			return DIR_COUNTERCLOCKWISE_90.get(direction);
 		}
 		
@@ -152,6 +158,43 @@ public final class RotationUtil {
 		DIR_COUNTERCLOCKWISE_90.put(Direction.NORTH_NORTHWEST, Direction.WEST_SOUTHWEST);
 	}
 	
-	private RotationUtil() {
+	
+	
+	public static void forEachInSphere(final Vector3i center, final int radius, final Consumer<Vector3i> action) {
+		GeomUtil.forEachInSphere(center.x(), center.y(), center.z(), radius, IntTriConsumer.fromVector3i(action));
+	}
+	
+	public static void forEachInSphere(final int x0, final int y0, final int z0, final int radius, final IntTriConsumer action) {
+		final int rad2 = radius * radius;
+		for (int x = -radius; x <= radius; ++x) {
+			final int x2 = x * x;
+			for (int z = -radius; z <= radius; ++z) {
+				final int z2 = z * z;
+				final int y2max = rad2 - x2 - z2;
+				for (int y = 0; y*y <= y2max; ++y) {
+					action.accept(x0 + x, y0 + y, z0 + z);
+					action.accept(x0 + x, y0 - y, z0 + z);
+				}
+			}
+		}
+	}
+	
+	public static void forEachInCircle(final Vector2i center, final int radius, final Consumer<Vector2i> action) {
+		GeomUtil.forEachInCircle(center.x(), center.y(), radius, IntBiConsumer.fromVector2i(action));
+	}
+	
+	public static void forEachInCircle(final int x0, final int y0, final int radius, final IntBiConsumer action) {
+		final int rad2 = radius * radius;
+		for (int x = -radius; x <= radius; ++x) {
+			final int x2 = x * x;
+			final int y2max = rad2 - x2;
+			for (int y = 0; y*y <= y2max; ++y) {
+				action.accept(x0 + x, y0 + y);
+				action.accept(x0 + x, y0 - y);
+			}
+		}
+	}
+	
+	private GeomUtil() {
 	}
 }

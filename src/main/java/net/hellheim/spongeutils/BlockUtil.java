@@ -16,7 +16,6 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.api.world.server.ServerWorld;
-import org.spongepowered.math.vector.Vector3i;
 
 import com.google.common.collect.ImmutableBiMap;
 
@@ -783,36 +782,17 @@ public final class BlockUtil {
 	
 	
 	
-	public static void forEachNonAirInSphere(final ServerLocation center, final int rad, final Consumer<ServerLocation> action) {
-		forEachInSphere(center, rad, loc -> {
-			if (!isAir(loc.blockType())) {
+	public static void forEachNonAirInSphere(final ServerLocation center, final int radius, final Consumer<ServerLocation> action) {
+		BlockUtil.forEachInSphere(center, radius, loc -> {
+			if (!BlockUtil.isAir(loc.blockType())) {
 				action.accept(loc);
 			}
 		});
 	}
 	
-	public static void forEachInSphere(final ServerLocation center, final int rad, final Consumer<ServerLocation> action) {
-		ServerWorld world = center.world();
-		forEachInSphere(center.blockPosition(), rad, v -> action.accept(world.location(v)));
-	}
-	
-	public static void forEachInSphere(final Vector3i center, final int rad, final Consumer<Vector3i> action) {
-		int rad2 = rad * rad;
-		for (int x = -rad; x <= rad; ++x) {
-			int x2 = x * x;
-			for (int z = -rad; z <= rad; ++z) {
-				int z2 = z * z;
-				int y2max = rad2 - x2 - z2;
-				for (int y = 0; y <= rad; ++y) {
-					if (y*y > y2max) {
-						break;
-					}
-					
-					action.accept(center.add(x, +y, z));
-					action.accept(center.add(x, -y, z));
-				}
-			}
-		}
+	public static void forEachInSphere(final ServerLocation center, final int radius, final Consumer<ServerLocation> action) {
+		final ServerWorld world = center.world();
+		GeomUtil.forEachInSphere(center.blockPosition(), radius, v -> action.accept(world.location(v)));
 	}
 	
 	private BlockUtil() {
