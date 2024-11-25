@@ -12,8 +12,14 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.mirror.Mirror;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.rotation.Rotations;
+import org.spongepowered.math.vector.Vector2d;
+import org.spongepowered.math.vector.Vector2f;
 import org.spongepowered.math.vector.Vector2i;
+import org.spongepowered.math.vector.Vector2l;
+import org.spongepowered.math.vector.Vector3d;
+import org.spongepowered.math.vector.Vector3f;
 import org.spongepowered.math.vector.Vector3i;
+import org.spongepowered.math.vector.Vector3l;
 
 import net.hellheim.spongeutils.function.IntBiConsumer;
 import net.hellheim.spongeutils.function.IntTriConsumer;
@@ -127,6 +133,120 @@ public final class GeomUtil {
 		
 		throw new AssertionError();
 	}
+	
+	public static Vector2i rotate(final Vector2i vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector2i(vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector2i(-vector.x(), -vector.y());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector2i(-vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector2l rotate(final Vector2l vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector2l(vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector2l(-vector.x(), -vector.y());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector2l(-vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector2f rotate(final Vector2f vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector2f(vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector2f(-vector.x(), -vector.y());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector2f(-vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector2d rotate(final Vector2d vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector2d(vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector2d(-vector.x(), -vector.y());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector2d(-vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector3i rotate(final Vector3i vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector3i(vector.z(), vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector3i(-vector.x(), vector.y(), -vector.z());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector3i(-vector.z(), vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector3l rotate(final Vector3l vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector3l(vector.z(), vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector3l(-vector.x(), vector.y(), -vector.z());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector3l(-vector.z(), vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector3f rotate(final Vector3f vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector3f(vector.z(), vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector3f(-vector.x(), vector.y(), -vector.z());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector3f(-vector.z(), vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	public static Vector3d rotate(final Vector3d vector, final Rotation rotation) {
+		if (GeomUtil.is0(rotation)) {
+			return vector;
+		} else if (GeomUtil.is90(rotation)) {
+			return new Vector3d(vector.z(), vector.y(), -vector.x());
+		} else if (GeomUtil.is180(rotation)) {
+			return new Vector3d(-vector.x(), vector.y(), -vector.z());
+		} else if (GeomUtil.is270(rotation)) {
+			return new Vector3d(-vector.z(), vector.y(), vector.x());
+		}
+		
+		throw new AssertionError();
+	}
+	
+	
 	
 	private static final Map<Direction, Direction> DIR_CLOCKWISE_90 = new EnumMap<>(Direction.class);
 	private static final Map<Direction, Direction> DIR_COUNTERCLOCKWISE_90 = new EnumMap<>(Direction.class);
