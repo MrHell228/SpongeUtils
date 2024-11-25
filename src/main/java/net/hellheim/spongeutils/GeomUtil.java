@@ -171,7 +171,12 @@ public final class GeomUtil {
 			for (int z = -radius; z <= radius; ++z) {
 				final int z2 = z * z;
 				final int y2max = rad2 - x2 - z2;
-				for (int y = 0; y*y <= y2max; ++y) {
+				if (y2max < 0) {
+					break;
+				}
+				
+				action.accept(x0 + x, y0, z0 + z);
+				for (int y = 1; y*y <= y2max; ++y) {
 					action.accept(x0 + x, y0 + y, z0 + z);
 					action.accept(x0 + x, y0 - y, z0 + z);
 				}
@@ -188,7 +193,12 @@ public final class GeomUtil {
 		for (int x = -radius; x <= radius; ++x) {
 			final int x2 = x * x;
 			final int y2max = rad2 - x2;
-			for (int y = 0; y*y <= y2max; ++y) {
+			if (y2max < 0) {
+				break;
+			}
+			
+			action.accept(x0, y0);
+			for (int y = 1; y*y <= y2max; ++y) {
 				action.accept(x0 + x, y0 + y);
 				action.accept(x0 + x, y0 - y);
 			}
