@@ -68,6 +68,22 @@ public final class GeomUtil {
 		return !direction.isUpright() && !GeomUtil.is(direction, Direction.NONE);
 	}
 	
+	public static boolean is0(final Rotation rotation) {
+		return GeomUtil.is(rotation, GeomUtil.ROT_0);
+	}
+	
+	public static boolean is90(final Rotation rotation) {
+		return GeomUtil.is(rotation, GeomUtil.ROT_90);
+	}
+	
+	public static boolean is180(final Rotation rotation) {
+		return GeomUtil.is(rotation, GeomUtil.ROT_180);
+	}
+	
+	public static boolean is270(final Rotation rotation) {
+		return GeomUtil.is(rotation, GeomUtil.ROT_270);
+	}
+	
 	public static List<Rotation> rotations() {
 		return ROTATION_VALUES;
 	}
@@ -99,13 +115,13 @@ public final class GeomUtil {
 			throw new IllegalArgumentException("direction must be horizontal");
 		}
 		
-		if (GeomUtil.is(rotation, GeomUtil.ROT_0)) {
+		if (GeomUtil.is0(rotation)) {
 			return direction;
-		} else if (GeomUtil.is(rotation, GeomUtil.ROT_180)) {
+		} else if (GeomUtil.is180(rotation)) {
 			return direction.opposite();
-		} else if (GeomUtil.is(rotation, GeomUtil.ROT_90)) {
+		} else if (GeomUtil.is90(rotation)) {
 			return DIR_CLOCKWISE_90.get(direction);
-		} else if (GeomUtil.is(rotation, GeomUtil.ROT_270)) {
+		} else if (GeomUtil.is270(rotation)) {
 			return DIR_COUNTERCLOCKWISE_90.get(direction);
 		}
 		
