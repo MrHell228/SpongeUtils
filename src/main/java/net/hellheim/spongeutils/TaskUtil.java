@@ -5,13 +5,21 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.ScheduledTask;
+import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Ticks;
 import org.spongepowered.plugin.PluginContainer;
 
+import net.hellheim.spongeutils.source.solid.SchedulerSource;
+
 public final class TaskUtil {
+	
+	public static final SchedulerSource ASYNC = () -> Sponge.asyncScheduler();
+	public static final SchedulerSource SERVER = () -> Sponge.server().scheduler();
+	public static final SchedulerSource CLIENT = () -> Sponge.client().scheduler();
 	
 	private static final Ticks TICK = Ticks.of(1);
 	
@@ -42,7 +50,7 @@ public final class TaskUtil {
 	}
 	
 	public static ScheduledTask sync(final Task task) {
-		return Sponge.server().scheduler().submit(task);
+		return task(SERVER, task);
 	}
 	
 	public static ScheduledTask async(final PluginContainer plugin, final Runnable executor) {
@@ -58,7 +66,7 @@ public final class TaskUtil {
 	}
 	
 	public static ScheduledTask async(final Task task) {
-		return Sponge.asyncScheduler().submit(task);
+		return task(ASYNC, task);
 	}
 	
 	public static ScheduledTask task(final PluginContainer plugin, final boolean sync, final Runnable executor) {
@@ -81,18 +89,33 @@ public final class TaskUtil {
 		}
 	}
 	
+	public static ScheduledTask task(final Scheduler scheduler, final PluginContainer plugin, final Runnable executor) {
+		return task(scheduler, plugin, builder().execute(executor));
+	}
+	
+	public static ScheduledTask task(final Scheduler scheduler, final PluginContainer plugin, final Consumer<ScheduledTask> executor) {
+		return task(scheduler, plugin, builder().execute(executor));
+	}
+	
+	public static ScheduledTask task(final Scheduler scheduler, final PluginContainer plugin, final Task.Builder builder) {
+		return task(scheduler, builder.plugin(plugin).build());
+	}
+	
+	public static ScheduledTask task(final Scheduler scheduler, final Task task) {
+		return scheduler.submit(task);
+	}
+	
 	public static Optional<ScheduledTask> optionalSync(final PluginContainer plugin, final boolean shouldCreate, final Runnable executor) {
-		if (shouldCreate) {
-			return Optional.of(sync(plugin, executor));
-		} else {
-			executor.run();
-			return Optional.empty();
-		}
+		return optional(plugin, shouldCreate ? SERVER : null, executor);
 	}
 	
 	public static Optional<ScheduledTask> optionalAsync(final PluginContainer plugin, final boolean shouldCreate, final Runnable executor) {
-		if (shouldCreate) {
-			return Optional.of(async(plugin, executor));
+		return optional(plugin, shouldCreate ? ASYNC : null, executor);
+	}
+	
+	public static Optional<ScheduledTask> optional(final PluginContainer plugin, final @Nullable Scheduler scheduler, final Runnable executor) {
+		if (scheduler != null) {
+			return Optional.of(task(scheduler, plugin, executor));
 		} else {
 			executor.run();
 			return Optional.empty();
@@ -113,18 +136,18 @@ public final class TaskUtil {
 	public static void syncTasksFromAsync(final PluginContainer plugin,
 			final long sleepingTime, final int tasks, final int tasksPerThread,
 			final Consumer<Integer> taskCons, final Runnable onStart, final Runnable onEnd) {
-		tasksFromAsync(plugin, sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd, TaskUtil::sync);
+		tasksFromAsync(plugin, sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd, SERVER);
 	}
 	
 	public static void asyncTasksFromAsync(final PluginContainer plugin,
 			final long sleepingTime, final int tasks, final int tasksPerThread,
 			final Consumer<Integer> taskCons, final Runnable onStart, final Runnable onEnd) {
-		tasksFromAsync(plugin, sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd, TaskUtil::async);
+		tasksFromAsync(plugin, sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd, ASYNC);
 	}
 	
 	private static void tasksFromAsync(final PluginContainer plugin,
 			final long sleepingTime, final int tasks, final int tasksPerThread, 
-			final Consumer<Integer> taskCons, final Runnable onStart, final Runnable onEnd, final Consumer<Task> submitter) {
+			final Consumer<Integer> taskCons, final Runnable onStart, final Runnable onEnd, final Scheduler scheduler) {
 		Task.Builder builder = Task.builder().plugin(plugin);
 		async(plugin, () -> {
 			onStart.run();
@@ -133,7 +156,7 @@ public final class TaskUtil {
 			MutableInt task = new MutableInt();
 			MutableBoolean flag = new MutableBoolean(false);
 			for (int thread = 0; thread < fullThreads; ++thread) {
-				submitter.accept(builder.execute(() -> {
+				scheduler.submit(builder.execute(() -> {
 					for (int i = 0; i < tasksPerThread; ++i) {
 						taskCons.accept(task.getAndIncrement());
 					}
@@ -151,7 +174,7 @@ public final class TaskUtil {
 			
 			int remainingTasks = tasks % tasksPerThread;
 			if (remainingTasks > 0) {
-				submitter.accept(builder.execute(() -> {
+				scheduler.submit(builder.execute(() -> {
 					for (int i = 0; i < remainingTasks; ++i) {
 						taskCons.accept(task.getAndIncrement());
 					}
