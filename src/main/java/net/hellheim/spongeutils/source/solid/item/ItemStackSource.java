@@ -14,7 +14,7 @@ public interface ItemStackSource extends IItemSource {
 	
 	@Override
 	default ItemStackSnapshot getAsItemStackSnapshot() {
-		return this.getAsItemStack().createSnapshot();
+		return this.getAsItemStack().asImmutable();
 	}
 	
 	@Override

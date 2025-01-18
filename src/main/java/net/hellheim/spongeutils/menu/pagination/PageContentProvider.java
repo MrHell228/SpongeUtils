@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.common.returnsreceiver.qual.This;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import net.hellheim.spongeutils.menu.Menu;
@@ -27,13 +28,13 @@ import net.hellheim.spongeutils.source.solid.item.IItemSource;
 public class PageContentProvider<M extends Menu<M>, T> {
 	
 	private final Function<M, ? extends List<T>> elementsProvider;
-	private final Function<M, Function<T, ItemStack>> elementStackProvider;
-	private final Function<M, ItemStack> emptyStackProvider;
+	private final Function<M, Function<T, ? extends ItemStackLike>> elementStackProvider;
+	private final Function<M, ? extends ItemStackLike> emptyStackProvider;
 	
 	protected PageContentProvider(
 		final Function<M, ? extends List<T>> elements,
-		final Function<M, Function<T, ItemStack>> elementStack,
-		final Function<M, ItemStack> emptyStack
+		final Function<M, Function<T, ? extends ItemStackLike>> elementStack,
+		final Function<M, ? extends ItemStackLike> emptyStack
 	) {
 		this.elementsProvider = elements;
 		this.elementStackProvider = elementStack;
@@ -51,24 +52,24 @@ public class PageContentProvider<M extends Menu<M>, T> {
 	}
 	
 	/**
-	 * Returns function that provides {@link ItemStack} for the element in the given {@link Menu}.
+	 * Returns function that provides {@link ItemStackLike} for the element in the given {@link Menu}.
 	 * 
 	 * @param menu The menu
 	 * @param element The element
 	 * @return The ItemStack
 	 */
-	public Function<T, ItemStack> elementStackProvider(final M menu) {
+	public Function<T, ? extends ItemStackLike> elementStackProvider(final M menu) {
 		return this.elementStackProvider.apply(menu);
 	}
 	
 	/**
-	 * Returns the {@link ItemStack} that should be placed when there is not enough
+	 * Returns the {@link ItemStackLike} that should be placed when there is not enough
 	 * {@link #elements(Menu)} to fill the page.
 	 * 
 	 * @param menu The menu
 	 * @return The ItemStack
 	 */
-	public ItemStack emptyStack(final M menu) {
+	public ItemStackLike emptyStack(final M menu) {
 		return this.emptyStackProvider.apply(menu);
 	}
 	
@@ -83,7 +84,7 @@ public class PageContentProvider<M extends Menu<M>, T> {
 	}
 	
 	public static <M extends Menu<M>> Builder<M, ItemStackSnapshot> builderOfSnapshot() {
-		return new Builder<M, ItemStackSnapshot>().elementStack(snapshot -> snapshot.createStack());
+		return new Builder<M, ItemStackSnapshot>().elementStack(snapshot -> snapshot.asMutable());
 	}
 	
 	public static <M extends Menu<M>, T extends IItemSource> Builder<M, T> builderOfSource() {
@@ -95,8 +96,8 @@ public class PageContentProvider<M extends Menu<M>, T> {
 	public static class Builder<M extends Menu<M>, T> {
 		
 		private Function<M, ? extends List<T>> elementsProvider = null;
-		private Function<M, Function<T, ItemStack>> elementStackProvider = null;
-		private Function<M, ItemStack> emptyStackProvider = null;
+		private Function<M, Function<T, ? extends ItemStackLike>> elementStackProvider = null;
+		private Function<M, ? extends ItemStackLike> emptyStackProvider = null;
 		
 		public Builder() {
 		}
@@ -245,15 +246,15 @@ public class PageContentProvider<M extends Menu<M>, T> {
 		
 		// Element stack provider
 		
-		public @This Builder<M, T> elementStack(final Function<T, ItemStack> elementStack) {
+		public @This Builder<M, T> elementStack(final Function<T, ? extends ItemStackLike> elementStack) {
 			return this.elementStackProvider((menu) -> ((element) -> elementStack.apply(element)));
 		}
 		
-		public @This Builder<M, T> elementStack(final BiFunction<M, T, ItemStack> elementStack) {
+		public @This Builder<M, T> elementStack(final BiFunction<M, T, ? extends ItemStackLike> elementStack) {
 			return this.elementStackProvider((menu) -> ((element) -> elementStack.apply(menu, element)));
 		}
 		
-		public @This Builder<M, T> elementStackProvider(final Function<M, Function<T, ItemStack>> elementStack) {
+		public @This Builder<M, T> elementStackProvider(final Function<M, Function<T, ? extends ItemStackLike>> elementStack) {
 			this.elementStackProvider = elementStack;
 			return this;
 		}
@@ -269,11 +270,11 @@ public class PageContentProvider<M extends Menu<M>, T> {
 		}
 		
 		public @This Builder<M, T> emptyStack(final ItemStackSnapshot item) {
-			return this.emptyStack(item::createStack);
+			return this.emptyStack(item::asMutable);
 		}
 		
 		public @This Builder<M, T> emptyStack(final ItemStack item) {
-			return this.emptyStack(item.createSnapshot());
+			return this.emptyStack(item.asImmutable());
 		}
 		
 		public @This Builder<M, T> emptyStack(final Supplier<ItemStack> emptyStack) {

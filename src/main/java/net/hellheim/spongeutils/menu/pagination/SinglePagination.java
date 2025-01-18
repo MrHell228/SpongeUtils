@@ -6,6 +6,7 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 
 import net.hellheim.spongeutils.menu.Menu;
 
@@ -99,14 +100,14 @@ public class SinglePagination<M extends Menu<M>, T> implements Pagination {
 	public void update() {
 		// Sets elements on page
 		final int[] indizes = this.getIndizes();
-		final Function<T, ItemStack> elementStack = this.content.elementStackProvider(this.menu);
+		final Function<T, ? extends ItemStackLike> elementStack = this.content.elementStackProvider(this.menu);
 		for (int i = 0; i < indizes.length; ++i) {
 			this.inventory.set(this.cfg.mapIndex(i), elementStack.apply(this.elements.get(indizes[i])));
 		}
 		
 		// Sets empty stacks on page
 		if (indizes.length < this.cfg.pageSize()) {
-			final ItemStack emptyStack = this.content.emptyStack(this.menu);
+			final ItemStackLike emptyStack = this.content.emptyStack(this.menu);
 			for (int i = indizes.length; i < this.cfg.pageSize(); ++i) {
 				this.inventory.set(this.cfg.mapIndex(i), emptyStack);
 			}

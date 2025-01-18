@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.ContainerType;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
@@ -275,16 +275,7 @@ public interface ViewableInventoryBuilder extends InventoryOperator {
 		 *
 		 * @return The structure step
 		 */
-		StructureStep item(ItemStackSnapshot item);
-		
-		/**
-		 * Sets the default item for the dummy-slots.
-		 *
-		 * @param item The default item
-		 *
-		 * @return The structure step
-		 */
-		StructureStep item(ItemStack item);
+		StructureStep item(ItemStackLike item);
 		
 		/**
 		 * Sets {@link ItemStackSnapshot#empty()} as default item for the dummy-slots.
@@ -300,10 +291,7 @@ public interface ViewableInventoryBuilder extends InventoryOperator {
 		SizedStructureStep item(IItemSource item);
 		
 		@Override
-		SizedStructureStep item(ItemStackSnapshot item);
-		
-		@Override
-		SizedStructureStep item(ItemStack item);
+		SizedStructureStep item(ItemStackLike item);
 		
 		@Override
 		SizedStructureStep empty();

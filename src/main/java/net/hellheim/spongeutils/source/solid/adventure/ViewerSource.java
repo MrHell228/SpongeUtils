@@ -26,8 +26,8 @@ public interface ViewerSource extends AudienceSource, Viewer {
 	}
 	
 	@Override
-	default void spawnParticles(final ParticleEffect particleEffect, final Vector3d position, final int radius) {
-		this.getAsAudience().spawnParticles(particleEffect, position, radius);
+	default void spawnParticles(final ParticleEffect particleEffect, final double x, final double y, final double z) {
+		this.getAsAudience().spawnParticles(particleEffect, x, y, z);
 	}
 	
 	@Override
@@ -41,8 +41,18 @@ public interface ViewerSource extends AudienceSource, Viewer {
 	}
 	
 	@Override
+	default void playMusicDisc(final int x, final int y, final int z, final MusicDisc musicDisc) {
+		this.getAsAudience().playMusicDisc(x, y, z, musicDisc);
+	}
+	
+	@Override
 	default void stopMusicDisc(final Vector3i position) {
 		this.getAsAudience().stopMusicDisc(position);
+	}
+	
+	@Override
+	default void stopMusicDisc(final int x, final int y, final int z) {
+		this.getAsAudience().stopMusicDisc(x, y, z);
 	}
 	
 	@Override
@@ -63,5 +73,25 @@ public interface ViewerSource extends AudienceSource, Viewer {
 	@Override
 	default void resetBlockChange(final int x, final int y, final int z) {
 		this.getAsAudience().resetBlockChange(x, y, z);
+	}
+	
+	@Override
+	default void sendBlockProgress(final Vector3i position, double progress) {
+		this.getAsAudience().sendBlockProgress(position, progress);
+	}
+	
+	@Override
+	default void sendBlockProgress(final int x, final int y, final int z, final double progress) {
+		this.getAsAudience().sendBlockProgress(x, y, z, progress);
+	}
+	
+	@Override
+	default void resetBlockProgress(final Vector3i position) {
+		this.getAsAudience().resetBlockProgress(position);
+	}
+	
+	@Override
+	default void resetBlockProgress(final int x, final int y, final int z) {
+		this.getAsAudience().resetBlockProgress(x, y, z);
 	}
 }

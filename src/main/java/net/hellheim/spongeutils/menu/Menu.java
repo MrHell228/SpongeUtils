@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jetbrains.annotations.UnmodifiableView;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.inventory.menu.InventoryMenu;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
@@ -126,7 +125,6 @@ public abstract class Menu<M extends Menu<M>> implements PluginSource, Identifia
 	 * 
 	 * @return The history
 	 */
-	@UnmodifiableView
 	public UnmodifiableDeque<IMenuType<M>> history() {
 		return this.historyView;
 	}

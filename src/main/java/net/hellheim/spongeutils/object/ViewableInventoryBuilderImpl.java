@@ -11,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.ContainerType;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
@@ -181,7 +181,7 @@ public class ViewableInventoryBuilderImpl extends InventoryOperatorImpl implemen
 	}
 	
 	@Override
-	public SizedStructureStep item(final ItemStackSnapshot item) {
+	public SizedStructureStep item(final ItemStackLike item) {
 		if (this.dummySlotsIndizes == null) {
 			((DummyStep) this.builder).item(item);
 		} else {
@@ -206,11 +206,6 @@ public class ViewableInventoryBuilderImpl extends InventoryOperatorImpl implemen
 			this.dummySlotsIndizes = null;
 		}
 		return this;
-	}
-	
-	@Override
-	public SizedStructureStep item(final ItemStack item) {
-		return this.item(item.createSnapshot());
 	}
 	
 	@Override

@@ -11,6 +11,7 @@ import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.enchantment.EnchantmentTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import net.hellheim.spongeutils.CompUtil;
@@ -51,9 +52,6 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 	private ItemBuilder(final ItemType type) {
 		this(ItemUtil.stackOf(type));
 	}
-	private ItemBuilder(final ItemStackSnapshot snapshot) {
-		this(snapshot.createStack());
-	}
 	
 	
 	
@@ -65,12 +63,8 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return new ItemBuilder(type.get());
 	}
 	
-	public static ItemBuilder of(final ItemStack stack) {
-		return new ItemBuilder(stack.copy());
-	}
-	
-	public static ItemBuilder of(final ItemStackSnapshot snapshot) {
-		return new ItemBuilder(snapshot);
+	public static ItemBuilder of(final ItemStackLike item) {
+		return new ItemBuilder(item.asMutableCopy());
 	}
 	
 	public static ItemBuilder of(final IItemSource source) {
@@ -92,7 +86,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 	
 	@Override
 	public ItemStackSnapshot getAsItemStackSnapshot() {
-		return this.stack.createSnapshot();
+		return this.stack.asImmutable();
 	}
 	
 	@Override

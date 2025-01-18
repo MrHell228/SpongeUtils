@@ -120,7 +120,7 @@ public final class ViewerUtil {
 		}
 		
 		@Override
-		public void spawnParticles(final ParticleEffect particleEffect, final Vector3d position, final int radius) {
+		public void spawnParticles(final ParticleEffect particleEffect, final double x, final double y, final double z) {
 		}
 		
 		@Override
@@ -132,7 +132,15 @@ public final class ViewerUtil {
 		}
 		
 		@Override
+		public void playMusicDisc(final int x, final int y, final int z, final MusicDisc musicDisc) {
+		}
+		
+		@Override
 		public void stopMusicDisc(final Vector3i position) {
+		}
+		
+		@Override
+		public void stopMusicDisc(final int x, final int y, final int z) {
 		}
 		
 		@Override
@@ -149,6 +157,22 @@ public final class ViewerUtil {
 		
 		@Override
 		public void resetBlockChange(final int x, final int y, final int z) {
+		}
+		
+		@Override
+		public void sendBlockProgress(final Vector3i position, final double progress) {
+		}
+		
+		@Override
+		public void sendBlockProgress(final int x, final int y, final int z, final double progress) {
+		}
+		
+		@Override
+		public void resetBlockProgress(final Vector3i position) {
+		}
+		
+		@Override
+		public void resetBlockProgress(final int x, final int y, final int z) {
 		}
 		
 		@Override

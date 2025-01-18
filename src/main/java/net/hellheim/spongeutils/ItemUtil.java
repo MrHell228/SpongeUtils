@@ -14,6 +14,7 @@ import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackComparators;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
 
@@ -39,21 +40,10 @@ public final class ItemUtil {
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
 	 * @param i1 The {@link IItemSource}
-	 * @param i2 The {@link ItemStackSnapshot}
+	 * @param i2 The {@link ItemStackLike}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final IItemSource i1, final ItemStackSnapshot i2) {
-		return is(i1.getAsItemType(), i2.type());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link IItemSource}
-	 * @param i2 The {@link ItemStack}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final IItemSource i1, final ItemStack i2) {
+	public static boolean is(final IItemSource i1, final ItemStackLike i2) {
 		return is(i1.getAsItemType(), i2.type());
 	}
 	
@@ -82,110 +72,44 @@ public final class ItemUtil {
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link ItemStackSnapshot}
+	 * @param i1 The {@link ItemStackLike}
 	 * @param i2 The {@link IItemSource}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemStackSnapshot i1, final IItemSource i2) {
+	public static boolean is(final ItemStackLike i1, final IItemSource i2) {
 		return is(i1.type(), i2.getAsItemType());
 	}
 	
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link ItemStackSnapshot}
-	 * @param i2 The {@link ItemStackSnapshot}
+	 * @param i1 The {@link ItemStackLike}
+	 * @param i2 The {@link ItemStackLike}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemStackSnapshot i1, final ItemStackSnapshot i2) {
+	public static boolean is(final ItemStackLike i1, final ItemStackLike i2) {
 		return is(i1.type(), i2.type());
 	}
 	
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link ItemStackSnapshot}
-	 * @param i2 The {@link ItemStack}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemStackSnapshot i1, final ItemStack i2) {
-		return is(i1.type(), i2.type());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemStackSnapshot}
+	 * @param i1 The {@link ItemStackLike}
 	 * @param i2 The {@link Supplier ItemType Supplier}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemStackSnapshot i1, final Supplier<ItemType> i2) {
+	public static boolean is(final ItemStackLike i1, final Supplier<ItemType> i2) {
 		return is(i1.type(), i2.get());
 	}
 	
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link ItemStackSnapshot}
+	 * @param i1 The {@link ItemStackLike}
 	 * @param i2 The {@link ItemType}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemStackSnapshot i1, final ItemType i2) {
-		return is(i1.type(), i2);
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemStack}
-	 * @param i2 The {@link IItemSource}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemStack i1, final IItemSource i2) {
-		return is(i1.type(), i2.getAsItemType());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemStack}
-	 * @param i2 The {@link ItemStackSnapshot}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemStack i1, final ItemStackSnapshot i2) {
-		return is(i1.type(), i2.type());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemStack}
-	 * @param i2 The {@link ItemStack}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemStack i1, final ItemStack i2) {
-		return is(i1.type(), i2.type());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemStack}
-	 * @param i2 The {@link Supplier ItemType Supplier}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemStack i1, final Supplier<ItemType> i2) {
-		return is(i1.type(), i2.get());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemStack}
-	 * @param i2 The {@link ItemType}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemStack i1, final ItemType i2) {
+	public static boolean is(final ItemStackLike i1, final ItemType i2) {
 		return is(i1.type(), i2);
 	}
 	
@@ -204,21 +128,10 @@ public final class ItemUtil {
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
 	 * @param i1 The {@link Supplier ItemType Supplier}
-	 * @param i2 The {@link ItemStackSnapshot}
+	 * @param i2 The {@link ItemStackLike}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final Supplier<ItemType> i1, final ItemStackSnapshot i2) {
-		return is(i1.get(), i2.type());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link Supplier ItemType Supplier}
-	 * @param i2 The {@link ItemStack}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final Supplier<ItemType> i1, final ItemStack i2) {
+	public static boolean is(final Supplier<ItemType> i1, final ItemStackLike i2) {
 		return is(i1.get(), i2.type());
 	}
 	
@@ -259,21 +172,10 @@ public final class ItemUtil {
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
 	 * @param i1 The {@link ItemType}
-	 * @param i2 The {@link ItemStackSnapshot}
+	 * @param i2 The {@link ItemStackLike}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemType i1, final ItemStackSnapshot i2) {
-		return is(i1, i2.type());
-	}
-	
-	/**
-	 * Compares {@link ItemType}s of two arguments.
-	 * 
-	 * @param i1 The {@link ItemType}
-	 * @param i2 The {@link ItemStack}
-	 * @return True if {@link ItemType}s of the arguments are equal
-	 */
-	public static boolean is(final ItemType i1, final ItemStack i2) {
+	public static boolean is(final ItemType i1, final ItemStackLike i2) {
 		return is(i1, i2.type());
 	}
 	
@@ -345,41 +247,36 @@ public final class ItemUtil {
 	}
 	
 	public static ItemStackSnapshot snapshotOf(final IItemSource source, final int quantity) {
-		return stackOf(source, quantity).createSnapshot();
+		return stackOf(source, quantity).asImmutable();
 	}
 	public static ItemStackSnapshot snapshotOf(final Supplier<ItemType> type, final int quantity) {
-		return stackOf(type, quantity).createSnapshot();
+		return stackOf(type, quantity).asImmutable();
 	}
 	public static ItemStackSnapshot snapshotOf(final ItemType type, final int quantity) {
-		return stackOf(type, quantity).createSnapshot();
+		return stackOf(type, quantity).asImmutable();
 	}
 	public static ItemStackSnapshot snapshotOf(final IItemSource source) {
 		return source.getAsItemStackSnapshot();
 	}
 	public static ItemStackSnapshot snapshotOf(final Supplier<ItemType> type) {
-		return stackOf(type).createSnapshot();
+		return stackOf(type).asImmutable();
 	}
 	public static ItemStackSnapshot snapshotOf(final ItemType type) {
-		return stackOf(type).createSnapshot();
+		return stackOf(type).asImmutable();
 	}
 	
 	
-	
-	public static ItemStack changeDurability(final ItemStackSnapshot stack, final int durability) {
-		final ItemStack result = stack.createStack();
-		changeDurability(result, durability);
-		return result;
-	}
-	
-	public static void changeDurability(final ItemStack stack, final int durability) {
-		stack.get(Keys.ITEM_DURABILITY).ifPresent(current -> {
+	public static ItemStack changeDurability(final ItemStackLike stack, final int durability) {
+		final ItemStack mutable = stack.asMutable();
+		mutable.get(Keys.ITEM_DURABILITY).ifPresent(current -> {
 			int newDurability = current + durability;
 			if (newDurability <= 0) {
-				stack.setQuantity(0);
+				mutable.setQuantity(0);
 			} else {
-				stack.offer(Keys.ITEM_DURABILITY, current + durability);
+				mutable.offer(Keys.ITEM_DURABILITY, current + durability);
 			}
 		});
+		return mutable;
 	}
 	
 	

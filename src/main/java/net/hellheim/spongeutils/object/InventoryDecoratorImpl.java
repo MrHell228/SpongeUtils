@@ -2,7 +2,7 @@ package net.hellheim.spongeutils.object;
 
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.math.vector.Vector2i;
 
 import net.hellheim.spongeutils.object.InventoryDecorator.Sized;
@@ -45,12 +45,7 @@ public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperat
 	}
 	
 	@Override
-	public Sized<T> set(final int index, final ItemStackSnapshot item) {
-		return this.set(index, item.createStack());
-	}
-	
-	@Override
-	public Sized<T> set(int index, final ItemStack item) {
+	public Sized<T> set(int index, final ItemStackLike item) {
 		if (index < 0) {
 			index += this.inventory.capacity();
 		}
@@ -71,12 +66,7 @@ public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperat
 	}
 	
 	@Override
-	public Sized<T> set(final int row, final int column, final ItemStackSnapshot item) {
-		return this.set(row, column, item.createStack());
-	}
-	
-	@Override
-	public Sized<T> set(int row, int column, final ItemStack item) {
+	public Sized<T> set(int row, int column, final ItemStackLike item) {
 		if (row < 0) {
 			row += this.height;
 		}
@@ -97,12 +87,7 @@ public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperat
 	}
 	
 	@Override
-	public Sized<T> set(final Vector2i pos, final ItemStackSnapshot item) {
-		return this.set(pos.x(), pos.y(), item);
-	}
-	
-	@Override
-	public Sized<T> set(final Vector2i pos, final ItemStack item) {
+	public Sized<T> set(final Vector2i pos, final ItemStackLike item) {
 		return this.set(pos.x(), pos.y(), item);
 	}
 	

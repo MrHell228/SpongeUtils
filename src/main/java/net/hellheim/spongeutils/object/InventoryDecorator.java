@@ -1,7 +1,7 @@
 package net.hellheim.spongeutils.object;
 
 import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.math.vector.Vector2i;
 
@@ -39,18 +39,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 	 * 
 	 * @return The decoration step
 	 */
-	InventoryDecorator<T> set(int index, ItemStackSnapshot item);
-	
-	/**
-	 * Sets the item for slot at the given index. <br>
-	 * Negative index counts as index from the end of the inventory.
-	 * 
-	 * @param index The index
-	 * @param item  The item
-	 * 
-	 * @return The decoration step
-	 */
-	InventoryDecorator<T> set(int index, ItemStack item);
+	InventoryDecorator<T> set(int index, ItemStackLike item);
 	
 	/**
 	 * Sets {@link ItemStackSnapshot#empty()} for slot at the gievn index.
@@ -71,10 +60,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 		Sized<T> set(int index, IItemSource item);
 		
 		@Override
-		Sized<T> set(int index, ItemStackSnapshot item);
-		
-		@Override
-		Sized<T> set(int index, ItemStack item);
+		Sized<T> set(int index, ItemStackLike item);
 		
 		@Override
 		Sized<T> setEmpty(int index);
@@ -103,20 +89,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 		 * 
 		 * @return The decoration step
 		 */
-		Sized<T> set(int row, int column, ItemStackSnapshot item);
-		
-		/**
-		 * Sets the item for slot at the given position. <br>
-		 * Negative row counts as row from the end of the inventory. <br>
-		 * Negative column counts as column from the end of the inventory.
-		 * 
-		 * @param row    The row of position
-		 * @param column The column of position
-		 * @param item   The item
-		 * 
-		 * @return The decoration step
-		 */
-		Sized<T> set(int row, int column, ItemStack item);
+		Sized<T> set(int row, int column, ItemStackLike item);
 		
 		/**
 		 * Sets {@link ItemStackSnapshot#empty()} for slot at the given position. <br>
@@ -152,19 +125,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 		 * 
 		 * @return The decoration step
 		 */
-		Sized<T> set(Vector2i pos, ItemStackSnapshot item);
-		
-		/**
-		 * Sets the item for slot at the given position. <br>
-		 * Negative row counts as row from the end of the inventory. <br>
-		 * Negative column counts as column from the end of the inventory.
-		 * 
-		 * @param pos  The position
-		 * @param item The item
-		 * 
-		 * @return The decoration step
-		 */
-		Sized<T> set(Vector2i pos, ItemStack item);
+		Sized<T> set(Vector2i pos, ItemStackLike item);
 		
 		/**
 		 * Sets {@link ItemStackSnapshot#empty()} for slot at the given position. <br>

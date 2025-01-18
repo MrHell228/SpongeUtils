@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.data.value.ListValue;
 import org.spongepowered.api.effect.potion.PotionEffect;
@@ -18,6 +19,7 @@ import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.Ticks;
 import org.spongepowered.api.world.World;
 import org.spongepowered.math.vector.Vector3d;
@@ -465,7 +467,15 @@ public final class EntityUtil {
 	}
 	
 	public static void setCooldown(final ServerPlayer player, final ItemType type, final Ticks cooldown) {
-		player.cooldownTracker().setCooldown(type, cooldown);
+		setCooldown(player, ItemStack.of(type), cooldown);
+	}
+	
+	public static void setCooldown(final ServerPlayer player, final ItemStack stack, final Ticks cooldown) {
+		player.cooldownTracker().setCooldown(stack, cooldown);
+	}
+	
+	public static void setCooldown(final ServerPlayer player, final ResourceKey key, final Ticks cooldown) {
+		player.cooldownTracker().setCooldown(key, cooldown);
 	}
 	
 	public static void resetCooldown(final ServerPlayer player, final IItemSource type) {
@@ -477,7 +487,15 @@ public final class EntityUtil {
 	}
 	
 	public static void resetCooldown(final ServerPlayer player, final ItemType type) {
-		player.cooldownTracker().resetCooldown(type);
+		resetCooldown(player, ItemStack.of(type));
+	}
+	
+	public static void resetCooldown(final ServerPlayer player, final ItemStack stack) {
+		player.cooldownTracker().resetCooldown(stack);
+	}
+	
+	public static void resetCooldown(final ServerPlayer player, final ResourceKey key) {
+		player.cooldownTracker().resetCooldown(key);
 	}
 	
 	public static boolean hasCooldown(final ServerPlayer player, final IItemSource type) {
@@ -489,7 +507,15 @@ public final class EntityUtil {
 	}
 	
 	public static boolean hasCooldown(final ServerPlayer player, final ItemType type) {
-		return cooldown(player, type).isPresent();
+		return hasCooldown(player, ItemStack.of(type));
+	}
+	
+	public static boolean hasCooldown(final ServerPlayer player, final ItemStack stack) {
+		return cooldown(player, stack).isPresent();
+	}
+	
+	public static boolean hasCooldown(final ServerPlayer player, final ResourceKey key) {
+		return cooldown(player, key).isPresent();
 	}
 	
 	public static Optional<Ticks> cooldown(final ServerPlayer player, final IItemSource type) {
@@ -501,7 +527,15 @@ public final class EntityUtil {
 	}
 	
 	public static Optional<Ticks> cooldown(final ServerPlayer player, final ItemType type) {
-		return player.cooldownTracker().cooldown(type);
+		return cooldown(player, ItemStack.of(type));
+	}
+	
+	public static Optional<Ticks> cooldown(final ServerPlayer player, final ItemStack stack) {
+		return player.cooldownTracker().cooldown(stack);
+	}
+	
+	public static Optional<Ticks> cooldown(final ServerPlayer player, final ResourceKey key) {
+		return player.cooldownTracker().cooldown(key);
 	}
 	
 	
