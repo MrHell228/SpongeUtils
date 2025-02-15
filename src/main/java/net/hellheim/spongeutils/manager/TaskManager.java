@@ -17,20 +17,36 @@ public class TaskManager extends Manager {
 		super(plugin);
 	}
 	
-	public ScheduledTask sync(final Runnable executor) {
-		return TaskUtil.sync(this.plugin(), executor);
+	public ScheduledTask server(final Runnable executor) {
+		return TaskUtil.server(this.plugin(), executor);
 	}
 	
-	public ScheduledTask sync(final Consumer<ScheduledTask> executor) {
-		return TaskUtil.sync(this.plugin(), executor);
+	public ScheduledTask server(final Consumer<ScheduledTask> executor) {
+		return TaskUtil.server(this.plugin(), executor);
 	}
 	
-	public ScheduledTask sync(final Task.Builder builder) {
-		return TaskUtil.sync(this.plugin(), builder);
+	public ScheduledTask server(final Task.Builder builder) {
+		return TaskUtil.server(this.plugin(), builder);
 	}
 	
-	public ScheduledTask sync(final Task task) {
-		return TaskUtil.sync(task);
+	public ScheduledTask server(final Task task) {
+		return TaskUtil.server(task);
+	}
+	
+	public ScheduledTask client(final Runnable executor) {
+		return TaskUtil.client(this.plugin(), executor);
+	}
+	
+	public ScheduledTask client(final Consumer<ScheduledTask> executor) {
+		return TaskUtil.client(this.plugin(), executor);
+	}
+	
+	public ScheduledTask client(final Task.Builder builder) {
+		return TaskUtil.client(this.plugin(), builder);
+	}
+	
+	public ScheduledTask client(final Task task) {
+		return TaskUtil.client(task);
 	}
 	
 	public ScheduledTask async(final Runnable executor) {
@@ -49,22 +65,6 @@ public class TaskManager extends Manager {
 		return TaskUtil.async(task);
 	}
 	
-	public ScheduledTask task(final boolean sync, final Runnable executor) {
-		return TaskUtil.task(this.plugin(), sync, executor);
-	}
-	
-	public ScheduledTask task(final boolean sync, final Consumer<ScheduledTask> executor) {
-		return TaskUtil.task(this.plugin(), sync, executor);
-	}
-	
-	public ScheduledTask task(final boolean sync, final Task.Builder builder) {
-		return TaskUtil.task(this.plugin(), sync, builder);
-	}
-	
-	public ScheduledTask task(final boolean sync, final Task task) {
-		return TaskUtil.task(sync, task);
-	}
-	
 	public ScheduledTask task(final Scheduler scheduler, final Runnable executor) {
 		return TaskUtil.task(scheduler, this.plugin(), executor);
 	}
@@ -81,8 +81,44 @@ public class TaskManager extends Manager {
 		return TaskUtil.task(scheduler, task);
 	}
 	
-	public Optional<ScheduledTask> optionalSync(final boolean shouldCreate, final Runnable executor) {
-		return TaskUtil.optionalSync(this.plugin(), shouldCreate, executor);
+	public ScheduledTask serverOrAsync(final boolean server, final Runnable executor) {
+		return TaskUtil.serverOrAsync(this.plugin(), server, executor);
+	}
+	
+	public ScheduledTask serverOrAsync(final boolean server, final Consumer<ScheduledTask> executor) {
+		return TaskUtil.serverOrAsync(this.plugin(), server, executor);
+	}
+	
+	public ScheduledTask serverOrAsync(final boolean server, final Task.Builder builder) {
+		return TaskUtil.serverOrAsync(this.plugin(), server, builder);
+	}
+	
+	public ScheduledTask serverOrAsync(final boolean server, final Task task) {
+		return TaskUtil.serverOrAsync(server, task);
+	}
+	
+	public ScheduledTask clientOrAsync(final boolean client, final Runnable executor) {
+		return TaskUtil.clientOrAsync(this.plugin(), client, executor);
+	}
+	
+	public ScheduledTask clientOrAsync(final boolean client, final Consumer<ScheduledTask> executor) {
+		return TaskUtil.clientOrAsync(this.plugin(), client, executor);
+	}
+	
+	public ScheduledTask clientOrAsync(final boolean client, final Task.Builder builder) {
+		return TaskUtil.clientOrAsync(this.plugin(), client, builder);
+	}
+	
+	public ScheduledTask clientOrAsync(final boolean client, final Task task) {
+		return TaskUtil.clientOrAsync(client, task);
+	}
+	
+	public Optional<ScheduledTask> optionalServer(final boolean shouldCreate, final Runnable executor) {
+		return TaskUtil.optionalServer(this.plugin(), shouldCreate, executor);
+	}
+	
+	public Optional<ScheduledTask> optionalClient(final boolean shouldCreate, final Runnable executor) {
+		return TaskUtil.optionalClient(this.plugin(), shouldCreate, executor);
 	}
 	
 	public Optional<ScheduledTask> optionalAsync(final boolean shouldCreate, final Runnable executor) {
@@ -97,17 +133,29 @@ public class TaskManager extends Manager {
 		return TaskUtil.ensureServer(this.plugin(), executor);
 	}
 	
+	public Optional<ScheduledTask> ensureClient(final Runnable executor) {
+		return TaskUtil.ensureClient(this.plugin(), executor);
+	}
+	
 	public Optional<ScheduledTask> ensureAsync(final Runnable executor) {
 		return TaskUtil.ensureAsync(this.plugin(), executor);
 	}
 	
-	public ScheduledTask tickDelayedSync(final Runnable executor) {
-		return TaskUtil.tickDelayedSync(this.plugin(), executor);
+	public Optional<ScheduledTask> ensureServerOrAsync(final boolean server, final Runnable executor) {
+		return TaskUtil.ensureServerOrAsync(this.plugin(), server, executor);
 	}
 	
-	public void syncTasksFromAsync(final long sleepingTime, final int tasks, final int tasksPerThread,
+	public Optional<ScheduledTask> ensureClientOrAsync(final boolean client, final Runnable executor) {
+		return TaskUtil.ensureClientOrAsync(this.plugin(), client, executor);
+	}
+	
+	public ScheduledTask tickDelayedServer(final Runnable executor) {
+		return TaskUtil.tickDelayedServer(this.plugin(), executor);
+	}
+	
+	public void serverTasksFromAsync(final long sleepingTime, final int tasks, final int tasksPerThread,
 			final Consumer<Integer> taskCons, final Runnable onStart, final Runnable onEnd) {
-		TaskUtil.syncTasksFromAsync(this.plugin(), sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd);
+		TaskUtil.serverTasksFromAsync(this.plugin(), sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd);
 	}
 	
 	public void asyncTasksFromAsync(final long sleepingTime, final int tasks, final int tasksPerThread,

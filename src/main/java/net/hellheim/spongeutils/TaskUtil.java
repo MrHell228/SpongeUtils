@@ -50,20 +50,36 @@ public final class TaskUtil {
 	}
 	
 	
-	public static ScheduledTask sync(final PluginContainer plugin, final Runnable executor) {
-		return TaskUtil.sync(plugin, builder().execute(executor));
+	public static ScheduledTask server(final PluginContainer plugin, final Runnable executor) {
+		return TaskUtil.server(plugin, builder().execute(executor));
 	}
 	
-	public static ScheduledTask sync(final PluginContainer plugin, final Consumer<ScheduledTask> executor) {
-		return TaskUtil.sync(plugin, builder().execute(executor));
+	public static ScheduledTask server(final PluginContainer plugin, final Consumer<ScheduledTask> executor) {
+		return TaskUtil.server(plugin, builder().execute(executor));
 	}
 	
-	public static ScheduledTask sync(final PluginContainer plugin, final Task.Builder builder) {
-		return TaskUtil.sync(builder.plugin(plugin).build());
+	public static ScheduledTask server(final PluginContainer plugin, final Task.Builder builder) {
+		return TaskUtil.server(builder.plugin(plugin).build());
 	}
 	
-	public static ScheduledTask sync(final Task task) {
+	public static ScheduledTask server(final Task task) {
 		return TaskUtil.task(SERVER, task);
+	}
+	
+	public static ScheduledTask client(final PluginContainer plugin, final Runnable executor) {
+		return TaskUtil.client(plugin, builder().execute(executor));
+	}
+	
+	public static ScheduledTask client(final PluginContainer plugin, final Consumer<ScheduledTask> executor) {
+		return TaskUtil.client(plugin, builder().execute(executor));
+	}
+	
+	public static ScheduledTask client(final PluginContainer plugin, final Task.Builder builder) {
+		return TaskUtil.client(builder.plugin(plugin).build());
+	}
+	
+	public static ScheduledTask client(final Task task) {
+		return TaskUtil.task(CLIENT, task);
 	}
 	
 	public static ScheduledTask async(final PluginContainer plugin, final Runnable executor) {
@@ -82,26 +98,6 @@ public final class TaskUtil {
 		return TaskUtil.task(ASYNC, task);
 	}
 	
-	public static ScheduledTask task(final PluginContainer plugin, final boolean sync, final Runnable executor) {
-		return TaskUtil.task(plugin, sync, builder().execute(executor));
-	}
-	
-	public static ScheduledTask task(final PluginContainer plugin, final boolean sync, final Consumer<ScheduledTask> executor) {
-		return TaskUtil.task(plugin, sync, builder().execute(executor));
-	}
-	
-	public static ScheduledTask task(final PluginContainer plugin, final boolean sync, final Task.Builder builder) {
-		return TaskUtil.task(sync, builder.plugin(plugin).build());
-	}
-	
-	public static ScheduledTask task(final boolean sync, final Task task) {
-		if (sync) {
-			return TaskUtil.sync(task);
-		} else {
-			return TaskUtil.async(task);
-		}
-	}
-	
 	public static ScheduledTask task(final Scheduler scheduler, final PluginContainer plugin, final Runnable executor) {
 		return TaskUtil.task(scheduler, plugin, builder().execute(executor));
 	}
@@ -118,8 +114,52 @@ public final class TaskUtil {
 		return scheduler.submit(task);
 	}
 	
-	public static Optional<ScheduledTask> optionalSync(final PluginContainer plugin, final boolean shouldCreate, final Runnable executor) {
+	public static ScheduledTask serverOrAsync(final PluginContainer plugin, final boolean server, final Runnable executor) {
+		return TaskUtil.serverOrAsync(plugin, server, builder().execute(executor));
+	}
+	
+	public static ScheduledTask serverOrAsync(final PluginContainer plugin, final boolean server, final Consumer<ScheduledTask> executor) {
+		return TaskUtil.serverOrAsync(plugin, server, builder().execute(executor));
+	}
+	
+	public static ScheduledTask serverOrAsync(final PluginContainer plugin, final boolean server, final Task.Builder builder) {
+		return TaskUtil.serverOrAsync(server, builder.plugin(plugin).build());
+	}
+	
+	public static ScheduledTask serverOrAsync(final boolean server, final Task task) {
+		if (server) {
+			return TaskUtil.server(task);
+		} else {
+			return TaskUtil.async(task);
+		}
+	}
+	
+	public static ScheduledTask clientOrAsync(final PluginContainer plugin, final boolean client, final Runnable executor) {
+		return TaskUtil.clientOrAsync(plugin, client, builder().execute(executor));
+	}
+	
+	public static ScheduledTask clientOrAsync(final PluginContainer plugin, final boolean client, final Consumer<ScheduledTask> executor) {
+		return TaskUtil.clientOrAsync(plugin, client, builder().execute(executor));
+	}
+	
+	public static ScheduledTask clientOrAsync(final PluginContainer plugin, final boolean client, final Task.Builder builder) {
+		return TaskUtil.clientOrAsync(client, builder.plugin(plugin).build());
+	}
+	
+	public static ScheduledTask clientOrAsync(final boolean client, final Task task) {
+		if (client) {
+			return TaskUtil.client(task);
+		} else {
+			return TaskUtil.async(task);
+		}
+	}
+	
+	public static Optional<ScheduledTask> optionalServer(final PluginContainer plugin, final boolean shouldCreate, final Runnable executor) {
 		return TaskUtil.optional(plugin, shouldCreate ? SERVER : null, executor);
+	}
+	
+	public static Optional<ScheduledTask> optionalClient(final PluginContainer plugin, final boolean shouldCreate, final Runnable executor) {
+		return TaskUtil.optional(plugin, shouldCreate ? CLIENT : null, executor);
 	}
 	
 	public static Optional<ScheduledTask> optionalAsync(final PluginContainer plugin, final boolean shouldCreate, final Runnable executor) {
@@ -136,25 +176,45 @@ public final class TaskUtil {
 	}
 	
 	public static Optional<ScheduledTask> ensureServer(final PluginContainer plugin, final Runnable executor) {
-		return TaskUtil.optionalSync(plugin, !TaskUtil.isServer(), executor);
+		return TaskUtil.optionalServer(plugin, !TaskUtil.isServer(), executor);
+	}
+	
+	public static Optional<ScheduledTask> ensureClient(final PluginContainer plugin, final Runnable executor) {
+		return TaskUtil.optionalClient(plugin, !TaskUtil.isClient(), executor);
 	}
 	
 	public static Optional<ScheduledTask> ensureAsync(final PluginContainer plugin, final Runnable executor) {
 		return TaskUtil.optionalAsync(plugin, !TaskUtil.isAsync(), executor);
 	}
 	
+	public static Optional<ScheduledTask> ensureServerOrAsync(final PluginContainer plugin, final boolean server, final Runnable executor) {
+		if (server) {
+			return TaskUtil.ensureServer(plugin, executor);
+		} else {
+			return TaskUtil.ensureAsync(plugin, executor);
+		}
+	}
+	
+	public static Optional<ScheduledTask> ensureClientOrAsync(final PluginContainer plugin, final boolean client, final Runnable executor) {
+		if (client) {
+			return TaskUtil.ensureClient(plugin, executor);
+		} else {
+			return TaskUtil.ensureAsync(plugin, executor);
+		}
+	}
+	
 	/**
-	 * Submits one tick delayed sync task.
+	 * Submits one tick delayed server task.
 	 * 
 	 * @param plugin The plugin
 	 * @param executor Task executor
 	 * @return Scheduled task
 	 */
-	public static ScheduledTask tickDelayedSync(final PluginContainer plugin, final Runnable executor) {
-		return TaskUtil.sync(plugin, builder().delay(TICK).execute(executor));
+	public static ScheduledTask tickDelayedServer(final PluginContainer plugin, final Runnable executor) {
+		return TaskUtil.server(plugin, builder().delay(TICK).execute(executor));
 	}
 	
-	public static void syncTasksFromAsync(final PluginContainer plugin,
+	public static void serverTasksFromAsync(final PluginContainer plugin,
 			final long sleepingTime, final int tasks, final int tasksPerThread,
 			final Consumer<Integer> taskCons, final Runnable onStart, final Runnable onEnd) {
 		TaskUtil.tasksFromAsync(plugin, sleepingTime, tasks, tasksPerThread, taskCons, onStart, onEnd, SERVER);

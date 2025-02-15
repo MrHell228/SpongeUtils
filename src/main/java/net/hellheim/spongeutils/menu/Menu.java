@@ -501,7 +501,7 @@ public abstract class Menu<M extends Menu<M>> implements PluginSource, Identifia
 				this.registerHandlers();
 			}
 		} else {
-			TaskUtil.tickDelayedSync(this.plugin, () -> {
+			TaskUtil.tickDelayedServer(this.plugin, () -> {
 				this.closeToViewers();
 				this.menu.setCurrentInventory(this.createInventory());
 				this.menu.setReadOnly(this.type.isReadOnly($this));
@@ -556,7 +556,7 @@ public abstract class Menu<M extends Menu<M>> implements PluginSource, Identifia
 	 * @param executor Task executor
 	 */
 	public void doTickDelayedTask(final Runnable executor) {
-		TaskUtil.tickDelayedSync(this.plugin, executor);
+		TaskUtil.tickDelayedServer(this.plugin, executor);
 	}
 	
 	private void closeToViewers() {
