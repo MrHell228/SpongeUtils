@@ -1,5 +1,6 @@
 package net.hellheim.spongeutils.object;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -12,6 +13,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.scheduler.TaskExecutorService;
@@ -62,13 +64,38 @@ public class SpongeCompletableFuture<T> extends CompletableFuture<T> {
 	}
 	
 	public static SpongeCompletableFuture<Void> allOf(
+			FutureTaskManager manager, Stream<? extends CompletableFuture<?>> cfs) {
+		return allOf(manager, cfs.toArray(CompletableFuture[]::new));
+	}
+	
+	public static SpongeCompletableFuture<Void> allOf(
+			FutureTaskManager manager, Collection<? extends CompletableFuture<?>> cfs) {
+		return allOf(manager, cfs.toArray(CompletableFuture[]::new));
+	}
+	
+	public static SpongeCompletableFuture<Void> allOf(
 			FutureTaskManager manager, CompletableFuture<?>... cfs) {
 		return wrapFuture(manager, CompletableFuture.allOf(cfs));
 	}
 	
 	public static SpongeCompletableFuture<Object> anyOf(
+			FutureTaskManager manager, Stream<? extends CompletableFuture<?>> cfs) {
+		return anyOf(manager, cfs.toArray(CompletableFuture[]::new));
+	}
+	
+	public static SpongeCompletableFuture<Object> anyOf(
+			FutureTaskManager manager, Collection<? extends CompletableFuture<?>> cfs) {
+		return anyOf(manager, cfs.toArray(CompletableFuture[]::new));
+	}
+	
+	public static SpongeCompletableFuture<Object> anyOf(
 			FutureTaskManager manager, CompletableFuture<?>... cfs) {
 		return wrapFuture(manager, CompletableFuture.anyOf(cfs));
+	}
+	
+	public static <U> SpongeCompletableFuture<U> completedFuture(
+			FutureTaskManager manager) {
+		return wrapFuture(manager, CompletableFuture.completedFuture(null));
 	}
 	
 	public static <U> SpongeCompletableFuture<U> completedFuture(

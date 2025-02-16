@@ -1,11 +1,13 @@
 package net.hellheim.spongeutils.manager;
 
 import java.time.temporal.TemporalUnit;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.spongepowered.api.scheduler.ScheduledTaskFuture;
@@ -75,7 +77,7 @@ public class FutureTaskManager extends Manager implements AutoCloseable {
 		}
 	}
 	
-	// CompletableFuture
+	// SpongeCompletableFuture
 	
 	public <U> SpongeCompletableFuture<U> newFuture() {
 		return SpongeCompletableFuture.newFuture(this);
@@ -85,12 +87,32 @@ public class FutureTaskManager extends Manager implements AutoCloseable {
 		return SpongeCompletableFuture.wrapFuture(this, wrapped);
 	}
 	
+	public SpongeCompletableFuture<Void> allOf(Stream<? extends CompletableFuture<?>> cfs) {
+		return SpongeCompletableFuture.allOf(this, cfs);
+	}
+	
+	public SpongeCompletableFuture<Void> allOf(Collection<? extends CompletableFuture<?>> cfs) {
+		return SpongeCompletableFuture.allOf(this, cfs);
+	}
+	
 	public SpongeCompletableFuture<Void> allOf(CompletableFuture<?>... cfs) {
 		return SpongeCompletableFuture.allOf(this, cfs);
 	}
 	
+	public SpongeCompletableFuture<Object> anyOf(Stream<? extends CompletableFuture<?>> cfs) {
+		return SpongeCompletableFuture.anyOf(this, cfs);
+	}
+	
+	public SpongeCompletableFuture<Object> anyOf(Collection<? extends CompletableFuture<?>> cfs) {
+		return SpongeCompletableFuture.anyOf(this, cfs);
+	}
+	
 	public SpongeCompletableFuture<Object> anyOf(CompletableFuture<?>... cfs) {
 		return SpongeCompletableFuture.anyOf(this, cfs);
+	}
+	
+	public <U> SpongeCompletableFuture<U> completedFuture() {
+		return SpongeCompletableFuture.completedFuture(this);
 	}
 	
 	public <U> SpongeCompletableFuture<U> completedFuture(U value) {
