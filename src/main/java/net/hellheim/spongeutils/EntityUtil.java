@@ -456,6 +456,30 @@ public final class EntityUtil {
 		return entity.rotation().z();
 	}
 	
+	public static void setPitch(final Entity entity, final double pitch) {
+		final Vector3d rotation = entity.rotation();
+		entity.setRotation(new Vector3d(pitch, rotation.y(), rotation.z()));
+	}
+	
+	public static void setYaw(final Entity entity, final double yaw) {
+		final Vector3d rotation = entity.rotation();
+		entity.setRotation(new Vector3d(rotation.x(), yaw, rotation.z()));
+	}
+	
+	public static void setRoll(final Entity entity, final double roll) {
+		final Vector3d rotation = entity.rotation();
+		entity.setRotation(new Vector3d(rotation.x(), rotation.y(), roll));
+	}
+	
+	public static void setRotation(final Entity entity, final double pitch, final double yaw) {
+		final Vector3d rotation = entity.rotation();
+		entity.setRotation(new Vector3d(pitch, yaw, rotation.z()));
+	}
+	
+	public static void setRotation(final Entity entity, final double pitch, final double yaw, final double roll) {
+		entity.setRotation(new Vector3d(pitch, yaw, roll));
+	}
+	
 	
 	
 	public static void setCooldown(final ServerPlayer player, final IItemSource type, final Ticks cooldown) {
