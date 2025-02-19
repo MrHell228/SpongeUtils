@@ -217,7 +217,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 	}
 	
 	public List<Component> lore() {
-		return this.stack.get(Keys.LORE).orElseGet(ArrayList::new);
+		return this.stack.get(Keys.LORE).map(lore -> new ArrayList<>(lore)).orElseGet(ArrayList::new);
 	}
 	
 	

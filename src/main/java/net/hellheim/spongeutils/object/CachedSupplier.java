@@ -2,7 +2,7 @@ package net.hellheim.spongeutils.object;
 
 import java.util.function.Supplier;
 
-public class CachedSupplier<T> {
+public class CachedSupplier<T> implements Supplier<T> {
 	
 	private final Supplier<T> supplier;
 	private boolean requested = false;
@@ -16,6 +16,7 @@ public class CachedSupplier<T> {
 		return new CachedSupplier<>(supplier);
 	}
 	
+	@Override
 	public T get() {
 		if (!this.requested) {
 			this.requested = true;

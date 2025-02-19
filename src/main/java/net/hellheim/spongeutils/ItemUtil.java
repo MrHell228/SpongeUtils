@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.enchantment.Enchantment;
@@ -213,13 +212,13 @@ public final class ItemUtil {
 		return displayName(type.get());
 	}
 	public static Component displayName(ItemType type) {
-		return displayName(stackOf(type));
+		return type.require(Keys.DISPLAY_NAME);
 	}
-	public static Component displayName(DataHolder stack) {
+	public static Component displayName(ItemStackLike stack) {
 		return stack.require(Keys.DISPLAY_NAME);
 	}
 	
-	public static String plainDisplayName(DataHolder stack) {
+	public static String plainDisplayName(ItemStackLike stack) {
 		return CompUtil.toPlain(displayName(stack));
 	}
 	
@@ -357,7 +356,7 @@ public final class ItemUtil {
 	
 	private static void enchant(final ItemStack stack, final Enchantment ench, final Predicate<Integer> shouldReplace) {
 		EnchantmentType type = ench.type();
-		List<Enchantment> list = stack.get(Keys.APPLIED_ENCHANTMENTS).orElseGet(ArrayList::new);
+		List<Enchantment> list = stack.get(Keys.APPLIED_ENCHANTMENTS).map(enchs -> new ArrayList<>(enchs)).orElseGet(ArrayList::new);
 		for (int i = 0, s = list.size(); i < s; ++i) {
 			Enchantment e = list.get(i);
 			if (e.type() == type) {
@@ -374,33 +373,37 @@ public final class ItemUtil {
 	}
 	
 	
-	public static boolean has(DataHolder stack, EnchantmentTypeSource type) {
+	public static boolean has(ItemStackLike stack, EnchantmentTypeSource type) {
 		return has(stack, type.getAsEnchantmentType());
 	}
-	public static boolean has(DataHolder stack, Supplier<EnchantmentType> type) {
+	public static boolean has(ItemStackLike stack, Supplier<EnchantmentType> type) {
 		return has(stack, type.get());
 	}
-	public static boolean has(DataHolder stack, EnchantmentType type) {
+	public static boolean has(ItemStackLike stack, EnchantmentType type) {
 		return has(stack, type, 1);
 	}
 	
-	public static boolean has(DataHolder stack, EnchantmentTypeSource type, int level) {
+	public static boolean has(ItemStackLike stack, EnchantmentTypeSource type, int level) {
 		return has(stack, type.getAsEnchantmentType(), level);
 	}
-	public static boolean has(DataHolder stack, Supplier<EnchantmentType> type, int level) {
+	public static boolean has(ItemStackLike stack, Supplier<EnchantmentType> type, int level) {
 		return has(stack, type.get(), level);
 	}
-	public static boolean has(DataHolder stack, EnchantmentType type, int level) {
+	public static boolean has(ItemStackLike stack, EnchantmentType type, int level) {
 		return level(stack, type) >= level;
 	}
 	
-	public static int level(DataHolder stack, EnchantmentTypeSource type) {
+	public static int level(ItemStackLike stack, EnchantmentTypeSource type) {
 		return level(stack, type.getAsEnchantmentType());
 	}
-	public static int level(DataHolder stack, Supplier<EnchantmentType> type) {
+	public static int level(ItemStackLike stack, Supplier<EnchantmentType> type) {
 		return level(stack, type.get());
 	}
-	public static int level(DataHolder stack, EnchantmentType type) {
+	public static int level(ItemStackLike stack, EnchantmentType type) {
+		if (stack.isEmpty()) {
+			return 0;
+		}
+		
 		Optional<List<Enchantment>> opt = stack.get(Keys.APPLIED_ENCHANTMENTS);
 		if (opt.isEmpty()) {
 			return 0;
@@ -415,14 +418,18 @@ public final class ItemUtil {
 		return 0;
 	}
 	
-	public static int levelFirst(DataHolder stack, EnchantmentTypeSource... types) {
+	public static int levelFirst(ItemStackLike stack, EnchantmentTypeSource... types) {
 		return levelFirst(stack, unpack(types));
 	}
 	@SafeVarargs
-	public static int levelFirst(DataHolder stack, Supplier<EnchantmentType>... types) {
+	public static int levelFirst(ItemStackLike stack, Supplier<EnchantmentType>... types) {
 		return levelFirst(stack, unpack(types));
 	}
-	public static int levelFirst(DataHolder stack, EnchantmentType... types) {
+	public static int levelFirst(ItemStackLike stack, EnchantmentType... types) {
+		if (stack.isEmpty()) {
+			return 0;
+		}
+		
 		Optional<List<Enchantment>> opt = stack.get(Keys.APPLIED_ENCHANTMENTS);
 		if (opt.isEmpty()) {
 			return 0;
@@ -439,14 +446,18 @@ public final class ItemUtil {
 		return 0;
 	}
 	
-	public static int levelMax(DataHolder stack, EnchantmentTypeSource... types) {
+	public static int levelMax(ItemStackLike stack, EnchantmentTypeSource... types) {
 		return levelMax(stack, unpack(types));
 	}
 	@SafeVarargs
-	public static int levelMax(DataHolder stack, Supplier<EnchantmentType>... types) {
+	public static int levelMax(ItemStackLike stack, Supplier<EnchantmentType>... types) {
 		return levelMax(stack, unpack(types));
 	}
-	public static int levelMax(DataHolder stack, EnchantmentType... types) {		
+	public static int levelMax(ItemStackLike stack, EnchantmentType... types) {
+		if (stack.isEmpty()) {
+			return 0;
+		}
+		
 		Optional<List<Enchantment>> opt = stack.get(Keys.APPLIED_ENCHANTMENTS);
 		if (opt.isEmpty()) {
 			return 0;
