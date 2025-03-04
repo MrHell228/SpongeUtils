@@ -13,8 +13,11 @@ import org.spongepowered.api.block.transaction.BlockTransaction;
 import org.spongepowered.api.block.transaction.BlockTransactionReceipt;
 import org.spongepowered.api.block.transaction.Operation;
 import org.spongepowered.api.block.transaction.Operations;
+import org.spongepowered.api.command.CommandCause;
+import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.EventContext;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.item.inventory.menu.ClickType;
 import org.spongepowered.api.world.LocatableBlock;
@@ -25,64 +28,118 @@ import net.hellheim.spongeutils.collection.StringList;
 public final class EventUtil {
 	
 	private static final Logger LOG = LogManager.getLogger("EventUtil");
+	private static final int SHIFT = 3;
+	private static final String DASH = " - ";
 	
 	public static void dump(final Event e) {
 		LOG.info("");
 		LOG.info("");
-		list(e).forEach(s -> LOG.info(s));
+		list(e).forEach(LOG::info);
+	}
+	
+	public static void dump(final CommandContext context) {
+		LOG.info("");
+		LOG.info("");
+		list(context).forEach(LOG::info);
+	}
+	
+	public static void dump(final CommandCause cause) {
+		LOG.info("");
+		LOG.info("");
+		list(cause).forEach(LOG::info);
 	}
 	
 	private static StringList list(final Event e) {
 		final StringList result = new StringList();
 		final String clazz = e.getClass().getSimpleName();
-		final int shift = 3;
-		final String dash = " - ";
 		
 		if (e instanceof ChangeBlockEvent.All) {
 			final StringList transactions = new StringList();
 			final MutableInt counter = new MutableInt(1);
 			((ChangeBlockEvent.All) e).transactions().forEach(bt -> {
 				final StringList tr = new StringList();
-				tr.add(dash + "Operation: " + toString(bt.operation()));
-				tr.add(dash + "Original:  " + toString(bt.original()));
+				tr.add(DASH + "Operation: " + toString(bt.operation()));
+				tr.add(DASH + "Original:  " + toString(bt.original()));
 				if (bt.custom().isPresent()) {
-					tr.add(dash + "Default:   " + toString(bt.defaultReplacement()));
-					tr.add(dash + "Custom:    " + toString(bt.custom().get()));
+					tr.add(DASH + "Default:   " + toString(bt.defaultReplacement()));
+					tr.add(DASH + "Custom:    " + toString(bt.custom().get()));
 				}
-				tr.add(dash + "Final:     " + toString(bt.finalReplacement()));
+				tr.add(DASH + "Final:     " + toString(bt.finalReplacement()));
 				
-				tr.shift(shift);
-				tr.add(0, dash + "Transaction №" + counter.getAndIncrement() + ":");
+				tr.shift(SHIFT);
+				tr.add(0, DASH + "Transaction №" + counter.getAndIncrement() + ":");
 				transactions.addAll(tr);
 			});
 			
 			transactions.add(0, "BlockTransactions of " + clazz);
-			transactions.shift(shift);
+			transactions.shift(SHIFT);
 			result.addAll(transactions);
 		}
 		
-		final StringList context = new StringList();
-		e.context().asMap().forEach((key, o) -> context.add(dash + key.key().asString() + " - " + o.toString()));
-		context.add(0, "Context of " + clazz);
-		context.shift(shift);
-		result.addAll(context);
+		result.addAll(list(e.context(), clazz));
+		result.addAll(list(e.cause(), clazz));
 		
-		final StringList cause = new StringList();
-		e.cause().forEach(o -> {
+		result.shift(SHIFT);
+		result.add(0, DASH + "Listing event " + clazz);
+		return result;
+	}
+	
+	private static StringList list(final CommandContext context) {
+		final StringList result = new StringList();
+		final String name = "CommandContext";
+		
+		context.executedCommand().ifPresent(command -> result.add(DASH + command));
+		result.addAll(list(context.cause()));
+		
+		result.shift(SHIFT);
+		result.add(0, DASH + "Listing " + name);
+		return result;
+	}
+	
+	private static StringList list(final CommandCause cause) {
+		final StringList result = new StringList();
+		final String name = "CommandCause";
+		
+		result.add(DASH + "Subject: " + cause.subject());
+		result.add(DASH + "Audience: " + cause.audience());
+		
+		cause.location().ifPresent(location -> result.add(DASH + "Location: " + location));
+		cause.rotation().ifPresent(rotation -> result.add(DASH + "Rotation:" + rotation));
+		cause.targetBlock().ifPresent(target -> result.add(DASH + "TargetBlock: " + target));
+		
+		result.addAll(list(cause.context(), name));
+		result.addAll(list(cause.cause(), name));
+		
+		result.shift(SHIFT);
+		result.add(0, DASH + "Listing " + name);
+		return result;
+	}
+	
+	private static StringList list(final Cause cause, final String name) {
+		final StringList result = new StringList();
+		cause.forEach(o -> {
 			if (o instanceof Event) {
-				cause.addAll(list((Event) o));
+				result.addAll(list((Event) o));
 			} else if (o instanceof LocatableBlock) {
-				cause.add(dash + "LocatableBlock: " + toString((LocatableBlock) o));
+				result.add(DASH + "LocatableBlock: " + toString((LocatableBlock) o));
 			} else {
-				cause.add(dash + o.getClass().getSimpleName());
+				result.add(DASH + o.getClass().getSimpleName());
 			}
 		});
-		cause.add(0, "Cause of " + clazz);
-		cause.shift(shift);
-		result.addAll(cause);
 		
-		result.shift(shift);
-		result.add(0, dash + "Listing event " + clazz);
+		result.add(0, "Cause of " + name);
+		result.shift(SHIFT);
+		return result;
+	}
+	
+	private static StringList list(final EventContext context, final String name) {
+		final StringList result = new StringList();
+		context.asMap().forEach((key, o) -> {
+			result.add(DASH + key.key().asString() + " - " + o.toString());
+		});
+		
+		result.add(0, "Context of " + name);
+		result.shift(SHIFT);
 		return result;
 	}
 	
