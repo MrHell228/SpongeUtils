@@ -21,6 +21,7 @@ import net.hellheim.spongeutils.source.solid.EnchantmentTypeSource;
 import net.hellheim.spongeutils.source.solid.data.TransitiveMutableDataHolderSource;
 import net.hellheim.spongeutils.source.solid.item.IItemSource;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -139,8 +140,8 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return this.displayName(CompUtil.fromPlain(name));
 	}
 	
-	public ItemBuilder displayName(Component name) {
-		this.offer(Keys.CUSTOM_NAME, applyFallback(name));
+	public ItemBuilder displayName(ComponentLike name) {
+		this.offer(Keys.CUSTOM_NAME, applyFallback(name.asComponent()));
 		return this;
 	}
 	
