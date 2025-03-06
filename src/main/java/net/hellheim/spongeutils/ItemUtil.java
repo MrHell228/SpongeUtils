@@ -265,6 +265,12 @@ public final class ItemUtil {
 	}
 	
 	
+	public static ItemStack withQuantity(final ItemStackLike stack, final int quantity) {
+		final ItemStack mutable = stack.asMutable();
+		mutable.setQuantity(quantity);
+		return mutable;
+	}
+	
 	public static ItemStack changeDurability(final ItemStackLike stack, final int durability) {
 		final ItemStack mutable = stack.asMutable();
 		mutable.get(Keys.ITEM_DURABILITY).ifPresent(current -> {
