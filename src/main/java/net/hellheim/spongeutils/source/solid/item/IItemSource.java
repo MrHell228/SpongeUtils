@@ -2,6 +2,7 @@ package net.hellheim.spongeutils.source.solid.item;
 
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import net.hellheim.spongeutils.object.ItemBuilder;
@@ -16,6 +17,8 @@ public interface IItemSource {
 	ItemStack getAsItemStack();
 	
 	ItemStackSnapshot getAsItemStackSnapshot();
+	
+	ItemStackLike getAsItemStackLike();
 	
 	default ItemBuilder builderOfType() {
 		return ItemBuilder.of(this.getAsItemType());

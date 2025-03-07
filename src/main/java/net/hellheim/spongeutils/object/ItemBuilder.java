@@ -91,6 +91,11 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 	}
 	
 	@Override
+	public ItemStackLike getAsItemStackLike() {
+		return this.getAsItemStack();
+	}
+	
+	@Override
 	public ItemBuilder itemBuilder() {
 		return new ItemBuilder(this.stack.copy());
 	}
