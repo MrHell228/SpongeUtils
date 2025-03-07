@@ -14,24 +14,24 @@ import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.math.vector.Vector2i;
 import org.spongepowered.plugin.PluginContainer;
 
-import net.hellheim.spongeutils.source.solid.PluginSource;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.PluginProxy;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 
 public interface ViewableInventoryBuilder extends InventoryOperator {
 	
-	static TypeStep of(final PluginSource pluginSource) {
+	static TypeStep of(final PluginProxy pluginSource) {
 		return of(pluginSource.plugin());
 	}
 	
-	static TypeStep of(final PluginSource pluginSource, final @Nullable Carrier carrier) {
+	static TypeStep of(final PluginProxy pluginSource, final @Nullable Carrier carrier) {
 		return of(pluginSource.plugin(), carrier);
 	}
 	
-	static TypeStep of(final PluginSource pluginSource, final @Nullable UUID uuid) {
+	static TypeStep of(final PluginProxy pluginSource, final @Nullable UUID uuid) {
 		return of(pluginSource.plugin(), uuid);
 	}
 	
-	static TypeStep of(final PluginSource pluginSource, final @Nullable UUID uuid, final @Nullable Carrier carrier) {
+	static TypeStep of(final PluginProxy pluginSource, final @Nullable UUID uuid, final @Nullable Carrier carrier) {
 		return of(pluginSource.plugin(), uuid, carrier);
 	}
 	
@@ -266,7 +266,7 @@ public interface ViewableInventoryBuilder extends InventoryOperator {
 		 *
 		 * @return The structure step
 		 */
-		StructureStep item(IItemSource item);
+		StructureStep item(IItemProxy item);
 		
 		/**
 		 * Sets the default item for the dummy-slots.
@@ -288,7 +288,7 @@ public interface ViewableInventoryBuilder extends InventoryOperator {
 	interface SizedDummyStep extends DummyStep {
 		
 		@Override
-		SizedStructureStep item(IItemSource item);
+		SizedStructureStep item(IItemProxy item);
 		
 		@Override
 		SizedStructureStep item(ItemStackLike item);

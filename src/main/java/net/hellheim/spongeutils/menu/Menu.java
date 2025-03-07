@@ -23,7 +23,7 @@ import net.hellheim.spongeutils.manager.IMenuManager;
 import net.hellheim.spongeutils.menu.pagination.Pagination;
 import net.hellheim.spongeutils.menu.pagination.PaginationInitStage;
 import net.hellheim.spongeutils.menu.pagination.PaginationType;
-import net.hellheim.spongeutils.source.solid.PluginSource;
+import net.hellheim.spongeutils.proxy.solid.PluginProxy;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -39,7 +39,7 @@ import net.kyori.adventure.text.Component;
  *
  * @param <M> The menu itself
  */
-public abstract class Menu<M extends Menu<M>> implements PluginSource, Identifiable {
+public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiable {
 	
 	private final PluginContainer plugin;
 	private final UUID uniqueId;

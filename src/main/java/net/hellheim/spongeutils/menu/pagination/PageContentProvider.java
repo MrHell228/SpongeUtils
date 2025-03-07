@@ -17,7 +17,7 @@ import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import net.hellheim.spongeutils.menu.Menu;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 
 /**
  * Provides content for pages in {@link Pagination}.
@@ -87,7 +87,7 @@ public class PageContentProvider<M extends Menu<M>, T> {
 		return new Builder<M, ItemStackSnapshot>().elementStack(snapshot -> snapshot.asMutable());
 	}
 	
-	public static <M extends Menu<M>, T extends IItemSource> Builder<M, T> builderOfSource() {
+	public static <M extends Menu<M>, T extends IItemProxy> Builder<M, T> builderOfSource() {
 		return new Builder<M, T>().elementStack(source -> source.getAsItemStack());
 	}
 	
@@ -265,7 +265,7 @@ public class PageContentProvider<M extends Menu<M>, T> {
 			return this.emptyStack(ItemStack::empty);
 		}
 		
-		public @This Builder<M, T> emptyStack(final IItemSource item) {
+		public @This Builder<M, T> emptyStack(final IItemProxy item) {
 			return this.emptyStack(item::getAsItemStack);
 		}
 		

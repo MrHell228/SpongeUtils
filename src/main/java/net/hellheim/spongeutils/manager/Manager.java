@@ -2,9 +2,9 @@ package net.hellheim.spongeutils.manager;
 
 import org.spongepowered.plugin.PluginContainer;
 
-import net.hellheim.spongeutils.source.solid.PluginSource;
+import net.hellheim.spongeutils.proxy.solid.PluginProxy;
 
-public abstract class Manager implements PluginSource {
+public abstract class Manager implements PluginProxy {
 	
 	protected final PluginContainer plugin;
 	

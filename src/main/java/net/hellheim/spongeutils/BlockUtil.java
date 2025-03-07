@@ -19,7 +19,7 @@ import org.spongepowered.api.world.server.ServerWorld;
 
 import com.google.common.collect.ImmutableBiMap;
 
-import net.hellheim.spongeutils.source.solid.block.BlockTypeSource;
+import net.hellheim.spongeutils.proxy.solid.block.BlockTypeProxy;
 
 /**
  * Block related utilities
@@ -31,66 +31,66 @@ public final class BlockUtil {
 	/**
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
-	 * @param b1 The {@link BlockTypeSource}
-	 * @param b2 The {@link BlockTypeSource}
+	 * @param b1 The {@link BlockTypeProxy}
+	 * @param b2 The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockTypeSource b1, final BlockTypeSource b2) {
+	public static boolean is(final BlockTypeProxy b1, final BlockTypeProxy b2) {
 		return is(b1.getAsBlockType(), b2.getAsBlockType());
 	}
 	
 	/**
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
-	 * @param b1 The {@link BlockTypeSource}
+	 * @param b1 The {@link BlockTypeProxy}
 	 * @param b2 The {@link Location}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockTypeSource b1, final Location<?, ?> b2) {
+	public static boolean is(final BlockTypeProxy b1, final Location<?, ?> b2) {
 		return is(b1.getAsBlockType(), b2.blockType());
 	}
 	
 	/**
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
-	 * @param b1 The {@link BlockTypeSource}
+	 * @param b1 The {@link BlockTypeProxy}
 	 * @param b2 The {@link BlockSnapshot}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockTypeSource b1, final BlockSnapshot b2) {
+	public static boolean is(final BlockTypeProxy b1, final BlockSnapshot b2) {
 		return is(b1.getAsBlockType(), b2.state().type());
 	}
 	
 	/**
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
-	 * @param b1 The {@link BlockTypeSource}
+	 * @param b1 The {@link BlockTypeProxy}
 	 * @param b2 The {@link BlockState}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockTypeSource b1, final BlockState b2) {
+	public static boolean is(final BlockTypeProxy b1, final BlockState b2) {
 		return is(b1.getAsBlockType(), b2.type());
 	}
 	
 	/**
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
-	 * @param b1 The {@link BlockTypeSource}
+	 * @param b1 The {@link BlockTypeProxy}
 	 * @param b2 The {@link Supplier BlockType Supplier}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockTypeSource b1, final Supplier<BlockType> b2) {
+	public static boolean is(final BlockTypeProxy b1, final Supplier<BlockType> b2) {
 		return is(b1.getAsBlockType(), b2.get());
 	}
 	
 	/**
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
-	 * @param b1 The {@link BlockTypeSource}
+	 * @param b1 The {@link BlockTypeProxy}
 	 * @param b2 The {@link BlockType}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockTypeSource b1, final BlockType b2) {
+	public static boolean is(final BlockTypeProxy b1, final BlockType b2) {
 		return is(b1.getAsBlockType(), b2);
 	}
 	
@@ -98,10 +98,10 @@ public final class BlockUtil {
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
 	 * @param b1 The {@link Location}
-	 * @param b2 The {@link BlockTypeSource}
+	 * @param b2 The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final Location<?, ?> b1, final BlockTypeSource b2) {
+	public static boolean is(final Location<?, ?> b1, final BlockTypeProxy b2) {
 		return is(b1.blockType(), b2.getAsBlockType());
 	}
 	
@@ -164,10 +164,10 @@ public final class BlockUtil {
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
 	 * @param b1 The {@link BlockSnapshot}
-	 * @param b2 The {@link BlockTypeSource}
+	 * @param b2 The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockSnapshot b1, final BlockTypeSource b2) {
+	public static boolean is(final BlockSnapshot b1, final BlockTypeProxy b2) {
 		return is(b1.state().type(), b2.getAsBlockType());
 	}
 	
@@ -230,10 +230,10 @@ public final class BlockUtil {
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
 	 * @param b1 The {@link BlockState}
-	 * @param b2 The {@link BlockTypeSource}
+	 * @param b2 The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockState b1, final BlockTypeSource b2) {
+	public static boolean is(final BlockState b1, final BlockTypeProxy b2) {
 		return is(b1.type(), b2.getAsBlockType());
 	}
 	
@@ -296,10 +296,10 @@ public final class BlockUtil {
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
 	 * @param b1 The {@link Supplier BlockType Supplier}
-	 * @param b2 The {@link BlockTypeSource}
+	 * @param b2 The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final Supplier<BlockType> b1, final BlockTypeSource b2) {
+	public static boolean is(final Supplier<BlockType> b1, final BlockTypeProxy b2) {
 		return is(b1.get(), b2.getAsBlockType());
 	}
 	
@@ -362,10 +362,10 @@ public final class BlockUtil {
 	 * Compares {@link BlockType}s of two arguments.
 	 * 
 	 * @param b1 The {@link BlockType}
-	 * @param b2 The {@link BlockTypeSource}
+	 * @param b2 The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType}s of the arguments are equal
 	 */
-	public static boolean is(final BlockType b1, final BlockTypeSource b2) {
+	public static boolean is(final BlockType b1, final BlockTypeProxy b2) {
 		return is(b1, b2.getAsBlockType());
 	}
 	
@@ -429,11 +429,11 @@ public final class BlockUtil {
 	/**
 	 * Compares {@link BlockType} of the argument with air {@link BlockType}s.
 	 * 
-	 * @param b The {@link BlockTypeSource}
+	 * @param b The {@link BlockTypeProxy}
 	 * @return True if {@link BlockType} of the argument is one of the air {@link BlockType}s
 	 */
 	
-	public static boolean isAir(final BlockTypeSource b) {
+	public static boolean isAir(final BlockTypeProxy b) {
 		return isAir(b.getAsBlockType());
 	}
 	
@@ -673,7 +673,7 @@ public final class BlockUtil {
 		STATE_TO_STRING.clear();
 	}
 	
-	public static void registerUniqueState(final String str, final BlockTypeSource type) {
+	public static void registerUniqueState(final String str, final BlockTypeProxy type) {
 		registerUniqueState(str, type.getAsBlockType());
 	}
 	public static void registerUniqueState(final String str, final Supplier<BlockType> type) {

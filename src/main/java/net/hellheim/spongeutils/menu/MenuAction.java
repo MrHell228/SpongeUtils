@@ -2,7 +2,7 @@ package net.hellheim.spongeutils.menu;
 
 import java.util.function.Consumer;
 
-import net.hellheim.spongeutils.source.solid.ColorSource;
+import net.hellheim.spongeutils.proxy.solid.ColorProxy;
 import net.kyori.adventure.text.ComponentLike;
 
 @FunctionalInterface
@@ -44,7 +44,7 @@ public interface MenuAction<M extends Menu<M>> extends Consumer<M> {
 		return (menu) -> menu.player().sendMessage(message);
 	}
 	
-	public static <M extends Menu<M>> MenuAction<M> send(final ColorSource color, final String message) {
+	public static <M extends Menu<M>> MenuAction<M> send(final ColorProxy color, final String message) {
 		return MenuAction.send(color.text(message));
 	}
 	
@@ -68,7 +68,7 @@ public interface MenuAction<M extends Menu<M>> extends Consumer<M> {
 		return this.andThen(MenuAction.send(message));
 	}
 	
-	default MenuAction<M> andSend(final ColorSource color, final String message) {
+	default MenuAction<M> andSend(final ColorProxy color, final String message) {
 		return this.andThen(MenuAction.send(color, message));
 	}
 }

@@ -13,13 +13,13 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Ticks;
 import org.spongepowered.plugin.PluginContainer;
 
-import net.hellheim.spongeutils.source.solid.SchedulerSource;
+import net.hellheim.spongeutils.proxy.solid.SchedulerProxy;
 
 public final class TaskUtil {
 	
-	public static final SchedulerSource ASYNC = () -> Sponge.asyncScheduler();
-	public static final SchedulerSource SERVER = () -> Sponge.server().scheduler();
-	public static final SchedulerSource CLIENT = () -> Sponge.client().scheduler();
+	public static final SchedulerProxy ASYNC = () -> Sponge.asyncScheduler();
+	public static final SchedulerProxy SERVER = () -> Sponge.server().scheduler();
+	public static final SchedulerProxy CLIENT = () -> Sponge.client().scheduler();
 	
 	private static final Ticks TICK = Ticks.of(1);
 	

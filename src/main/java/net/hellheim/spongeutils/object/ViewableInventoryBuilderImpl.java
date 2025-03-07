@@ -22,7 +22,7 @@ import org.spongepowered.plugin.PluginContainer;
 
 import net.hellheim.spongeutils.object.InventoryDecorator.Sized;
 import net.hellheim.spongeutils.object.ViewableInventoryBuilder.*;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 
 public class ViewableInventoryBuilderImpl extends InventoryOperatorImpl implements ViewableInventoryBuilder, TypeStep, SizedStructureStep, SizedDummyStep {
 	
@@ -176,7 +176,7 @@ public class ViewableInventoryBuilderImpl extends InventoryOperatorImpl implemen
 	// DummyStep
 	
 	@Override
-	public SizedStructureStep item(final IItemSource item) {
+	public SizedStructureStep item(final IItemProxy item) {
 		return this.item(item.getAsItemStackSnapshot());
 	}
 	

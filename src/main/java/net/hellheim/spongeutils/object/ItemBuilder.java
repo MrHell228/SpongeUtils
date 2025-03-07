@@ -16,10 +16,10 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import net.hellheim.spongeutils.CompUtil;
 import net.hellheim.spongeutils.ItemUtil;
-import net.hellheim.spongeutils.source.solid.EnchantmentSource;
-import net.hellheim.spongeutils.source.solid.EnchantmentTypeSource;
-import net.hellheim.spongeutils.source.solid.data.TransitiveMutableDataHolderSource;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.EnchantmentProxy;
+import net.hellheim.spongeutils.proxy.solid.EnchantmentTypeProxy;
+import net.hellheim.spongeutils.proxy.solid.data.TransitiveMutableDataHolderProxy;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,7 +28,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
-public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSource<ItemBuilder> {
+public class ItemBuilder implements IItemProxy, TransitiveMutableDataHolderProxy<ItemBuilder> {
 	
 	private static final Style FALLBACK_STYLE = Style.empty()
 			.color(NamedTextColor.WHITE)
@@ -68,7 +68,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return new ItemBuilder(item.asMutableCopy());
 	}
 	
-	public static ItemBuilder of(final IItemSource source) {
+	public static ItemBuilder of(final IItemProxy source) {
 		return new ItemBuilder(source.getAsItemStack());
 	}
 	
@@ -243,7 +243,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 	
 	// Enchantment
 	
-	public ItemBuilder enchant(final EnchantmentTypeSource type) {
+	public ItemBuilder enchant(final EnchantmentTypeProxy type) {
 		ItemUtil.enchant(this.stack, type);
 		return this;
 	}
@@ -256,7 +256,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return this;
 	}
 	
-	public ItemBuilder enchantIfHigher(final EnchantmentTypeSource type, final int level) {
+	public ItemBuilder enchantIfHigher(final EnchantmentTypeProxy type, final int level) {
 		ItemUtil.enchantIfHigher(this.stack, type, level);
 		return this;
 	}
@@ -268,7 +268,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		ItemUtil.enchantIfHigher(this.stack, type, level);
 		return this;
 	}
-	public ItemBuilder enchantIfHigher(final EnchantmentSource source) {
+	public ItemBuilder enchantIfHigher(final EnchantmentProxy source) {
 		ItemUtil.enchantIfHigher(this.stack, source);
 		return this;
 	}
@@ -277,7 +277,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return this;
 	}
 	
-	public ItemBuilder enchantIfLower(final EnchantmentTypeSource type, final int level) {
+	public ItemBuilder enchantIfLower(final EnchantmentTypeProxy type, final int level) {
 		ItemUtil.enchantIfLower(this.stack, type, level);
 		return this;
 	}
@@ -289,7 +289,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		ItemUtil.enchantIfLower(this.stack, type, level);
 		return this;
 	}
-	public ItemBuilder enchantIfLower(final EnchantmentSource source) {
+	public ItemBuilder enchantIfLower(final EnchantmentProxy source) {
 		ItemUtil.enchantIfLower(this.stack, source);
 		return this;
 	}
@@ -298,7 +298,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return this;
 	}
 	
-	public ItemBuilder enchantIfAbsent(final EnchantmentTypeSource type, final int level) {
+	public ItemBuilder enchantIfAbsent(final EnchantmentTypeProxy type, final int level) {
 		ItemUtil.enchantIfAbsent(this.stack, type, level);
 		return this;
 	}
@@ -310,7 +310,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		ItemUtil.enchantIfAbsent(this.stack, type, level);
 		return this;
 	}
-	public ItemBuilder enchantIfAbsent(final EnchantmentSource source) {
+	public ItemBuilder enchantIfAbsent(final EnchantmentProxy source) {
 		ItemUtil.enchantIfAbsent(this.stack, source);
 		return this;
 	}
@@ -319,7 +319,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		return this;
 	}
 	
-	public ItemBuilder enchantOrReplace(final EnchantmentTypeSource type, final int level) {
+	public ItemBuilder enchantOrReplace(final EnchantmentTypeProxy type, final int level) {
 		ItemUtil.enchantOrReplace(this.stack, type, level);
 		return this;
 	}
@@ -331,7 +331,7 @@ public class ItemBuilder implements IItemSource, TransitiveMutableDataHolderSour
 		ItemUtil.enchantOrReplace(this.stack, type, level);
 		return this;
 	}
-	public ItemBuilder enchantOrReplace(final EnchantmentSource source) {
+	public ItemBuilder enchantOrReplace(final EnchantmentProxy source) {
 		ItemUtil.enchantOrReplace(this.stack, source);
 		return this;
 	}

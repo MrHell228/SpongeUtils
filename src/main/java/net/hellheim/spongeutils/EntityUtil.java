@@ -25,76 +25,76 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.math.vector.Vector3d;
 import org.spongepowered.math.vector.Vector3i;
 
-import net.hellheim.spongeutils.source.solid.PotionEffectSource;
-import net.hellheim.spongeutils.source.solid.PotionEffectTypeSource;
-import net.hellheim.spongeutils.source.solid.entity.EntityTypeSource;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.PotionEffectProxy;
+import net.hellheim.spongeutils.proxy.solid.PotionEffectTypeProxy;
+import net.hellheim.spongeutils.proxy.solid.entity.EntityTypeProxy;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 
 public final class EntityUtil {
 	
 	/**
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
-	 * @param e1 The {@link EntityTypeSource}
-	 * @param e2 The {@link EntityTypeSource}
+	 * @param e1 The {@link EntityTypeProxy}
+	 * @param e2 The {@link EntityTypeProxy}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityTypeSource<?> e1, final EntityTypeSource<?> e2) {
+	public static boolean is(final EntityTypeProxy<?> e1, final EntityTypeProxy<?> e2) {
 		return is(e1.getAsEntityType(), e2.getAsEntityType());
 	}
 	
 	/**
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
-	 * @param e1 The {@link EntityTypeSource}
+	 * @param e1 The {@link EntityTypeProxy}
 	 * @param e2 The {@link EntityArchetype}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityTypeSource<?> e1, final EntityArchetype e2) {
+	public static boolean is(final EntityTypeProxy<?> e1, final EntityArchetype e2) {
 		return is(e1.getAsEntityType(), e2.type());
 	}
 	
 	/**
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
-	 * @param e1 The {@link EntityTypeSource}
+	 * @param e1 The {@link EntityTypeProxy}
 	 * @param e2 The {@link EntitySnapshot}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityTypeSource<?> e1, final EntitySnapshot e2) {
+	public static boolean is(final EntityTypeProxy<?> e1, final EntitySnapshot e2) {
 		return is(e1.getAsEntityType(), e2.type());
 	}
 	
 	/**
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
-	 * @param e1 The {@link EntityTypeSource}
+	 * @param e1 The {@link EntityTypeProxy}
 	 * @param e2 The {@link Entity}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityTypeSource<?> e1, final Entity e2) {
+	public static boolean is(final EntityTypeProxy<?> e1, final Entity e2) {
 		return is(e1.getAsEntityType(), e2.type());
 	}
 	
 	/**
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
-	 * @param e1 The {@link EntityTypeSource}
+	 * @param e1 The {@link EntityTypeProxy}
 	 * @param e2 The {@link Supplier EntityType Supplier}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityTypeSource<?> e1, final Supplier<EntityType<?>> e2) {
+	public static boolean is(final EntityTypeProxy<?> e1, final Supplier<EntityType<?>> e2) {
 		return is(e1.getAsEntityType(), e2.get());
 	}
 	
 	/**
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
-	 * @param e1 The {@link EntityTypeSource}
+	 * @param e1 The {@link EntityTypeProxy}
 	 * @param e2 The {@link EntityType}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityTypeSource<?> e1, final EntityType<?> e2) {
+	public static boolean is(final EntityTypeProxy<?> e1, final EntityType<?> e2) {
 		return is(e1.getAsEntityType(), e2);
 	}
 	
@@ -102,10 +102,10 @@ public final class EntityUtil {
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
 	 * @param e1 The {@link EntityArchetype}
-	 * @param e2 The {@link EntityTypeSource}
+	 * @param e2 The {@link EntityTypeProxy}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityArchetype e1, final EntityTypeSource<?> e2) {
+	public static boolean is(final EntityArchetype e1, final EntityTypeProxy<?> e2) {
 		return is(e1.type(), e2.getAsEntityType());
 	}
 	
@@ -168,10 +168,10 @@ public final class EntityUtil {
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
 	 * @param e1 The {@link EntitySnapshot}
-	 * @param e2 The {@link EntityTypeSource}
+	 * @param e2 The {@link EntityTypeProxy}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntitySnapshot e1, final EntityTypeSource<?> e2) {
+	public static boolean is(final EntitySnapshot e1, final EntityTypeProxy<?> e2) {
 		return is(e1.type(), e2.getAsEntityType());
 	}
 	
@@ -234,10 +234,10 @@ public final class EntityUtil {
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
 	 * @param e1 The {@link Entity}
-	 * @param e2 The {@link EntityTypeSource}
+	 * @param e2 The {@link EntityTypeProxy}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final Entity e1, final EntityTypeSource<?> e2) {
+	public static boolean is(final Entity e1, final EntityTypeProxy<?> e2) {
 		return is(e1.type(), e2.getAsEntityType());
 	}
 	
@@ -300,10 +300,10 @@ public final class EntityUtil {
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
 	 * @param e1 The {@link Supplier EntityType Supplier}
-	 * @param e2 The {@link EntityTypeSource}
+	 * @param e2 The {@link EntityTypeProxy}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final Supplier<EntityType<?>> e1, final EntityTypeSource<?> e2) {
+	public static boolean is(final Supplier<EntityType<?>> e1, final EntityTypeProxy<?> e2) {
 		return is(e1.get(), e2.getAsEntityType());
 	}
 	
@@ -366,10 +366,10 @@ public final class EntityUtil {
 	 * Compares {@link EntityType}s of two arguments.
 	 * 
 	 * @param e1 The {@link EntityType}
-	 * @param e2 The {@link EntityTypeSource}
+	 * @param e2 The {@link EntityTypeProxy}
 	 * @return True if {@link EntityType}s of the arguments are equal
 	 */
-	public static boolean is(final EntityType<?> e1, final EntityTypeSource<?> e2) {
+	public static boolean is(final EntityType<?> e1, final EntityTypeProxy<?> e2) {
 		return is(e1, e2.getAsEntityType());
 	}
 	
@@ -482,7 +482,7 @@ public final class EntityUtil {
 	
 	
 	
-	public static void setCooldown(final ServerPlayer player, final IItemSource type, final Ticks cooldown) {
+	public static void setCooldown(final ServerPlayer player, final IItemProxy type, final Ticks cooldown) {
 		setCooldown(player, type.getAsItemType(), cooldown);
 	}
 	
@@ -502,7 +502,7 @@ public final class EntityUtil {
 		player.cooldownTracker().setCooldown(key, cooldown);
 	}
 	
-	public static void resetCooldown(final ServerPlayer player, final IItemSource type) {
+	public static void resetCooldown(final ServerPlayer player, final IItemProxy type) {
 		resetCooldown(player, type.getAsItemType());
 	}
 	
@@ -522,7 +522,7 @@ public final class EntityUtil {
 		player.cooldownTracker().resetCooldown(key);
 	}
 	
-	public static boolean hasCooldown(final ServerPlayer player, final IItemSource type) {
+	public static boolean hasCooldown(final ServerPlayer player, final IItemProxy type) {
 		return hasCooldown(player, type.getAsItemType());
 	}
 	
@@ -542,7 +542,7 @@ public final class EntityUtil {
 		return cooldown(player, key).isPresent();
 	}
 	
-	public static Optional<Ticks> cooldown(final ServerPlayer player, final IItemSource type) {
+	public static Optional<Ticks> cooldown(final ServerPlayer player, final IItemProxy type) {
 		return cooldown(player, type.getAsItemType());
 	}
 	
@@ -564,7 +564,7 @@ public final class EntityUtil {
 	
 	
 	
-	public static void setEffect(final Living entity, final PotionEffectSource effect) {
+	public static void setEffect(final Living entity, final PotionEffectProxy effect) {
 		setEffect(entity, effect.getAsPotionEffect());
 	}
 	
@@ -572,7 +572,7 @@ public final class EntityUtil {
 		addEffect(entity, effect, ef -> true);
 	}
 	
-	public static void addEffect(final Living entity, final PotionEffectSource effect) {
+	public static void addEffect(final Living entity, final PotionEffectProxy effect) {
 		addEffect(entity, effect.getAsPotionEffect());
 	}
 	
@@ -581,7 +581,7 @@ public final class EntityUtil {
 	}
 	
 	public static void addEffect(
-		final Living entity, final PotionEffectSource effect, final Predicate<PotionEffect> shouldReplace
+		final Living entity, final PotionEffectProxy effect, final Predicate<PotionEffect> shouldReplace
 	) {
 		addEffect(entity, effect.getAsPotionEffect(), shouldReplace);
 	}
@@ -593,7 +593,7 @@ public final class EntityUtil {
 	}
 	
 	public static void addEffect(
-		final Living entity, final PotionEffectSource effect,
+		final Living entity, final PotionEffectProxy effect,
 		final Predicate<PotionEffect> shouldReplace, BinaryOperator<PotionEffect> merger
 	) {
 		addEffect(entity, effect.getAsPotionEffect(), shouldReplace, merger);
@@ -626,7 +626,7 @@ public final class EntityUtil {
 	
 	
 	
-	public static Optional<PotionEffect> effect(final Living entity, final PotionEffectTypeSource type) {
+	public static Optional<PotionEffect> effect(final Living entity, final PotionEffectTypeProxy type) {
 		return effect(entity, type.getAsPotionEffectType());
 	}
 	

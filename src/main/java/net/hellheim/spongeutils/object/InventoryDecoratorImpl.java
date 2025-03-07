@@ -6,7 +6,7 @@ import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.math.vector.Vector2i;
 
 import net.hellheim.spongeutils.object.InventoryDecorator.Sized;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 
 public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperatorImpl implements Sized<T> {
 	
@@ -40,7 +40,7 @@ public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperat
 	// InventoryDecorator
 	
 	@Override
-	public Sized<T> set(final int index, final IItemSource item) {
+	public Sized<T> set(final int index, final IItemProxy item) {
 		return this.set(index, item.getAsItemStack());
 	}
 	
@@ -61,7 +61,7 @@ public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperat
 	// SizedInventoryDecorator
 	
 	@Override
-	public Sized<T> set(final int row, final int column, final IItemSource item) {
+	public Sized<T> set(final int row, final int column, final IItemProxy item) {
 		return this.set(row, column, item.getAsItemStack());
 	}
 	
@@ -82,7 +82,7 @@ public class InventoryDecoratorImpl<T extends Inventory> extends InventoryOperat
 	}
 	
 	@Override
-	public Sized<T> set(final Vector2i pos, final IItemSource item) {
+	public Sized<T> set(final Vector2i pos, final IItemProxy item) {
 		return this.set(pos.x(), pos.y(), item);
 	}
 	

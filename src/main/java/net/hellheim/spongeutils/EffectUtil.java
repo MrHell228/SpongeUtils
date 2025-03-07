@@ -6,12 +6,12 @@ import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.util.Ticks;
 
-import net.hellheim.spongeutils.source.solid.PotionEffectSource;
-import net.hellheim.spongeutils.source.solid.PotionEffectTypeSource;
+import net.hellheim.spongeutils.proxy.solid.PotionEffectProxy;
+import net.hellheim.spongeutils.proxy.solid.PotionEffectTypeProxy;
 
 public final class EffectUtil {
 	
-	public static PotionEffect of(final PotionEffectTypeSource type, final int durationInSeconds) {
+	public static PotionEffect of(final PotionEffectTypeProxy type, final int durationInSeconds) {
 		return of(type.getAsPotionEffectType(), 0, TickUtil.ofSeconds(durationInSeconds));
 	}
 	
@@ -23,7 +23,7 @@ public final class EffectUtil {
 		return of(type, 0, TickUtil.ofSeconds(durationInSeconds));
 	}
 	
-	public static PotionEffect of(final PotionEffectTypeSource type, final Ticks duration) {
+	public static PotionEffect of(final PotionEffectTypeProxy type, final Ticks duration) {
 		return of(type.getAsPotionEffectType(), 0, duration);
 	}
 	
@@ -37,7 +37,7 @@ public final class EffectUtil {
 	
 	
 	public static PotionEffect of(
-		final PotionEffectTypeSource type, final int amplifier, final int durationInSeconds
+		final PotionEffectTypeProxy type, final int amplifier, final int durationInSeconds
 	) {
 		return of(type.getAsPotionEffectType(), amplifier, TickUtil.ofSeconds(durationInSeconds));
 	}
@@ -55,7 +55,7 @@ public final class EffectUtil {
 	}
 	
 	public static PotionEffect of(
-		final PotionEffectTypeSource type, final int amplifier, final Ticks duration
+		final PotionEffectTypeProxy type, final int amplifier, final Ticks duration
 	) {
 		return of(type.getAsPotionEffectType(), amplifier, duration);
 	}
@@ -72,7 +72,7 @@ public final class EffectUtil {
 		return PotionEffect.of(type, amplifier, duration);
 	}
 	
-	public static PotionEffect of(final PotionEffectSource source) {
+	public static PotionEffect of(final PotionEffectProxy source) {
 		return source.getAsPotionEffect();
 	}
 	

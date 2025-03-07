@@ -17,9 +17,9 @@ import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
 
-import net.hellheim.spongeutils.source.solid.EnchantmentSource;
-import net.hellheim.spongeutils.source.solid.EnchantmentTypeSource;
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.EnchantmentProxy;
+import net.hellheim.spongeutils.proxy.solid.EnchantmentTypeProxy;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 import net.kyori.adventure.text.Component;
 
 public final class ItemUtil {
@@ -27,44 +27,44 @@ public final class ItemUtil {
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link IItemSource}
-	 * @param i2 The {@link IItemSource}
+	 * @param i1 The {@link IItemProxy}
+	 * @param i2 The {@link IItemProxy}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final IItemSource i1, final IItemSource i2) {
+	public static boolean is(final IItemProxy i1, final IItemProxy i2) {
 		return is(i1.getAsItemType(), i2.getAsItemType());
 	}
 	
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link IItemSource}
+	 * @param i1 The {@link IItemProxy}
 	 * @param i2 The {@link ItemStackLike}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final IItemSource i1, final ItemStackLike i2) {
+	public static boolean is(final IItemProxy i1, final ItemStackLike i2) {
 		return is(i1.getAsItemType(), i2.type());
 	}
 	
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link IItemSource}
+	 * @param i1 The {@link IItemProxy}
 	 * @param i2 The {@link Supplier ItemType Supplier}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final IItemSource i1, final Supplier<ItemType> i2) {
+	public static boolean is(final IItemProxy i1, final Supplier<ItemType> i2) {
 		return is(i1.getAsItemType(), i2.get());
 	}
 	
 	/**
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
-	 * @param i1 The {@link IItemSource}
+	 * @param i1 The {@link IItemProxy}
 	 * @param i2 The {@link ItemType}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final IItemSource i1, final ItemType i2) {
+	public static boolean is(final IItemProxy i1, final ItemType i2) {
 		return is(i1.getAsItemType(), i2);
 	}
 	
@@ -72,10 +72,10 @@ public final class ItemUtil {
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
 	 * @param i1 The {@link ItemStackLike}
-	 * @param i2 The {@link IItemSource}
+	 * @param i2 The {@link IItemProxy}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemStackLike i1, final IItemSource i2) {
+	public static boolean is(final ItemStackLike i1, final IItemProxy i2) {
 		return is(i1.type(), i2.getAsItemType());
 	}
 	
@@ -116,10 +116,10 @@ public final class ItemUtil {
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
 	 * @param i1 The {@link Supplier ItemType Supplier}
-	 * @param i2 The {@link IItemSource}
+	 * @param i2 The {@link IItemProxy}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final Supplier<ItemType> i1, final IItemSource i2) {
+	public static boolean is(final Supplier<ItemType> i1, final IItemProxy i2) {
 		return is(i1.get(), i2.getAsItemType());
 	}
 	
@@ -160,10 +160,10 @@ public final class ItemUtil {
 	 * Compares {@link ItemType}s of two arguments.
 	 * 
 	 * @param i1 The {@link ItemType}
-	 * @param i2 The {@link IItemSource}
+	 * @param i2 The {@link IItemProxy}
 	 * @return True if {@link ItemType}s of the arguments are equal
 	 */
-	public static boolean is(final ItemType i1, final IItemSource i2) {
+	public static boolean is(final ItemType i1, final IItemProxy i2) {
 		return is(i1, i2.getAsItemType());
 	}
 	
@@ -224,7 +224,7 @@ public final class ItemUtil {
 	
 	
 	
-	public static ItemStack stackOf(final IItemSource source, final int quantity) {
+	public static ItemStack stackOf(final IItemProxy source, final int quantity) {
 		final ItemStack stack = source.getAsItemStack();
 		stack.setQuantity(quantity);
 		return stack;
@@ -240,7 +240,7 @@ public final class ItemUtil {
 		result.setQuantity(quantity);
 		return result;
 	}
-	public static ItemStack stackOf(final IItemSource source) {
+	public static ItemStack stackOf(final IItemProxy source) {
 		return source.getAsItemStack();
 	}
 	public static ItemStack stackOf(final Supplier<ItemType> type) {
@@ -253,7 +253,7 @@ public final class ItemUtil {
 		return stack.asMutableCopy();
 	}
 	
-	public static ItemStackSnapshot snapshotOf(final IItemSource source, final int quantity) {
+	public static ItemStackSnapshot snapshotOf(final IItemProxy source, final int quantity) {
 		return stackOf(source, quantity).asImmutable();
 	}
 	public static ItemStackSnapshot snapshotOf(final Supplier<ItemType> type, final int quantity) {
@@ -265,7 +265,7 @@ public final class ItemUtil {
 	public static ItemStackSnapshot snapshotOf(final ItemStackLike stack, final int quantity) {
 		return stackOf(stack, quantity).asImmutable();
 	}
-	public static ItemStackSnapshot snapshotOf(final IItemSource source) {
+	public static ItemStackSnapshot snapshotOf(final IItemProxy source) {
 		return source.getAsItemStackSnapshot();
 	}
 	public static ItemStackSnapshot snapshotOf(final Supplier<ItemType> type) {
@@ -294,7 +294,7 @@ public final class ItemUtil {
 	
 	
 	
-	public static void enchant(final ItemStack stack, final EnchantmentTypeSource type) {
+	public static void enchant(final ItemStack stack, final EnchantmentTypeProxy type) {
 		enchant(stack, type.getAsEnchantmentType());
 	}
 	public static void enchant(final ItemStack stack, final Supplier<EnchantmentType> type) {
@@ -304,7 +304,7 @@ public final class ItemUtil {
 		enchantIfAbsent(stack, type, type.minimumLevel());
 	}
 	
-	public static void enchantIfHigher(final ItemStack stack, final EnchantmentTypeSource type, final int level) {
+	public static void enchantIfHigher(final ItemStack stack, final EnchantmentTypeProxy type, final int level) {
 		enchantIfHigher(stack, type.getAsEnchantmentType(), level);
 	}
 	public static void enchantIfHigher(final ItemStack stack, final Supplier<EnchantmentType> type, final int level) {
@@ -313,14 +313,14 @@ public final class ItemUtil {
 	public static void enchantIfHigher(final ItemStack stack, final EnchantmentType type, final int level) {
 		enchantIfHigher(stack, Enchantment.of(type, level));
 	}
-	public static void enchantIfHigher(final ItemStack stack, final EnchantmentSource source) {
+	public static void enchantIfHigher(final ItemStack stack, final EnchantmentProxy source) {
 		enchantIfHigher(stack, source.getAsEnchantment());
 	}
 	public static void enchantIfHigher(final ItemStack stack, final Enchantment ench) {
 		enchant(stack, ench, level -> level > ench.level());
 	}
 	
-	public static void enchantIfLower(final ItemStack stack, final EnchantmentTypeSource type, final int level) {
+	public static void enchantIfLower(final ItemStack stack, final EnchantmentTypeProxy type, final int level) {
 		enchantIfLower(stack, type.getAsEnchantmentType(), level);
 	}
 	public static void enchantIfLower(final ItemStack stack, final Supplier<EnchantmentType> type, final int level) {
@@ -329,14 +329,14 @@ public final class ItemUtil {
 	public static void enchantIfLower(final ItemStack stack, final EnchantmentType type, final int level) {
 		enchantIfLower(stack, Enchantment.of(type, level));
 	}
-	public static void enchantIfLower(final ItemStack stack, EnchantmentSource source) {
+	public static void enchantIfLower(final ItemStack stack, EnchantmentProxy source) {
 		enchantIfLower(stack, source.getAsEnchantment());
 	}
 	public static void enchantIfLower(final ItemStack stack, Enchantment ench) {
 		enchant(stack, ench, level -> level < ench.level());
 	}
 	
-	public static void enchantIfAbsent(final ItemStack stack, final EnchantmentTypeSource type, final int level) {
+	public static void enchantIfAbsent(final ItemStack stack, final EnchantmentTypeProxy type, final int level) {
 		enchantIfAbsent(stack, type.getAsEnchantmentType(), level);
 	}
 	public static void enchantIfAbsent(final ItemStack stack, final Supplier<EnchantmentType> type, final int level) {
@@ -345,7 +345,7 @@ public final class ItemUtil {
 	public static void enchantIfAbsent(final ItemStack stack, final EnchantmentType type, final int level) {
 		enchantIfAbsent(stack, Enchantment.of(type, level));
 	}
-	public static void enchantIfAbsent(final ItemStack stack, final EnchantmentSource source) {
+	public static void enchantIfAbsent(final ItemStack stack, final EnchantmentProxy source) {
 		enchantIfAbsent(stack, source.getAsEnchantment());
 	}
 	public static void enchantIfAbsent(final ItemStack stack, final Enchantment ench) {
@@ -355,13 +355,13 @@ public final class ItemUtil {
 	public static void enchantOrReplace(final ItemStack stack, final Supplier<EnchantmentType> type, final int level) {
 		enchantOrReplace(stack, type.get(), level);
 	}
-	public static void enchantOrReplace(final ItemStack stack, final EnchantmentTypeSource type, final int level) {
+	public static void enchantOrReplace(final ItemStack stack, final EnchantmentTypeProxy type, final int level) {
 		enchantOrReplace(stack, type.getAsEnchantmentType(), level);
 	}
 	public static void enchantOrReplace(final ItemStack stack, final EnchantmentType type, final int level) {
 		enchantOrReplace(stack, Enchantment.of(type, level));
 	}
-	public static void enchantOrReplace(final ItemStack stack, final EnchantmentSource source) {
+	public static void enchantOrReplace(final ItemStack stack, final EnchantmentProxy source) {
 		enchantOrReplace(stack, source.getAsEnchantment());
 	}
 	public static void enchantOrReplace(final ItemStack stack, final Enchantment ench) {
@@ -387,7 +387,7 @@ public final class ItemUtil {
 	}
 	
 	
-	public static boolean has(ItemStackLike stack, EnchantmentTypeSource type) {
+	public static boolean has(ItemStackLike stack, EnchantmentTypeProxy type) {
 		return has(stack, type.getAsEnchantmentType());
 	}
 	public static boolean has(ItemStackLike stack, Supplier<EnchantmentType> type) {
@@ -397,7 +397,7 @@ public final class ItemUtil {
 		return has(stack, type, 1);
 	}
 	
-	public static boolean has(ItemStackLike stack, EnchantmentTypeSource type, int level) {
+	public static boolean has(ItemStackLike stack, EnchantmentTypeProxy type, int level) {
 		return has(stack, type.getAsEnchantmentType(), level);
 	}
 	public static boolean has(ItemStackLike stack, Supplier<EnchantmentType> type, int level) {
@@ -407,7 +407,7 @@ public final class ItemUtil {
 		return level(stack, type) >= level;
 	}
 	
-	public static int level(ItemStackLike stack, EnchantmentTypeSource type) {
+	public static int level(ItemStackLike stack, EnchantmentTypeProxy type) {
 		return level(stack, type.getAsEnchantmentType());
 	}
 	public static int level(ItemStackLike stack, Supplier<EnchantmentType> type) {
@@ -432,7 +432,7 @@ public final class ItemUtil {
 		return 0;
 	}
 	
-	public static int levelFirst(ItemStackLike stack, EnchantmentTypeSource... types) {
+	public static int levelFirst(ItemStackLike stack, EnchantmentTypeProxy... types) {
 		return levelFirst(stack, unpack(types));
 	}
 	@SafeVarargs
@@ -460,7 +460,7 @@ public final class ItemUtil {
 		return 0;
 	}
 	
-	public static int levelMax(ItemStackLike stack, EnchantmentTypeSource... types) {
+	public static int levelMax(ItemStackLike stack, EnchantmentTypeProxy... types) {
 		return levelMax(stack, unpack(types));
 	}
 	@SafeVarargs
@@ -494,7 +494,7 @@ public final class ItemUtil {
 		return 0;
 	}
 	
-	private static EnchantmentType[] unpack(EnchantmentTypeSource... sources) {
+	private static EnchantmentType[] unpack(EnchantmentTypeProxy... sources) {
 		int size = sources.length;
 		EnchantmentType[] types = new EnchantmentType[size];
 		for (int i = 0; i < size; ++i) {
@@ -514,7 +514,7 @@ public final class ItemUtil {
 	
 	
 	
-	public static boolean tryShrink(Inventory inv, IItemSource type) {
+	public static boolean tryShrink(Inventory inv, IItemProxy type) {
 		return tryShrinkAndCheck(inv, type, 1);
 	}
 	public static boolean tryShrink(Inventory inv, Supplier<ItemType> type) {
@@ -527,7 +527,7 @@ public final class ItemUtil {
 		return tryShrinkAndCheck(inv, pred, 1);
 	}
 	
-	public static boolean tryShrinkAndCheck(Inventory inv, IItemSource type, int amount) {
+	public static boolean tryShrinkAndCheck(Inventory inv, IItemProxy type, int amount) {
 		return tryShrink(inv, type, amount) == amount;
 	}
 	public static boolean tryShrinkAndCheck(Inventory inv, Supplier<ItemType> type, int amount) {
@@ -540,7 +540,7 @@ public final class ItemUtil {
 		return tryShrink(inv, pred, amount) == amount;
 	}
 	
-	public static int tryShrink(Inventory inv, IItemSource type, int amount) {
+	public static int tryShrink(Inventory inv, IItemProxy type, int amount) {
 		return tryShrink(inv, type.getAsItemType(), amount);
 	}
 	public static int tryShrink(Inventory inv, Supplier<ItemType> type, int amount) {

@@ -5,7 +5,7 @@ import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.math.vector.Vector2i;
 
-import net.hellheim.spongeutils.source.solid.item.IItemSource;
+import net.hellheim.spongeutils.proxy.solid.item.IItemProxy;
 
 public interface InventoryDecorator<T extends Inventory> extends InventoryOperator {
 	
@@ -28,7 +28,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 	 * 
 	 * @return The decoration step
 	 */
-	InventoryDecorator<T> set(int index, IItemSource item);
+	InventoryDecorator<T> set(int index, IItemProxy item);
 	
 	/**
 	 * Sets the item for slot at the given index. <br>
@@ -57,7 +57,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 	static interface Sized<T extends Inventory> extends InventoryDecorator<T> {
 		
 		@Override
-		Sized<T> set(int index, IItemSource item);
+		Sized<T> set(int index, IItemProxy item);
 		
 		@Override
 		Sized<T> set(int index, ItemStackLike item);
@@ -76,7 +76,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 		 * 
 		 * @return The decoration step
 		 */
-		Sized<T> set(int row, int column, IItemSource item);
+		Sized<T> set(int row, int column, IItemProxy item);
 		
 		/**
 		 * Sets the item for slot at the given position. <br>
@@ -113,7 +113,7 @@ public interface InventoryDecorator<T extends Inventory> extends InventoryOperat
 		 * 
 		 * @return The decoration step
 		 */
-		Sized<T> set(Vector2i pos, IItemSource item);
+		Sized<T> set(Vector2i pos, IItemProxy item);
 		
 		/**
 		 * Sets the item for slot at the given position. <br>
