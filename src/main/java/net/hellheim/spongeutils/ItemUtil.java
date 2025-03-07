@@ -235,6 +235,11 @@ public final class ItemUtil {
 	public static ItemStack stackOf(final ItemType type, final int quantity) {
 		return ItemStack.of(type, quantity);
 	}
+	public static ItemStack stackOf(final ItemStackLike stack, final int quantity) {
+		final ItemStack result = stack.asMutableCopy();
+		result.setQuantity(quantity);
+		return result;
+	}
 	public static ItemStack stackOf(final IItemSource source) {
 		return source.getAsItemStack();
 	}
@@ -243,6 +248,9 @@ public final class ItemUtil {
 	}
 	public static ItemStack stackOf(final ItemType type) {
 		return ItemStack.of(type);
+	}
+	public static ItemStack stackOf(final ItemStackLike stack) {
+		return stack.asMutableCopy();
 	}
 	
 	public static ItemStackSnapshot snapshotOf(final IItemSource source, final int quantity) {
@@ -254,6 +262,9 @@ public final class ItemUtil {
 	public static ItemStackSnapshot snapshotOf(final ItemType type, final int quantity) {
 		return stackOf(type, quantity).asImmutable();
 	}
+	public static ItemStackSnapshot snapshotOf(final ItemStackLike stack, final int quantity) {
+		return stackOf(stack, quantity).asImmutable();
+	}
 	public static ItemStackSnapshot snapshotOf(final IItemSource source) {
 		return source.getAsItemStackSnapshot();
 	}
@@ -263,13 +274,10 @@ public final class ItemUtil {
 	public static ItemStackSnapshot snapshotOf(final ItemType type) {
 		return stackOf(type).asImmutable();
 	}
-	
-	
-	public static ItemStack withQuantity(final ItemStackLike stack, final int quantity) {
-		final ItemStack mutable = stack.asMutable();
-		mutable.setQuantity(quantity);
-		return mutable;
+	public static ItemStackSnapshot snapshotOf(final ItemStackLike stack) {
+		return stack.asImmutable();
 	}
+	
 	
 	public static ItemStack changeDurability(final ItemStackLike stack, final int durability) {
 		final ItemStack mutable = stack.asMutable();
