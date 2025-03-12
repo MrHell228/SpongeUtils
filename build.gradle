@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+	id 'java-library'
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -11,27 +11,22 @@ version = '0.3-SNAPSHOT'
 description = 'SpongeToolsAPI'
 
 repositories {
-    jcenter()
-    maven {
-        name = 'sponge'
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
-    }
-    maven {
-        name = "sonatype-oss-snapshots1"
-        url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-    }
-
-    mavenLocal()
+	jcenter()
+	maven {
+		name = 'sponge'
+		url = 'https://repo.spongepowered.org/repository/maven-public/'
+	}
+	maven {
+		name = "sonatype-oss-snapshots1"
+		url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+	}
+	
+	mavenLocal()
 }
 
 dependencies {
-    implementation 'org.spongepowered:spongeapi:14.0.0-SNAPSHOT'
-
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    implementation 'org.apache.commons:commons-math3:3.6.1'
-
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:29.0-jre'
+	// SpongeAPI
+	api 'org.spongepowered:spongeapi:14.0.0-SNAPSHOT'
 	
 	// DataFixerUpper
 	api 'com.mojang:datafixerupper:8.0.16'
@@ -41,5 +36,5 @@ dependencies {
 }
 
 jar {
-    archiveBaseName = "SpongeToolsAPI"
+	archiveBaseName = "SpongeToolsAPI"
 }
