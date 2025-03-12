@@ -32,6 +32,12 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:29.0-jre'
+	
+	// DataFixerUpper
+	api 'com.mojang:datafixerupper:8.0.16'
+	
+	// icu4j (for TimeZone in ItemModel)
+	api 'com.ibm.icu:icu4j:76.1'
 }
 
 jar {
