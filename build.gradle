@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -7,8 +7,8 @@ targetCompatibility = 21
 sourceCompatibility = 21
 
 group = 'net.hellheim'
-version = '0.3'
-description = 'SpongeUtils'
+version = '0.3-SNAPSHOT'
+description = 'SpongeToolsAPI'
 
 repositories {
     jcenter()
@@ -21,7 +21,6 @@ repositories {
         url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
     }
 
-    mavenCentral()
     mavenLocal()
 }
 
@@ -36,5 +35,5 @@ dependencies {
 }
 
 jar {
-    archiveBaseName = "SpongeUtils"
+    archiveBaseName = "SpongeToolsAPI"
 }
