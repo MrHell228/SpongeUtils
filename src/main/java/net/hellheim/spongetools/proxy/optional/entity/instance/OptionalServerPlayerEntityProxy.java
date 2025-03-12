@@ -9,8 +9,8 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.Ticks;
 
-import net.hellheim.spongetools.EntityUtil;
 import net.hellheim.spongetools.proxy.solid.item.IItemProxy;
+import net.hellheim.spongetools.util.EntityUtil;
 import net.kyori.adventure.text.Component;
 
 public interface OptionalServerPlayerEntityProxy extends OptionalPlayerEntityProxy<ServerPlayer> {

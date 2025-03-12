@@ -9,10 +9,10 @@ import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.living.Living;
 
-import net.hellheim.spongetools.EntityUtil;
 import net.hellheim.spongetools.proxy.optional.entity.OptionalEntityProxy;
 import net.hellheim.spongetools.proxy.solid.PotionEffectProxy;
 import net.hellheim.spongetools.proxy.solid.PotionEffectTypeProxy;
+import net.hellheim.spongetools.util.EntityUtil;
 
 public interface OptionalLivingEntityProxy<T extends Living> extends OptionalEntityProxy<T> {
 	

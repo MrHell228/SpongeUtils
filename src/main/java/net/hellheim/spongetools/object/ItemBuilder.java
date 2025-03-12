@@ -14,12 +14,12 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-import net.hellheim.spongetools.CompUtil;
-import net.hellheim.spongetools.ItemUtil;
 import net.hellheim.spongetools.proxy.solid.EnchantmentProxy;
 import net.hellheim.spongetools.proxy.solid.EnchantmentTypeProxy;
 import net.hellheim.spongetools.proxy.solid.data.TransitiveMutableDataHolderProxy;
 import net.hellheim.spongetools.proxy.solid.item.IItemProxy;
+import net.hellheim.spongetools.util.CompUtil;
+import net.hellheim.spongetools.util.ItemUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;

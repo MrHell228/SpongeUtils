@@ -9,7 +9,7 @@ import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.plugin.PluginContainer;
 
-import net.hellheim.spongetools.TaskUtil;
+import net.hellheim.spongetools.util.TaskUtil;
 
 public class TaskManager extends Manager {
 	

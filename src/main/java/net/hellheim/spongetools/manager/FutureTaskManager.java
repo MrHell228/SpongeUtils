@@ -16,8 +16,8 @@ import org.spongepowered.api.scheduler.TaskExecutorService;
 import org.spongepowered.api.scheduler.TaskFuture;
 import org.spongepowered.plugin.PluginContainer;
 
-import net.hellheim.spongetools.TaskUtil;
 import net.hellheim.spongetools.object.SpongeCompletableFuture;
+import net.hellheim.spongetools.util.TaskUtil;
 
 /**
  * Manager for utilizing {@link SpongeCompletableFuture}

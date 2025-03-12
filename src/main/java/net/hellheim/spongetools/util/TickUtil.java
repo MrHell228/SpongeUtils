@@ -1,4 +1,4 @@
-package net.hellheim.spongetools;
+package net.hellheim.spongetools.util;
 
 import org.spongepowered.api.util.Ticks;
 

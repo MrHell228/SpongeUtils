@@ -1,4 +1,4 @@
-package net.hellheim.spongetools;
+package net.hellheim.spongetools.util;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.block.BlockType;

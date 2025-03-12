@@ -17,13 +17,13 @@ import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.api.util.Identifiable;
 import org.spongepowered.plugin.PluginContainer;
 
-import net.hellheim.spongetools.TaskUtil;
 import net.hellheim.spongetools.collection.UnmodifiableDeque;
 import net.hellheim.spongetools.manager.IMenuManager;
 import net.hellheim.spongetools.menu.pagination.Pagination;
 import net.hellheim.spongetools.menu.pagination.PaginationInitStage;
 import net.hellheim.spongetools.menu.pagination.PaginationType;
 import net.hellheim.spongetools.proxy.solid.PluginProxy;
+import net.hellheim.spongetools.util.TaskUtil;
 import net.kyori.adventure.text.Component;
 
 /**

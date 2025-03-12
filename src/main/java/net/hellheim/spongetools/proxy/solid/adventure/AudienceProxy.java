@@ -3,7 +3,7 @@ package net.hellheim.spongetools.proxy.solid.adventure;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import net.hellheim.spongetools.CompUtil;
+import net.hellheim.spongetools.util.CompUtil;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.bossbar.BossBar;

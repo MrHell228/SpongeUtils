@@ -23,7 +23,6 @@ import org.spongepowered.api.item.inventory.menu.handler.SlotClickHandler;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.api.util.Tuple;
 
-import net.hellheim.spongetools.CompUtil;
 import net.hellheim.spongetools.function.BooleanBinaryOperator;
 import net.hellheim.spongetools.menu.handler.MenuClickHandler;
 import net.hellheim.spongetools.menu.handler.MenuCloseHandler;
@@ -37,6 +36,7 @@ import net.hellheim.spongetools.menu.pagination.Pagination;
 import net.hellheim.spongetools.menu.pagination.PaginationConfig;
 import net.hellheim.spongetools.menu.pagination.PaginationInitStage;
 import net.hellheim.spongetools.menu.pagination.SinglePagination;
+import net.hellheim.spongetools.util.CompUtil;
 import net.kyori.adventure.text.Component;
 
 /**

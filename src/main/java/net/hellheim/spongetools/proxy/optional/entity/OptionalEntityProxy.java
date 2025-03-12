@@ -10,7 +10,7 @@ import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.math.vector.Vector3d;
 import org.spongepowered.math.vector.Vector3i;
 
-import net.hellheim.spongetools.EntityUtil;
+import net.hellheim.spongetools.util.EntityUtil;
 
 public interface OptionalEntityProxy<T extends Entity> extends OptionalEntityArchetypeProxy<T> {
 	

@@ -4,7 +4,7 @@ import org.spongepowered.api.registry.RegistryType;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.metadata.PluginMetadata;
 
-import net.hellheim.spongetools.TranslationUtil;
+import net.hellheim.spongetools.util.TranslationUtil;
 import net.kyori.adventure.key.Namespaced;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

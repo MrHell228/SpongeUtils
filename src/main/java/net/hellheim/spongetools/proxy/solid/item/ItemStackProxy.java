@@ -6,9 +6,9 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-import net.hellheim.spongetools.ItemUtil;
 import net.hellheim.spongetools.object.CachedSupplier;
 import net.hellheim.spongetools.object.ItemBuilder;
+import net.hellheim.spongetools.util.ItemUtil;
 
 public interface ItemStackProxy extends IItemProxy {
 	
