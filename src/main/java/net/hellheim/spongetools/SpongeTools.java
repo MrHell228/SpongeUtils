@@ -10,10 +10,10 @@ import org.spongepowered.api.registry.RegistryType;
 
 public final class SpongeTools {
 	
-	public static final String ID = "spongetools";
+	public static final String NAMESPACE = "spongetools";
 	
 	public static ResourceKey key(final String value) {
-		return ResourceKey.of(SpongeTools.ID, value);
+		return ResourceKey.of(SpongeTools.NAMESPACE, value);
 	}
 	
 	public static final class Registries {
