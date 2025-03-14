@@ -30,7 +30,11 @@ public class StringRepresentableCodec<S extends StringRepresentable> implements 
 				);
 	}
 	
-	static <S extends StringRepresentable> StringRepresentableCodec<S> fromValues(final Supplier<S[]> values) {
+	public static <S extends StringRepresentable> StringRepresentableCodec<S> fromValues(final S[] values) {
+		return StringRepresentableCodec.fromValues(() -> values);
+	}
+	
+	public static <S extends StringRepresentable> StringRepresentableCodec<S> fromValues(final Supplier<S[]> values) {
 		final Supplier<S[]> memoized = Suppliers.memoize(values::get);
         final Supplier<List<S>> memoizedList = Suppliers.memoize(() -> List.of(memoized.get()));
         
@@ -40,7 +44,7 @@ public class StringRepresentableCodec<S extends StringRepresentable> implements 
         return new StringRepresentableCodec<>(memoized, nameLookup, indexLookup);
     }
 	
-	static <S extends StringRepresentable> Function<String, S> nameLookup(
+	public static <S extends StringRepresentable> Function<String, S> nameLookup(
 		final Supplier<S[]> values, final Function<String, String> keyFunction
 	) {
 		final Supplier<S[]> memoized = Suppliers.memoize(values::get);

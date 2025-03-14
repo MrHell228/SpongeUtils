@@ -1,0 +1,315 @@
+package net.hellheim.spongetools.custom.item.model;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+
+import org.spongepowered.api.ResourceKey;
+import org.spongepowered.api.data.type.DyeColor;
+import org.spongepowered.api.util.Direction;
+
+import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.hellheim.spongetools.codec.LateBoundIdMapper;
+import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.StringRepresentableCodecs;
+
+public interface SpecialModel {
+	
+	final Codec<SpecialModel> CODEC = Registrar.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatch(SpecialModel::codec, Function.identity());
+	
+	final class Registrar {
+		
+		private static final LateBoundIdMapper<ResourceKey, MapCodec<? extends SpecialModel>> ID_MAPPER = new LateBoundIdMapper<>();
+		
+		static {
+			ID_MAPPER.put(ResourceKey.minecraft("bed"), Bed.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("banner"), Banner.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("conduit"), Conduit.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("chest"), Chest.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("head"), Skull.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("shulker_box"), ShulkerBox.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("shield"), Shield.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("trident"), Trident.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("decorated_pot"), DecoratedPot.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("standing_sign"), StandingSign.CODEC);
+	        ID_MAPPER.put(ResourceKey.minecraft("hanging_sign"), HangingSign.CODEC);
+		}
+		
+		private Registrar() {
+		}
+	}
+	
+	static Conduit conduit() {
+		return Conduit.INSTANCE;
+	}
+	
+	static DecoratedPot decoratedPot() {
+		return DecoratedPot.INSTANCE;
+	}
+	
+	static Trident triden() {
+		 return Trident.INSTANCE;
+	}
+	
+	static Shield shield() {
+		return Shield.INSTANCE;
+	}
+	
+	static Banner banner(final DyeColor base) {
+		return new Banner(base);
+	}
+	
+	static Bed bed(final ResourceKey texture) {
+		return new Bed(texture);
+	}
+	
+	static Chest chest(final ResourceKey texture) {
+		return SpecialModel.chest(texture, Chest.DEFAULT);
+	}
+	
+	static Chest chest(final ResourceKey texture, final float openness) {
+		return new Chest(texture, openness);
+	}
+	
+	static ShulkerBox shulkerBox(final ResourceKey texture) {
+		return SpecialModel.shulkerBox(texture, ShulkerBox.DEFAULT_OPENNESS, ShulkerBox.DEFAULT_ORIENTATION);
+	}
+	
+	static ShulkerBox shulkerBox(final ResourceKey texture, final Direction orientation) {
+		return SpecialModel.shulkerBox(texture, ShulkerBox.DEFAULT_OPENNESS, orientation);
+	}
+	
+	static ShulkerBox shulkerBox(final ResourceKey texture, final float openness) {
+		return SpecialModel.shulkerBox(texture, openness, ShulkerBox.DEFAULT_ORIENTATION);
+	}
+	
+	static ShulkerBox shulkerBox(final ResourceKey texture, final float openness, final Direction orientation) {
+		return new ShulkerBox(texture, openness, orientation);
+	}
+	
+	static StandingSign standingSign(final String woodType) {
+		return SpecialModel.standingSign(woodType, Optional.empty());
+	}
+	
+	static StandingSign standingSign(final String woodType, final ResourceKey texture) {
+		return SpecialModel.standingSign(woodType, Optional.of(texture));
+	}
+	
+	static StandingSign standingSign(final String woodType, final Optional<ResourceKey> texture) {
+		return new StandingSign(woodType, texture);
+	}
+	
+	static HangingSign hangingSign(final String woodType) {
+		return SpecialModel.hangingSign(woodType, Optional.empty());
+	}
+	
+	static HangingSign hangingSign(final String woodType, final ResourceKey texture) {
+		return SpecialModel.hangingSign(woodType, Optional.of(texture));
+	}
+	
+	static HangingSign hangingSign(final String woodType, final Optional<ResourceKey> texture) {
+		return new HangingSign(woodType, texture);
+	}
+	
+	static Skull skull(final SkullType type) {
+		return SpecialModel.skull(type, Skull.DEFAULT, Optional.empty());
+	}
+	
+	static Skull skull(final SkullType type, final ResourceKey textureOverride) {
+		return SpecialModel.skull(type, Skull.DEFAULT, Optional.of(textureOverride));
+	}
+	
+	static Skull skull(final SkullType type, final Optional<ResourceKey> textureOverride) {
+		return SpecialModel.skull(type, Skull.DEFAULT, textureOverride);
+	}
+	
+	static Skull skull(final SkullType type, final float animation) {
+		return SpecialModel.skull(type, animation, Optional.empty());
+	}
+	
+	static Skull skull(final SkullType type, final float animation, final ResourceKey textureOverride) {
+		return SpecialModel.skull(type, animation, Optional.of(textureOverride));
+	}
+	
+	static Skull skull(final SkullType type, final float animation, final Optional<ResourceKey> textureOverride) {
+		return new Skull(type, animation, textureOverride);
+	}
+	
+	MapCodec<? extends SpecialModel> codec();
+	
+	record Conduit() implements SpecialModel {
+		public static final Conduit INSTANCE = new Conduit();
+		public static final MapCodec<Conduit> CODEC = MapCodec.unit(INSTANCE);
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record DecoratedPot() implements SpecialModel {
+		public static final DecoratedPot INSTANCE = new DecoratedPot();
+		public static final MapCodec<DecoratedPot> CODEC = MapCodec.unit(INSTANCE);
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record Trident() implements SpecialModel {
+		public static final Trident INSTANCE = new Trident();
+		public static final MapCodec<Trident> CODEC = MapCodec.unit(INSTANCE);
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record Shield() implements SpecialModel {
+		public static final Shield INSTANCE = new Shield();
+		public static final MapCodec<Shield> CODEC = MapCodec.unit(INSTANCE);
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record Banner(DyeColor base) implements SpecialModel {
+		public static final MapCodec<Banner> CODEC = RecordCodecBuilder.mapCodec(
+				p_386477_ -> p_386477_.group(
+						StringRepresentableCodecs.DYE_COLOR.fieldOf("color").forGetter(Banner::base)
+						).apply(p_386477_, Banner::new));
+		
+		public Banner(final DyeColor base) {
+			this.base = Objects.requireNonNull(base, "base");
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record Bed(ResourceKey texture) implements SpecialModel {
+		public static final MapCodec<Bed> CODEC = RecordCodecBuilder.mapCodec(
+				p_388012_ -> p_388012_.group(
+						SpongeCodecs.RESOURCE_KEY.fieldOf("texture").forGetter(Bed::texture)
+						).apply(p_388012_, Bed::new));
+		
+		public Bed(final ResourceKey texture) {
+			this.texture = Objects.requireNonNull(texture, "texture");
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record Chest(ResourceKey texture, float openness) implements SpecialModel {
+		public static final float DEFAULT = 0.0F;
+		public static final MapCodec<Chest> CODEC = RecordCodecBuilder.mapCodec(
+				p_388545_ -> p_388545_.group(
+						SpongeCodecs.RESOURCE_KEY.fieldOf("texture").forGetter(Chest::texture),
+						Codec.FLOAT.optionalFieldOf("openness", DEFAULT).forGetter(Chest::openness)
+						).apply(p_388545_, Chest::new));
+		
+		public Chest(final ResourceKey texture, final float openness) {
+			this.texture = Objects.requireNonNull(texture, "texture");
+			this.openness = openness;
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record ShulkerBox(ResourceKey texture, float openness, Direction orientation) implements SpecialModel {
+		public static final float DEFAULT_OPENNESS = 0.0F;
+		public static final Direction DEFAULT_ORIENTATION = Direction.UP;
+		public static final MapCodec<ShulkerBox> CODEC = RecordCodecBuilder.mapCodec(
+				p_386593_ -> p_386593_.group(
+						SpongeCodecs.RESOURCE_KEY.fieldOf("texture").forGetter(ShulkerBox::texture),
+						Codec.FLOAT.optionalFieldOf("openness", DEFAULT_OPENNESS).forGetter(ShulkerBox::openness),
+						SpongeCodecs.CARDINAL_DIRECTION.optionalFieldOf("orientation", DEFAULT_ORIENTATION).forGetter(ShulkerBox::orientation)
+						).apply(p_386593_, ShulkerBox::new));
+		
+		public ShulkerBox(final ResourceKey texture, final float openness, final Direction orientation) {
+			this.texture = Objects.requireNonNull(texture, "texture");
+			this.openness = openness;
+			this.orientation = Objects.requireNonNull(orientation, "orientation");
+			Preconditions.checkArgument(orientation.isCardinal(), "Direction must be cardinal: " + orientation);
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record StandingSign(String woodType, Optional<ResourceKey> texture) implements SpecialModel {
+		public static final MapCodec<StandingSign> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						Codec.STRING.fieldOf("wood_type").forGetter(StandingSign::woodType),
+						SpongeCodecs.RESOURCE_KEY.optionalFieldOf("texture").forGetter(StandingSign::texture)
+						).apply(instance, StandingSign::new));
+		
+		public StandingSign(final String woodType, final Optional<ResourceKey> texture) {
+			this.woodType = Objects.requireNonNull(woodType, "woodType");
+			this.texture = Objects.requireNonNull(texture, "texture");
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record HangingSign(String woodType, Optional<ResourceKey> texture) implements SpecialModel {
+		public static final MapCodec<HangingSign> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						Codec.STRING.fieldOf("wood_type").forGetter(HangingSign::woodType),
+						SpongeCodecs.RESOURCE_KEY.optionalFieldOf("texture").forGetter(HangingSign::texture)
+						).apply(instance, HangingSign::new));
+		
+		public HangingSign(final String woodType, final Optional<ResourceKey> texture) {
+			this.woodType = Objects.requireNonNull(woodType, "woodType");
+			this.texture = Objects.requireNonNull(texture, "texture");
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+	
+	record Skull(SkullType type, float animation, Optional<ResourceKey> textureOverride) implements SpecialModel {
+		public static final float DEFAULT = 0.0F;
+		public static final MapCodec<Skull> CODEC = RecordCodecBuilder.mapCodec(
+				p_390096_ -> p_390096_.group(
+						SkullType.CODEC.fieldOf("kind").forGetter(Skull::type),
+						Codec.FLOAT.optionalFieldOf("animation", DEFAULT).forGetter(Skull::animation),
+						SpongeCodecs.RESOURCE_KEY.optionalFieldOf("texture").forGetter(Skull::textureOverride)
+						).apply(p_390096_, Skull::new));
+		
+		public Skull(final SkullType type, final float animation, final Optional<ResourceKey> textureOverride) {
+			this.type = Objects.requireNonNull(type, "type");
+			this.animation = animation;
+			this.textureOverride = Objects.requireNonNull(textureOverride, "textureOverride");
+		}
+		
+		@Override
+		public MapCodec<? extends SpecialModel> codec() {
+			return CODEC;
+		}
+	}
+}
