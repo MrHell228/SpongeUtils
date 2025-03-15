@@ -4,10 +4,13 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.util.CopyableBuilder;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.hellheim.spongetools.SpongeTools;
 
 public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight guiLight) {
 	
@@ -22,6 +25,10 @@ public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight gu
 		this.model = Objects.requireNonNull(model, "model");
 		this.display = Objects.requireNonNull(display, "display");
 		this.guiLight = Objects.requireNonNull(guiLight, "guiLight");
+	}
+	
+	public static DefaultedRegistryType<ItemModel> registry() {
+		return SpongeTools.Registries.ITEM_MODEL;
 	}
 	
 	public static ItemModel of(final TexturedModel model, final ItemTransforms display) {

@@ -4,6 +4,8 @@ import java.lang.reflect.Type;
 
 import com.mojang.serialization.Codec;
 
+import net.hellheim.spongetools.codec.list.TypeCodecs;
+
 public interface CodecMapper<R> {
 	
 	interface M1<R> extends CodecMapper<R> {

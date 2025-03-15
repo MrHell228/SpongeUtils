@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.codec;
+package net.hellheim.spongetools.codec.list;
 
 import java.io.IOException;
 import java.util.HashMap;

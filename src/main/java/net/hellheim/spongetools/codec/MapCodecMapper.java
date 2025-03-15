@@ -5,6 +5,8 @@ import java.lang.reflect.Type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
+import net.hellheim.spongetools.codec.list.TypeCodecs;
+
 public interface MapCodecMapper<R> {
 	
 	interface M1<R> extends MapCodecMapper<R> {

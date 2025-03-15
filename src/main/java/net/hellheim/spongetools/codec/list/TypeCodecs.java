@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.codec;
+package net.hellheim.spongetools.codec.list;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -17,6 +17,8 @@ import org.spongepowered.api.util.weighted.RandomObjectTable;
 import org.spongepowered.api.util.weighted.TableEntry;
 
 import com.mojang.serialization.Codec;
+
+import net.hellheim.spongetools.codec.CodecMapper;
 
 public final class TypeCodecs {
 	

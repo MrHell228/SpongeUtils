@@ -13,7 +13,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
-import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface ItemModelDefinition {
 	
@@ -135,6 +135,14 @@ public interface ItemModelDefinition {
 	}
 	
 	MapCodec<? extends ItemModelDefinition> codec();
+	
+	default Item asItem(final boolean handAnimationOnSwap) {
+		return Item.of(this, handAnimationOnSwap);
+	}
+	
+	default Item asItem() {
+		return Item.of(this);
+	}
 	
 	record Empty() implements ItemModelDefinition {
 		public static final Empty INSTANCE = new Empty();

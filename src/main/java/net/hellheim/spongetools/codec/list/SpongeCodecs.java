@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.codec;
+package net.hellheim.spongetools.codec.list;
 
 import java.util.List;
 import java.util.function.Function;
@@ -21,6 +21,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 
+import net.hellheim.spongetools.codec.StringRepresentableCodec;
 import net.hellheim.spongetools.codec.dispatched.TableEntryCodecs;
 import net.hellheim.spongetools.codec.dispatched.VariableAmountCodecs;
 

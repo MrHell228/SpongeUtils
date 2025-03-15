@@ -8,6 +8,8 @@ import org.spongepowered.api.registry.DuplicateRegistrationException;
 
 import com.mojang.serialization.Codec;
 
+import net.hellheim.spongetools.codec.list.ExtraCodecs;
+
 public final class CodecMapperDispatcher<I, V> {
 	
 	private final LateBoundIdMapper<I, MapCodecMapper.M1<? extends V>> idMapper = new LateBoundIdMapper<>();

@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.codec;
+package net.hellheim.spongetools.codec.list;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.advancement.Advancement;
@@ -171,10 +171,18 @@ import org.spongepowered.api.world.weather.WeatherType;
 
 import com.mojang.serialization.Codec;
 
+import net.hellheim.spongetools.custom.item.CustomItemType;
+
 /**
  * Codecs for all {@link RegistryType}s provided by SpongeAPI.
  */
 public final class RegistryCodecs {
+	
+	// SpongeToolsAPI
+	
+	public static final Codec<CustomItemType> CUSTOM_ITEM = RegistryCodecs.register(CustomItemType.class, CustomItemType.registry());
+	
+	// SpongeAPI
 	
 	public static final Codec<Advancement> ADVANCEMENT = RegistryCodecs.register(Advancement.class, RegistryTypes.ADVANCEMENT);
 	

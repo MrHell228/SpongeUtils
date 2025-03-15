@@ -9,7 +9,7 @@ import org.spongepowered.api.util.Transform;
 
 import com.mojang.serialization.Codec;
 
-import net.hellheim.spongetools.codec.MathCodecs;
+import net.hellheim.spongetools.codec.list.MathCodecs;
 
 public record ItemTransforms(Map<ItemDisplayContext, Transform> transforms) {
 	

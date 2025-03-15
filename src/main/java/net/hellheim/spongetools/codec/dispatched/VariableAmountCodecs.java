@@ -9,7 +9,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.codec.CodecDispatcher;
-import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public class VariableAmountCodecs {
 	

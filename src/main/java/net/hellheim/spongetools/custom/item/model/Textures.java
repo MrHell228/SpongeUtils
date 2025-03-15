@@ -10,7 +10,7 @@ import org.spongepowered.api.util.CopyableBuilder;
 
 import com.mojang.serialization.Codec;
 
-import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public record Textures(Map<TextureSlot, ResourceKey> textures) {
 	

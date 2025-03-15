@@ -26,10 +26,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.hellheim.spongetools.codec.ExtraCodecs;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
-import net.hellheim.spongetools.codec.RegistryCodecs;
-import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.ExtraCodecs;
+import net.hellheim.spongetools.codec.list.RegistryCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface SelectProperty<T> {
 	

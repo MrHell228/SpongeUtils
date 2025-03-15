@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.codec;
+package net.hellheim.spongetools.codec.list;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.DyeColor;

@@ -18,7 +18,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 
 import net.hellheim.spongetools.codec.CodecMapperDispatcher;
 import net.hellheim.spongetools.codec.MapCodecMapper;
-import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public final class TableEntryCodecs {
 	

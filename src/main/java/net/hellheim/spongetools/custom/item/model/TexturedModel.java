@@ -12,7 +12,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.hellheim.spongetools.codec.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public record TexturedModel(ModelTemplate parent, Textures textures) {
 	

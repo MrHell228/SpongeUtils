@@ -6,6 +6,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 
+import net.hellheim.spongetools.codec.list.ExtraCodecs;
+
 public class LateBoundIdMapper<I, V> {
 	
 	protected final BiMap<I, V> idToValue = HashBiMap.create();

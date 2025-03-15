@@ -14,8 +14,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
-import net.hellheim.spongetools.codec.SpongeCodecs;
-import net.hellheim.spongetools.codec.StringRepresentableCodecs;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
 
 public interface SpecialModel {
 	

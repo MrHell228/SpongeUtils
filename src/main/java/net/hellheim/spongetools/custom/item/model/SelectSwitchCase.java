@@ -6,7 +6,7 @@ import java.util.Objects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.hellheim.spongetools.codec.ExtraCodecs;
+import net.hellheim.spongetools.codec.list.ExtraCodecs;
 
 public record SelectSwitchCase<T>(List<T> values, ItemModelDefinition model) {
 	public static <T> Codec<SelectSwitchCase<T>> codec(Codec<T> codec) {

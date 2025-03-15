@@ -13,6 +13,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 
+import net.hellheim.spongetools.codec.list.ExtraCodecs;
+
 public class StringRepresentableCodec<S extends StringRepresentable> implements Codec<S> {
 	
 	private final Supplier<S[]> memoized;
