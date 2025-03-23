@@ -101,7 +101,7 @@ public class ItemBuilder implements IItemProxy, TransitiveMutableDataHolderProxy
 	}
 	
 	@Override
-	public DataHolder.Mutable getAsDataHolder() {
+	public DataHolder.Mutable getAsData() {
 		return this.stack;
 	}
 	

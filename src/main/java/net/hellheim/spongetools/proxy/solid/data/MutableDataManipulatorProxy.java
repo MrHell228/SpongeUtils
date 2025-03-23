@@ -13,95 +13,95 @@ import org.spongepowered.api.data.value.ValueContainer;
 public interface MutableDataManipulatorProxy extends DataManipulatorProxy, DataManipulator.Mutable {
 	
 	@Override
-	DataManipulator.Mutable getAsDataHolder();
+	DataManipulator.Mutable getAsData();
 	
 	@Override
     default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final Predicate<Key<?>> predicate) {
-        return this.getAsDataHolder().copyFrom(valueContainer, predicate);
+        return this.getAsData().copyFrom(valueContainer, predicate);
     }
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final MergeFunction overlap, final Predicate<Key<?>> predicate) {
-		return this.getAsDataHolder().copyFrom(valueContainer, overlap, predicate);
+		return this.getAsData().copyFrom(valueContainer, overlap, predicate);
 	}
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final Key<?> first, final Key<?>... more) {
-		return this.getAsDataHolder().copyFrom(valueContainer, first, more);
+		return this.getAsData().copyFrom(valueContainer, first, more);
 	}
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final MergeFunction overlap, final Key<?> first, final Key<?>... more) {
-		return this.getAsDataHolder().copyFrom(valueContainer, overlap, first, more);
+		return this.getAsData().copyFrom(valueContainer, overlap, first, more);
 	}
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final Iterable<Key<?>> keys) {
-		return this.getAsDataHolder().copyFrom(valueContainer, keys);
+		return this.getAsData().copyFrom(valueContainer, keys);
 	}
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final MergeFunction overlap, final Iterable<Key<?>> keys) {
-		return this.getAsDataHolder().copyFrom(valueContainer, overlap, keys);
+		return this.getAsData().copyFrom(valueContainer, overlap, keys);
 	}
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer) {
-		return this.getAsDataHolder().copyFrom(valueContainer);
+		return this.getAsData().copyFrom(valueContainer);
 	}
 	
 	@Override
 	default DataManipulator.Mutable copyFrom(final ValueContainer valueContainer, final MergeFunction overlap) {
-		return this.getAsDataHolder().copyFrom(valueContainer, overlap);
+		return this.getAsData().copyFrom(valueContainer, overlap);
 	}
 	
 	@Override
 	default <E> DataManipulator.Mutable set(final Key<? extends Value<E>> key, final E value) {
-		return this.getAsDataHolder().set(key, value);
+		return this.getAsData().set(key, value);
 	}
 	
 	@Override
 	default <E, V extends Value<E>> DataManipulator.Mutable set(final Supplier<Key<V>> key, final E value) {
-		return this.getAsDataHolder().set(key, value);
+		return this.getAsData().set(key, value);
 	}
 	
 	@Override
 	default <E, V extends Value<E>> DataManipulator.Mutable set(final Supplier<Key<V>> key, final Supplier<E> value) {
-		return this.getAsDataHolder().set(key, value);
+		return this.getAsData().set(key, value);
 	}
 	
 	@Override
 	default DataManipulator.Mutable set(final Value<?> value) {
-		return this.getAsDataHolder().set(value);
+		return this.getAsData().set(value);
 	}
 	
 	@Override
 	default DataManipulator.Mutable set(final Value<?>... values) {
-		return this.getAsDataHolder().set(values);
+		return this.getAsData().set(values);
 	}
 	
 	@Override
 	default DataManipulator.Mutable set(final Iterable<? extends Value<?>> values) {
-		return this.getAsDataHolder().set(values);
+		return this.getAsData().set(values);
 	}
 	
 	@Override
 	default <E> DataManipulator.Mutable transform(final Key<? extends Value<E>> key, final Function<E, E> function) {
-		return this.getAsDataHolder().transform(key, function);
+		return this.getAsData().transform(key, function);
 	}
 	
 	@Override
 	default DataManipulator.Mutable remove(final Key<?> key) {
-		return this.getAsDataHolder().remove(key);
+		return this.getAsData().remove(key);
 	}
 	
 	@Override
 	default DataManipulator.Mutable asMutable() {
-		return this.getAsDataHolder().asMutable();
+		return this.getAsData().asMutable();
 	}
 	
 	@Override
 	default DataManipulator.Mutable copy() {
-		return this.getAsDataHolder().copy();
+		return this.getAsData().copy();
 	}
 }

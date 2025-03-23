@@ -12,70 +12,70 @@ import org.spongepowered.api.data.value.ValueContainer;
 
 public interface ValueContainerProxy extends ValueContainer {
 	
-	ValueContainer getAsDataHolder();
+	ValueContainer getAsData();
 	
 	@Override
 	default <E> Optional<E> get(final Key<? extends Value<E>> key) {
-		return this.getAsDataHolder().get(key);
+		return this.getAsData().get(key);
 	}
 	
 	@Override
 	default OptionalInt getInt(final Key<? extends Value<Integer>> key) {
-		return this.getAsDataHolder().getInt(key);
+		return this.getAsData().getInt(key);
 	}
 	
 	@Override
 	default OptionalDouble getDouble(final Key<? extends Value<Double>> key) {
-		return this.getAsDataHolder().getDouble(key);
+		return this.getAsData().getDouble(key);
 	}
 	
 	@Override
 	default OptionalLong getLong(final Key<? extends Value<Long>> key) {
-		return this.getAsDataHolder().getLong(key);
+		return this.getAsData().getLong(key);
 	}
 	
 	@Override
 	default <E> E require(final Key<? extends Value<E>> key) {
-		return this.getAsDataHolder().require(key);
+		return this.getAsData().require(key);
 	}
 	
 	@Override
 	default <E> E getOrNull(final Key<? extends Value<E>> key) {
-		return this.getAsDataHolder().getOrNull(key);
+		return this.getAsData().getOrNull(key);
 	}
 	
 	@Override
 	default <E> E getOrElse(final Key<? extends Value<E>> key, E defaultValue) {
-		return this.getAsDataHolder().getOrElse(key, defaultValue);
+		return this.getAsData().getOrElse(key, defaultValue);
 	}
 	
 	@Override
 	default <E, V extends Value<E>> Optional<V> getValue(final Key<V> key) {
-		return this.getAsDataHolder().getValue(key);
+		return this.getAsData().getValue(key);
 	}
 	
 	@Override
 	default <E, V extends Value<E>> V requireValue(final Key<V> key) {
-		return this.getAsDataHolder().requireValue(key);
+		return this.getAsData().requireValue(key);
 	}
 	
 	@Override
 	default boolean supports(final Key<?> key) {
-		return this.getAsDataHolder().supports(key);
+		return this.getAsData().supports(key);
 	}
 	
 	@Override
 	default boolean supports(final Value<?> value) {
-		return this.getAsDataHolder().supports(value);
+		return this.getAsData().supports(value);
 	}
 	
 	@Override
 	default Set<Key<?>> getKeys() {
-		return this.getAsDataHolder().getKeys();
+		return this.getAsData().getKeys();
 	}
 	
 	@Override
 	default Set<Value.Immutable<?>> getValues() {
-		return this.getAsDataHolder().getValues();
+		return this.getAsData().getValues();
 	}
 }

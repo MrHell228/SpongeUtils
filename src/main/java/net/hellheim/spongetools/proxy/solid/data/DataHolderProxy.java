@@ -5,5 +5,5 @@ import org.spongepowered.api.data.DataHolder;
 public interface DataHolderProxy extends ValueContainerProxy, DataHolder {
 	
 	@Override
-	DataHolder getAsDataHolder();
+	DataHolder getAsData();
 }

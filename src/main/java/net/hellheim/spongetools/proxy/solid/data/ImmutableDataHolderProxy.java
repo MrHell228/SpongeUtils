@@ -12,55 +12,55 @@ import org.spongepowered.api.data.value.Value;
 public interface ImmutableDataHolderProxy<I extends DataHolder.Immutable<I>> extends DataHolderProxy, DataHolder.Immutable<I> {
 	
 	@Override
-	DataHolder.Immutable<I> getAsDataHolder();
+	DataHolder.Immutable<I> getAsData();
 	
 	@Override
 	default <E> Optional<I> transform(final Key<? extends Value<E>> key, final Function<E, E> function) {
-		return this.getAsDataHolder().transform(key, function);
+		return this.getAsData().transform(key, function);
 	}
 	
 	@Override
 	default <E> Optional<I> transform(final Supplier<? extends Key<? extends Value<E>>> key, final Function<E, E> function) {
-		return this.getAsDataHolder().transform(key, function);
+		return this.getAsData().transform(key, function);
 	}
 	
 	@Override
 	default <E> Optional<I> with(final Key<? extends Value<E>> key, final E value) {
-		return this.getAsDataHolder().with(key, value);
+		return this.getAsData().with(key, value);
 	}
 	
 	@Override
 	default <E> Optional<I> with(final Supplier<? extends Key<? extends Value<E>>> key, final E value) {
-		return this.getAsDataHolder().with(key, value);
+		return this.getAsData().with(key, value);
 	}
 	
 	@Override
 	default Optional<I> with(final Value<?> value) {
-		return this.getAsDataHolder().with(value);
+		return this.getAsData().with(value);
 	}
 	
 	@Override
 	default Optional<I> without(final Value<?> value) {
-		return this.getAsDataHolder().without(value);
+		return this.getAsData().without(value);
 	}
 	
 	@Override
 	default Optional<I> without(final Key<?> key) {
-		return this.getAsDataHolder().without(key);
+		return this.getAsData().without(key);
 	}
 	
 	@Override
 	default Optional<I> without(final Supplier<? extends Key<?>> key) {
-		return this.getAsDataHolder().without(key);
+		return this.getAsData().without(key);
 	}
 	
 	@Override
 	default I mergeWith(final I that) {
-		return this.getAsDataHolder().mergeWith(that);
+		return this.getAsData().mergeWith(that);
 	}
 	
 	@Override
 	default I mergeWith(final I that, final MergeFunction function) {
-		return this.getAsDataHolder().mergeWith(that, function);
+		return this.getAsData().mergeWith(that, function);
 	}
 }
