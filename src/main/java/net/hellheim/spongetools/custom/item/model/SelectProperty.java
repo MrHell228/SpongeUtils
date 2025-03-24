@@ -28,6 +28,7 @@ import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.custom.item.model.enums.ChargeType;
 
 public interface SelectProperty<T> {
 	
@@ -60,7 +61,7 @@ public interface SelectProperty<T> {
 	}
 	
 	static CustomModelData custom() {
-		return SelectProperty.custom(CustomModelData.DEFAULT);
+		return SelectProperty.custom(CustomModelData.DEFAULT_INDEX);
 	}
 	
 	static CustomModelData custom(final int index) {
@@ -166,10 +167,10 @@ public interface SelectProperty<T> {
 	}
 	
 	record CustomModelData(int index) implements SelectProperty<String> {
-		public static final int DEFAULT = 0;
+		public static final int DEFAULT_INDEX = 0;
 		public static final MapCodec<CustomModelData> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", DEFAULT).forGetter(CustomModelData::index)
+						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", CustomModelData.DEFAULT_INDEX).forGetter(CustomModelData::index)
 						).apply(instance, CustomModelData::new));
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, Codec.STRING);
 		
@@ -203,7 +204,6 @@ public interface SelectProperty<T> {
 	
 	record LocalTime(String format, Locale locale, Optional<TimeZone> timeZone) implements SelectProperty<String> {
 		public static final Locale DEFAULT_LOCALE = Locale.of("");
-		
 		public static final MapCodec<LocalTime> CODEC = RecordCodecBuilder.<LocalTime>mapCodec(
 				instance -> instance.group(
 						Codec.STRING.fieldOf("pattern").forGetter(LocalTime::format),

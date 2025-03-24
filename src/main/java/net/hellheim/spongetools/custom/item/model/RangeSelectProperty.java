@@ -13,6 +13,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.custom.item.model.enums.CompassTarget;
+import net.hellheim.spongetools.custom.item.model.enums.TimeSource;
 
 public interface RangeSelectProperty {
 	
@@ -34,7 +36,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static Quantity quantity() {
-		return RangeSelectProperty.quantity(Quantity.DEFAULT);
+		return RangeSelectProperty.quantity(Quantity.DEFAULT_NORMALIZE);
 	}
 	
 	static Quantity quantity(final boolean normalize) {
@@ -42,7 +44,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static Damage damage() {
-		return RangeSelectProperty.damage(Damage.DEFAULT);
+		return RangeSelectProperty.damage(Damage.DEFAULT_NORMALIZE);
 	}
 	
 	static Damage damage(final boolean normalize) {
@@ -50,7 +52,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static CustomModelData custom() {
-		return RangeSelectProperty.custom(CustomModelData.DEFAULT);
+		return RangeSelectProperty.custom(CustomModelData.DEFAULT_INDEX);
 	}
 	
 	static CustomModelData custom(final int index) {
@@ -58,7 +60,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static UseCycle useCycle() {
-		return RangeSelectProperty.useCycle(UseCycle.DEFAULT);
+		return RangeSelectProperty.useCycle(UseCycle.DEFAULT_PERIOD);
 	}
 	
 	static UseCycle useCycle(final float period) {
@@ -66,7 +68,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static UseDuration useDuration() {
-		return RangeSelectProperty.useDuration(UseDuration.DEFAULT);
+		return RangeSelectProperty.useDuration(UseDuration.DEFAULT_REMAINING);
 	}
 	
 	static UseDuration useDuration(final boolean remaining) {
@@ -74,7 +76,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static CompassAngle compassAngle(final CompassTarget target) {
-		return RangeSelectProperty.compassAngle(CompassAngle.DEFAULT, target);
+		return RangeSelectProperty.compassAngle(CompassAngle.DEFAULT_WOBBLE, target);
 	}
 	
 	static CompassAngle compassAngle(final boolean wobble, final CompassTarget target) {
@@ -82,7 +84,7 @@ public interface RangeSelectProperty {
 	}
 	
 	static Time time(final TimeSource source) {
-		return RangeSelectProperty.time(Time.DEFAULT, source);
+		return RangeSelectProperty.time(Time.DEFAULT_WOBBLE, source);
 	}
 	
 	static Time time(final boolean wobble, final TimeSource source) {
@@ -122,10 +124,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record Quantity(boolean normalize) implements RangeSelectProperty {
-		public static final boolean DEFAULT = true;
+		public static final boolean DEFAULT_NORMALIZE = true;
 		public static final MapCodec<Quantity> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						Codec.BOOL.optionalFieldOf("normalize", DEFAULT).forGetter(Quantity::normalize)
+						Codec.BOOL.optionalFieldOf("normalize", Quantity.DEFAULT_NORMALIZE).forGetter(Quantity::normalize)
 						).apply(instance, Quantity::new));
 		
 		@Override
@@ -135,10 +137,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record Damage(boolean normalize) implements RangeSelectProperty {
-		public static final boolean DEFAULT = true;
+		public static final boolean DEFAULT_NORMALIZE = true;
 		public static final MapCodec<Damage> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						Codec.BOOL.optionalFieldOf("normalize", DEFAULT).forGetter(Damage::normalize)
+						Codec.BOOL.optionalFieldOf("normalize", Damage.DEFAULT_NORMALIZE).forGetter(Damage::normalize)
 						).apply(instance, Damage::new));
 		
 		@Override
@@ -148,10 +150,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record CustomModelData(int index) implements RangeSelectProperty {
-		public static final int DEFAULT = 0;
+		public static final int DEFAULT_INDEX = 0;
 		public static final MapCodec<CustomModelData> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", DEFAULT).forGetter(CustomModelData::index)
+						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", CustomModelData.DEFAULT_INDEX).forGetter(CustomModelData::index)
 						).apply(instance, CustomModelData::new));
 		
 		public CustomModelData(final int index) {
@@ -166,10 +168,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record UseCycle(float period) implements RangeSelectProperty {
-		public static final float DEFAULT = 1.0F;
+		public static final float DEFAULT_PERIOD = 1.0F;
 		public static final MapCodec<UseCycle> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("period", DEFAULT).forGetter(UseCycle::period)
+						ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("period", UseCycle.DEFAULT_PERIOD).forGetter(UseCycle::period)
 						).apply(instance, UseCycle::new));
 		
 		public UseCycle(final float period) {
@@ -184,10 +186,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record UseDuration(boolean remaining) implements RangeSelectProperty {
-		public static final boolean DEFAULT = false;
+		public static final boolean DEFAULT_REMAINING = false;
 		public static final MapCodec<UseDuration> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						Codec.BOOL.optionalFieldOf("remaining", DEFAULT).forGetter(UseDuration::remaining)
+						Codec.BOOL.optionalFieldOf("remaining", UseDuration.DEFAULT_REMAINING).forGetter(UseDuration::remaining)
 						).apply(instance, UseDuration::new));
 		
 		@Override
@@ -197,10 +199,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record CompassAngle(boolean wobble, CompassTarget target) implements RangeSelectProperty {
-		public static final boolean DEFAULT = true;
+		public static final boolean DEFAULT_WOBBLE = true;
 		public static final MapCodec<CompassAngle> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						Codec.BOOL.optionalFieldOf("wobble", DEFAULT).forGetter(CompassAngle::wobble),
+						Codec.BOOL.optionalFieldOf("wobble", CompassAngle.DEFAULT_WOBBLE).forGetter(CompassAngle::wobble),
 						CompassTarget.CODEC.fieldOf("target").forGetter(CompassAngle::target)
 						).apply(instance, CompassAngle::new));
 		
@@ -216,10 +218,10 @@ public interface RangeSelectProperty {
 	}
 	
 	record Time(boolean wobble, TimeSource source) implements RangeSelectProperty {
-		public static final boolean DEFAULT = true;
+		public static final boolean DEFAULT_WOBBLE = true;
 		public static final MapCodec<Time> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						Codec.BOOL.optionalFieldOf("wobble", DEFAULT).forGetter(Time::wobble),
+						Codec.BOOL.optionalFieldOf("wobble", Time.DEFAULT_WOBBLE).forGetter(Time::wobble),
 						TimeSource.CODEC.fieldOf("source").forGetter(p_390088_ -> p_390088_.source)
 						).apply(instance, Time::new));
 		

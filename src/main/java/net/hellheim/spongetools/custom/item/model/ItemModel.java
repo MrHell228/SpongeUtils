@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.custom.item.model.enums.GuiLight;
 
 public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight guiLight) {
 	

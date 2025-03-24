@@ -16,6 +16,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
+import net.hellheim.spongetools.custom.item.model.enums.SkullType;
 
 public interface SpecialModel {
 	
@@ -49,7 +50,7 @@ public interface SpecialModel {
 	}
 	
 	static Chest chest(final ResourceKey texture) {
-		return SpecialModel.chest(texture, Chest.DEFAULT);
+		return SpecialModel.chest(texture, Chest.DEFAULT_OPENNESS);
 	}
 	
 	static Chest chest(final ResourceKey texture, final float openness) {
@@ -97,15 +98,15 @@ public interface SpecialModel {
 	}
 	
 	static Skull skull(final SkullType type) {
-		return SpecialModel.skull(type, Skull.DEFAULT, Optional.empty());
+		return SpecialModel.skull(type, Skull.DEFAULT_ANIMATION, Optional.empty());
 	}
 	
 	static Skull skull(final SkullType type, final ResourceKey textureOverride) {
-		return SpecialModel.skull(type, Skull.DEFAULT, Optional.of(textureOverride));
+		return SpecialModel.skull(type, Skull.DEFAULT_ANIMATION, Optional.of(textureOverride));
 	}
 	
 	static Skull skull(final SkullType type, final Optional<ResourceKey> textureOverride) {
-		return SpecialModel.skull(type, Skull.DEFAULT, textureOverride);
+		return SpecialModel.skull(type, Skull.DEFAULT_ANIMATION, textureOverride);
 	}
 	
 	static Skull skull(final SkullType type, final float animation) {
@@ -164,9 +165,9 @@ public interface SpecialModel {
 	
 	record Banner(DyeColor base) implements SpecialModel {
 		public static final MapCodec<Banner> CODEC = RecordCodecBuilder.mapCodec(
-				p_386477_ -> p_386477_.group(
+				instance -> instance.group(
 						StringRepresentableCodecs.DYE_COLOR.fieldOf("color").forGetter(Banner::base)
-						).apply(p_386477_, Banner::new));
+						).apply(instance, Banner::new));
 		
 		public Banner(final DyeColor base) {
 			this.base = Objects.requireNonNull(base, "base");
@@ -180,9 +181,9 @@ public interface SpecialModel {
 	
 	record Bed(ResourceKey texture) implements SpecialModel {
 		public static final MapCodec<Bed> CODEC = RecordCodecBuilder.mapCodec(
-				p_388012_ -> p_388012_.group(
+				instance -> instance.group(
 						SpongeCodecs.RESOURCE_KEY.fieldOf("texture").forGetter(Bed::texture)
-						).apply(p_388012_, Bed::new));
+						).apply(instance, Bed::new));
 		
 		public Bed(final ResourceKey texture) {
 			this.texture = Objects.requireNonNull(texture, "texture");
@@ -195,12 +196,12 @@ public interface SpecialModel {
 	}
 	
 	record Chest(ResourceKey texture, float openness) implements SpecialModel {
-		public static final float DEFAULT = 0.0F;
+		public static final float DEFAULT_OPENNESS = 0.0F;
 		public static final MapCodec<Chest> CODEC = RecordCodecBuilder.mapCodec(
-				p_388545_ -> p_388545_.group(
+				instance -> instance.group(
 						SpongeCodecs.RESOURCE_KEY.fieldOf("texture").forGetter(Chest::texture),
-						Codec.FLOAT.optionalFieldOf("openness", DEFAULT).forGetter(Chest::openness)
-						).apply(p_388545_, Chest::new));
+						Codec.FLOAT.optionalFieldOf("openness", Chest.DEFAULT_OPENNESS).forGetter(Chest::openness)
+						).apply(instance, Chest::new));
 		
 		public Chest(final ResourceKey texture, final float openness) {
 			this.texture = Objects.requireNonNull(texture, "texture");
@@ -219,8 +220,8 @@ public interface SpecialModel {
 		public static final MapCodec<ShulkerBox> CODEC = RecordCodecBuilder.mapCodec(
 				p_386593_ -> p_386593_.group(
 						SpongeCodecs.RESOURCE_KEY.fieldOf("texture").forGetter(ShulkerBox::texture),
-						Codec.FLOAT.optionalFieldOf("openness", DEFAULT_OPENNESS).forGetter(ShulkerBox::openness),
-						SpongeCodecs.CARDINAL_DIRECTION.optionalFieldOf("orientation", DEFAULT_ORIENTATION).forGetter(ShulkerBox::orientation)
+						Codec.FLOAT.optionalFieldOf("openness", ShulkerBox.DEFAULT_OPENNESS).forGetter(ShulkerBox::openness),
+						SpongeCodecs.CARDINAL_DIRECTION.optionalFieldOf("orientation", ShulkerBox.DEFAULT_ORIENTATION).forGetter(ShulkerBox::orientation)
 						).apply(p_386593_, ShulkerBox::new));
 		
 		public ShulkerBox(final ResourceKey texture, final float openness, final Direction orientation) {
@@ -273,11 +274,11 @@ public interface SpecialModel {
 	}
 	
 	record Skull(SkullType type, float animation, Optional<ResourceKey> textureOverride) implements SpecialModel {
-		public static final float DEFAULT = 0.0F;
+		public static final float DEFAULT_ANIMATION = 0.0F;
 		public static final MapCodec<Skull> CODEC = RecordCodecBuilder.mapCodec(
 				p_390096_ -> p_390096_.group(
 						SkullType.CODEC.fieldOf("kind").forGetter(Skull::type),
-						Codec.FLOAT.optionalFieldOf("animation", DEFAULT).forGetter(Skull::animation),
+						Codec.FLOAT.optionalFieldOf("animation", Skull.DEFAULT_ANIMATION).forGetter(Skull::animation),
 						SpongeCodecs.RESOURCE_KEY.optionalFieldOf("texture").forGetter(Skull::textureOverride)
 						).apply(p_390096_, Skull::new));
 		

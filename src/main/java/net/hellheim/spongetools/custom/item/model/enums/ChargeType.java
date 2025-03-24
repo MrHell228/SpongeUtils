@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model;
+package net.hellheim.spongetools.custom.item.model.enums;
 
 import org.spongepowered.api.data.type.StringRepresentable;
 

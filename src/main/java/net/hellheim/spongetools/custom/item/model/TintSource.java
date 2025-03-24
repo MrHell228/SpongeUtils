@@ -25,7 +25,7 @@ public interface TintSource {
 	}
 	
 	static CustomModelData custom(final int defaultColor) {
-		return TintSource.custom(CustomModelData.DEFAULT, defaultColor);
+		return TintSource.custom(CustomModelData.DEFAULT_INDEX, defaultColor);
 	}
 	
 	static CustomModelData custom(final int index, final int defaultColor) {
@@ -87,10 +87,10 @@ public interface TintSource {
 	}
 	
 	record CustomModelData(int index, int defaultColor) implements TintSource {
-		public static final int DEFAULT = 0;
+		public static final int DEFAULT_INDEX = 0;
 		public static final MapCodec<CustomModelData> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", DEFAULT).forGetter(CustomModelData::index),
+						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", CustomModelData.DEFAULT_INDEX).forGetter(CustomModelData::index),
 						ExtraCodecs.RGB.fieldOf("default").forGetter(CustomModelData::defaultColor)
 						).apply(instance, CustomModelData::new));
 		

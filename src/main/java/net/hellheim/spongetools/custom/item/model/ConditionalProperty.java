@@ -56,7 +56,7 @@ public interface ConditionalProperty {
 	}
 	
 	static CustomModelData custom() {
-		return ConditionalProperty.custom(CustomModelData.DEFAULT);
+		return ConditionalProperty.custom(CustomModelData.DEFAULT_INDEX);
 	}
 	
 	static CustomModelData custom(final int index) {
@@ -156,10 +156,10 @@ public interface ConditionalProperty {
 	}
 	
 	record CustomModelData(int index) implements ConditionalProperty {
-		public static final int DEFAULT = 0;
+		public static final int DEFAULT_INDEX = 0;
 		public static final MapCodec<CustomModelData> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
-						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", DEFAULT).forGetter(CustomModelData::index)
+						ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("index", CustomModelData.DEFAULT_INDEX).forGetter(CustomModelData::index)
 						).apply(instance, CustomModelData::new));
 		
 		public CustomModelData(final int index) {
