@@ -1,12 +1,10 @@
 package net.hellheim.spongetools.custom.item;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
-import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.persistence.AbstractDataBuilder;
 import org.spongepowered.api.data.persistence.DataContainer;
@@ -25,7 +23,13 @@ import net.hellheim.spongetools.custom.item.model.Item;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.kyori.adventure.text.ComponentLike;
 
-public interface CustomItemType extends ResourceKeyed, ComponentLike, DataSerializable, DataHolder, IconProxy, ItemStackSnapshotProxy {
+public interface CustomItemType extends
+		ResourceKeyed,
+		ComponentLike,
+		DataSerializable,
+		ValueContainer,
+		IconProxy,
+		ItemStackSnapshotProxy {
 	
 	static DefaultedRegistryType<CustomItemType> registry() {
 		return SpongeTools.Registries.CUSTOM_ITEM;
@@ -187,6 +191,10 @@ public interface CustomItemType extends ResourceKeyed, ComponentLike, DataSerial
 		return !this.isAnyOfContainer(containers);
 	}
 	
+	default EitherItemType either() {
+		return EitherItemType.custom(this);
+	}
+	
 	// Methods that may be overriden
 	
 	@Override
@@ -206,8 +214,6 @@ public interface CustomItemType extends ResourceKeyed, ComponentLike, DataSerial
 	ItemType base();
 	
 	Optional<Item> model();
-	
-	Set<Value<?>> data();
 	
 	public static class DataBuilder extends AbstractDataBuilder<CustomItemType> {
 		

@@ -6,16 +6,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 
@@ -50,6 +53,23 @@ public final class ExtraCodecs {
 	public static final Codec<String> NON_EMPTY_STRING = ExtraCodecs.factory().nonEmptyString();
 	public static final Codec<String> PLAYER_NAME = ExtraCodecs.factory().playerName();
 	public static final Codec<Pattern> PATTERN = ExtraCodecs.factory().pattern();
+	
+	public static final Codec<TimeZone> TIME_ZONE = Codec.STRING.comapFlatMap(str -> {
+		for (final String id : TimeZone.getAvailableIDs()) {
+			if (id.equals(str)) {
+				return DataResult.success(TimeZone.getTimeZone(str));
+			}
+		}
+		return DataResult.error(() -> "Unknown timezone: " + str);
+	}, TimeZone::getID);
+	
+	public static final Codec<Locale> LOCALE = Codec.STRING.comapFlatMap(str -> {
+		try {
+			return DataResult.success(LocaleUtils.toLocale(str));
+		} catch (final IllegalArgumentException e) {
+			return DataResult.error(e::toString);
+		}
+	}, Locale::toString);
 	
 	public static <T> Codec<T> converter(final DynamicOps<T> ops) {
 		return ExtraCodecs.factory().converter(ops);
@@ -179,7 +199,7 @@ public final class ExtraCodecs {
 						@SuppressWarnings("unchecked")
 						final T to = (T) from;
 						return DataResult.success(to);
-					} catch (ClassCastException e) {
+					} catch (final ClassCastException e) {
 						return DataResult.error(e::toString);
 					}
 				},
@@ -188,7 +208,7 @@ public final class ExtraCodecs {
 						@SuppressWarnings("unchecked")
 						final F from = (F) to;
 						return DataResult.success(from);
-					} catch (ClassCastException e) {
+					} catch (final ClassCastException e) {
 						return DataResult.error(e::toString);
 					}
 				});

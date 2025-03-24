@@ -16,7 +16,7 @@ public record Item(ItemModelDefinition definition, boolean handAnimationOnSwap) 
 	public static final Codec<Item> CODEC = RecordCodecBuilder.create(
 			instance -> instance.group(
 					ItemModelDefinition.CODEC.fieldOf("model").forGetter(Item::definition),
-					Codec.BOOL.optionalFieldOf("hand_animation_on_swap", DEFAULT_HAND_ANIMATION_ON_SWAP).forGetter(Item::handAnimationOnSwap)
+					Codec.BOOL.optionalFieldOf("hand_animation_on_swap", Item.DEFAULT_HAND_ANIMATION_ON_SWAP).forGetter(Item::handAnimationOnSwap)
 					).apply(instance, Item::new));
 	
 	public Item(final ItemModelDefinition definition, final boolean handAnimationOnSwap) {
@@ -33,6 +33,6 @@ public record Item(ItemModelDefinition definition, boolean handAnimationOnSwap) 
 	}
 	
 	public static Item of(final ItemModelDefinition definition) {
-		return Item.of(definition, DEFAULT_HAND_ANIMATION_ON_SWAP);
+		return Item.of(definition, Item.DEFAULT_HAND_ANIMATION_ON_SWAP);
 	}
 }

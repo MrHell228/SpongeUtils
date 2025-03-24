@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.persistence.DataBuilder;
 import org.spongepowered.api.data.persistence.DataContainer;
@@ -19,6 +18,7 @@ import org.spongepowered.api.data.persistence.DataSerializable;
 import org.spongepowered.api.data.persistence.InvalidDataException;
 import org.spongepowered.api.data.persistence.StringDataFormat;
 import org.spongepowered.api.data.value.Value;
+import org.spongepowered.api.data.value.ValueContainer;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -30,7 +30,7 @@ public final class DataCodecs {
 	
 	private static final Map<StringDataFormat, Codec<DataContainer>> CONTAINERS = new HashMap<>();
 	
-	public static Function<ResourceKey, Key<?>> keyLookup(final DataHolder keyLookupProvider) {
+	public static Function<ResourceKey, Key<?>> keyLookup(final ValueContainer keyLookupProvider) {
 		return keyLookupProvider.getKeys()
 				.stream()
 				.collect(Collectors.toUnmodifiableMap(Key::key, Function.identity()))
@@ -41,7 +41,7 @@ public final class DataCodecs {
 		return TypeCodecs.of(key.elementType());
 	}
 	
-	public static Codec<Key<Value<Object>>> key(final DataHolder keyLookupProvider) {
+	public static Codec<Key<Value<Object>>> key(final ValueContainer keyLookupProvider) {
 		return DataCodecs.key(DataCodecs.keyLookup(keyLookupProvider));
 	}
 	
@@ -56,7 +56,7 @@ public final class DataCodecs {
 		}, Key::key);
 	}
 	
-	public static Codec<Map<Key<Value<Object>>, Object>> map(final DataHolder keyLookupProvider) {
+	public static Codec<Map<Key<Value<Object>>, Object>> map(final ValueContainer keyLookupProvider) {
 		return DataCodecs.map(DataCodecs.keyLookup(keyLookupProvider));
 	}
 	
@@ -64,11 +64,11 @@ public final class DataCodecs {
 		return Codec.dispatchedMap(key(keyLookup), DataCodecs::byKey);
 	}
 	
-	public static Codec<Set<Value<?>>> valueSet(final DataHolder keyLookupProvider) {
+	public static Codec<Set<? extends Value<?>>> valueSet(final ValueContainer keyLookupProvider) {
 		return DataCodecs.valueSet(DataCodecs.keyLookup(keyLookupProvider));
 	}
 	
-	public static Codec<Set<Value<?>>> valueSet(Function<? super ResourceKey, ? extends Key<?>> keyLookup) {
+	public static Codec<Set<? extends Value<?>>> valueSet(final Function<? super ResourceKey, ? extends Key<?>> keyLookup) {
 		return DataCodecs.map(keyLookup).xmap(
 				map -> map.entrySet().stream()
 						.map(DataCodecs::entryToValue)

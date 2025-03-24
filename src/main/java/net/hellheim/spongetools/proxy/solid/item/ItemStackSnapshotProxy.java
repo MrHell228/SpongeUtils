@@ -5,6 +5,9 @@ import java.util.function.Supplier;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackLike;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+
+import com.google.common.base.Suppliers;
 
 import net.hellheim.spongetools.object.CachedSupplier;
 import net.hellheim.spongetools.object.ItemBuilder;
@@ -18,6 +21,15 @@ public interface ItemStackSnapshotProxy extends IItemProxy {
 	
 	static ItemStackSnapshotProxy wrapTypeCached(final Supplier<ItemType> typeSupplier) {
 		return CachedSupplier.of(() -> ItemUtil.snapshotOf(typeSupplier))::get;
+	}
+	
+	static ItemStackSnapshotProxy of(final ItemStackLike stack) {
+		final ItemStackSnapshot snapshot = stack.asImmutable();
+		return () -> snapshot;
+	}
+	
+	static ItemStackSnapshotProxy of(final Supplier<? extends ItemStackLike> stack) {
+		return Suppliers.memoize(() -> stack.get().asImmutable())::get;
 	}
 	
 	@Override

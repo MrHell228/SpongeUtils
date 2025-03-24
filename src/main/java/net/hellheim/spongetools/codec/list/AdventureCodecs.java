@@ -63,7 +63,7 @@ public final class AdventureCodecs {
 	public static final Codec<ChatType> CHAT_TYPE = AdventureCodecs.factory().chatType();
 	
 	public static Codec<Key> key(final String defaultNamespace) {
-		if (Key.parseableNamespace(defaultNamespace)) {
+		if (!Key.parseableNamespace(defaultNamespace)) {
 			throw new IllegalArgumentException("Invalid namespace: " + defaultNamespace);
 		}
 		

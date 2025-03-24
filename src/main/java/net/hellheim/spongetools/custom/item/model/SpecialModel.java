@@ -19,30 +19,10 @@ import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
 
 public interface SpecialModel {
 	
-	final Codec<SpecialModel> CODEC = Registrar.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatch(SpecialModel::codec, Function.identity());
+	final LateBoundIdMapper<ResourceKey, MapCodec<? extends SpecialModel>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final class Registrar {
-		
-		private static final LateBoundIdMapper<ResourceKey, MapCodec<? extends SpecialModel>> ID_MAPPER = new LateBoundIdMapper<>();
-		
-		static {
-			ID_MAPPER.put(ResourceKey.minecraft("bed"), Bed.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("banner"), Banner.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("conduit"), Conduit.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("chest"), Chest.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("head"), Skull.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("shulker_box"), ShulkerBox.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("shield"), Shield.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("trident"), Trident.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("decorated_pot"), DecoratedPot.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("standing_sign"), StandingSign.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("hanging_sign"), HangingSign.CODEC);
-		}
-		
-		private Registrar() {
-		}
-	}
+	final Codec<SpecialModel> CODEC = SpecialModel.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatch(SpecialModel::codec, Function.identity());
 	
 	static Conduit conduit() {
 		return Conduit.INSTANCE;

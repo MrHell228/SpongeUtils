@@ -1,26 +1,20 @@
 package net.hellheim.spongetools.custom.item;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
-import org.spongepowered.api.data.DataHolder;
-import org.spongepowered.api.data.DataHolderBuilder;
-import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.util.CopyableBuilder;
 import org.spongepowered.api.util.ResourceKeyedBuilder;
 
-import com.google.common.collect.Sets;
 import com.mojang.datafixers.Products.P4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -28,12 +22,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 
-import net.hellheim.spongetools.codec.list.DataCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.custom.item.model.Item;
+import net.hellheim.spongetools.object.DeferredValueContainer;
 import net.hellheim.spongetools.object.ItemBuilder;
-import net.hellheim.spongetools.proxy.solid.data.DataHolderProxy;
+import net.hellheim.spongetools.object.ValueSetBuilder;
+import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.hellheim.spongetools.util.TranslationUtil;
 import net.kyori.adventure.text.Component;
@@ -42,7 +37,7 @@ import net.kyori.adventure.text.ComponentLike;
 public class CustomItemTypeProperties implements
 		ResourceKeyed,
 		ComponentLike,
-		DataHolderProxy,
+		ValueContainerProxy,
 		IconProxy,
 		ItemStackSnapshotProxy {
 	
@@ -54,11 +49,11 @@ public class CustomItemTypeProperties implements
 	private final ResourceKey key;
 	private final ItemType base;
 	private final Optional<Item> model;
-	private final Set<Value<?>> data;
+	private final DeferredValueContainer data;
 	
 	private final Component name;
-	private final ItemStackSnapshot icon;
-	private final ItemStackSnapshot snapshot;
+	private final ItemStackSnapshotProxy icon;
+	private final ItemStackSnapshotProxy snapshot;
 	
 	protected CustomItemTypeProperties(final Builder builder) {
 		builder.validate();
@@ -67,61 +62,51 @@ public class CustomItemTypeProperties implements
 		this.model = Optional.ofNullable(builder.model);
 		
 		this.name = TranslationUtil.item(this.key);
-		builder.add(Keys.ITEM_NAME, this.name);
+		DeferredValueContainer data = builder.data;
+		data = data.withBefore(b -> b.add(Keys.ITEM_NAME, this.name));
 		if (this.model.isPresent()) {
-			builder.add(Keys.MODEL, this.key);
+			data = data.withBefore(b -> b.add(Keys.MODEL, this.key));
 		}
+		this.data = data;
 		
-		this.data = builder.data.stream()
-				.map(Value::asImmutable)
-				.collect(Collectors.toUnmodifiableSet());
-		
-		this.icon = this.iconBuilder(builder).getAsItemStackSnapshot();
-		this.snapshot = this.snapshotBuilder(builder).getAsItemStackSnapshot();
+		this.icon = ItemStackSnapshotProxy.of(() -> this.iconBuilder(builder).getAsItemStackSnapshot());
+		this.snapshot = ItemStackSnapshotProxy.of(() -> this.snapshotBuilder(builder).getAsItemStackSnapshot());
 	}
 	
 	protected CustomItemTypeProperties(
-		final ResourceKey key, final ItemType base, final Optional<Item> model, final Set<Value<?>> data
+		final ResourceKey key, final ItemType base, final Optional<Item> model, DeferredValueContainer data
 	) {
 		this.key = key;
 		this.base = base;
 		this.model = model;
 		
-		final Set<Value<?>> newData = new HashSet<>(data);
 		this.name = TranslationUtil.item(this.key);
-		newData.add(Value.immutableOf(Keys.ITEM_NAME, this.name));
+		data = data.withBefore(b -> b.add(Keys.ITEM_NAME, this.name));
 		if (this.model.isPresent()) {
-			newData.add(Value.immutableOf(Keys.MODEL, this.key));
+			data = data.withBefore(b -> b.add(Keys.MODEL, this.key));
 		}
-		
-		this.data = newData.stream()
-				.map(Value::asImmutable)
-				.collect(Collectors.toUnmodifiableSet());
+		this.data = data;
 		
 		final Builder builder = this.asBuilder();
-		this.icon = this.iconBuilder(builder).getAsItemStackSnapshot();
-		this.snapshot = this.snapshotBuilder(builder).getAsItemStackSnapshot();
+		this.icon = ItemStackSnapshotProxy.of(() -> this.iconBuilder(builder).getAsItemStackSnapshot());
+		this.snapshot = ItemStackSnapshotProxy.of(() -> this.snapshotBuilder(builder).getAsItemStackSnapshot());
 	}
 	
 	public static Builder builder() {
 		return new Builder();
 	}
 	
-	public static <T extends CustomItemTypeProperties> P4<Mu<T>, ResourceKey, ItemType, Optional<Item>, Set<Value<?>>> codecBuilder(Instance<T> instance) {
+	public static <T extends CustomItemTypeProperties> P4<Mu<T>, ResourceKey, ItemType, Optional<Item>, DeferredValueContainer> codecBuilder(Instance<T> instance) {
 		return instance.group(
 				SpongeCodecs.RESOURCE_KEY.fieldOf("key").forGetter(CustomItemTypeProperties::key),
 				RegistryCodecs.ITEM_TYPE.fieldOf("base").forGetter(CustomItemTypeProperties::base),
 				Item.CODEC.optionalFieldOf("model").forGetter(CustomItemTypeProperties::model),
-				DataCodecs.valueSet(ItemStackSnapshot.empty()).optionalFieldOf("data", Set.of()).forGetter(CustomItemTypeProperties::data)
+				DeferredValueContainer.codec(ItemStackSnapshot.empty()).optionalFieldOf("data", DeferredValueContainer.EMPTY).forGetter(CustomItemTypeProperties::getAsData)
 				);
 	}
 	
 	protected Component getName() {
-		return this.data.stream()
-				.filter(v -> v.key() == Keys.CUSTOM_NAME)
-				.findAny()
-				.map(Value::get)
-				.map(Component.class::cast)
+		return this.data.getAsData().get(Keys.CUSTOM_NAME)
 				.orElseGet(() -> TranslationUtil.item(this.key));
 	}
 	
@@ -143,28 +128,24 @@ public class CustomItemTypeProperties implements
 		return this.model;
 	}
 	
-	public Set<Value<?>> data() {
+	@Override
+	public DeferredValueContainer getAsData() {
 		return this.data;
 	}
 	
 	@Override
-	public DataHolder getAsDataHolder() {
-		return this.snapshot;
-	}
-	
-	@Override
 	public ItemStackSnapshot getAsIcon() {
-		return this.icon;
+		return this.icon.getAsItemStackSnapshot();
 	}
 	
 	@Override
 	public ItemStackSnapshot getAsItemStackSnapshot() {
-		return this.snapshot;
+		return this.snapshot.getAsItemStackSnapshot();
 	}
 	
 	protected ItemBuilder iconBuilder(final Builder builder) {
 		final ItemBuilder item = ItemBuilder.of(this.base).displayName(this.name);
-		this.data.forEach(item::offer);
+		this.data.getAsData().getValues().forEach(item::offer);
 		return item;
 	}
 	
@@ -178,12 +159,12 @@ public class CustomItemTypeProperties implements
 	
 	public static class Builder implements
 			ResourceKeyedBuilder<CustomItemTypeProperties, Builder>,
-			DataHolderBuilder<CustomItemTypeProperties, Builder> {
+			CopyableBuilder<CustomItemTypeProperties, Builder> {
 		
 		protected @Nullable ResourceKey key;
 		protected @Nullable ItemType base;
 		protected @Nullable Item model;
-		protected Set<Value<?>> data = new HashSet<>();
+		protected @Nullable DeferredValueContainer data;
 		
 		public Builder() {
 			this.reset();
@@ -209,14 +190,13 @@ public class CustomItemTypeProperties implements
 			return this;
 		}
 		
-		public <V> Builder supply(final Key<? extends Value<V>> key, final Supplier<V> value) {
-			return this.add(key, value.get());
+		public Builder data(final DeferredValueContainer data) {
+			this.data = Objects.requireNonNull(data, "data");
+			return this;
 		}
 		
-		@Override
-		public <V> Builder add(final Key<? extends Value<V>> key, final V value) {
-			this.data.add(Value.immutableOf(key, value));
-			return this;
+		public Builder data(final Consumer<ValueSetBuilder> data) {
+			return this.data(DeferredValueContainer.of(data));
 		}
 		
 		@Override
@@ -224,7 +204,7 @@ public class CustomItemTypeProperties implements
 			this.key = null;
 			this.base = null;
 			this.model = null;
-			this.data.clear();
+			this.data = null;
 			return this;
 		}
 		
@@ -233,7 +213,7 @@ public class CustomItemTypeProperties implements
 			this.key = holder.key;
 			this.base = holder.base;
 			this.model = holder.model.orElse(null);
-			this.data = Sets.newHashSet(holder.data);
+			this.data = holder.data;
 			return this;
 		}
 		
@@ -247,6 +227,10 @@ public class CustomItemTypeProperties implements
 			
 			if (this.base == null) {
 				this.base = ItemTypes.RABBIT_FOOT.get();
+			}
+			
+			if (this.data == null) {
+				this.data = DeferredValueContainer.EMPTY;
 			}
 			
 			return this;

@@ -1,9 +1,11 @@
 package net.hellheim.spongetools.custom.item.model;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.spongepowered.api.ResourceKey;
@@ -17,10 +19,6 @@ import org.spongepowered.api.world.WorldType;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import com.ibm.icu.text.SimpleDateFormat;
-import com.ibm.icu.util.Calendar;
-import com.ibm.icu.util.TimeZone;
-import com.ibm.icu.util.ULocale;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -33,27 +31,9 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface SelectProperty<T> {
 	
-    final Codec<MapCodec<? extends SelectSwitch<?, ?>>> CODEC = Registrar.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY);
+	final LateBoundIdMapper<ResourceKey, MapCodec<? extends SelectSwitch<?, ?>>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final class Registrar {
-		
-		private static final LateBoundIdMapper<ResourceKey, MapCodec<? extends SelectSwitch<?, ?>>> ID_MAPPER = new LateBoundIdMapper<>();
-		
-		static {
-			ID_MAPPER.put(ResourceKey.minecraft("custom_model_data"), CustomModelData.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("main_hand"), MainHand.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("charge_type"), Charge.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("trim_material"), Trim.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("block_state"), StateProperty.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("display_context"), Display.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("local_time"), LocalTime.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("context_entity_type"), Entity.SWITCH);
-	        ID_MAPPER.put(ResourceKey.minecraft("context_dimension"), World.SWITCH);
-		}
-		
-		private Registrar() {
-		}
-	}
+    final Codec<MapCodec<? extends SelectSwitch<?, ?>>> CODEC = SelectProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY);
 	
 	static Charge charge() {
 		return Charge.INSTANCE;
@@ -92,27 +72,29 @@ public interface SelectProperty<T> {
 	}
 	
 	static LocalTime localTime(final String format, final TimeZone timeZone) {
-		return SelectProperty.localTime(format, LocalTime.DEFAULT, Optional.of(timeZone));
+		return SelectProperty.localTime(format, LocalTime.DEFAULT_LOCALE, Optional.of(timeZone));
 	}
 	
 	static LocalTime localTime(final String format) {
-		return SelectProperty.localTime(format, LocalTime.DEFAULT, Optional.empty());
+		return SelectProperty.localTime(format, LocalTime.DEFAULT_LOCALE, Optional.empty());
 	}
 	
 	static LocalTime localTime(final String format, final Optional<TimeZone> timeZone) {
-		return SelectProperty.localTime(format, LocalTime.DEFAULT, timeZone);
+		return SelectProperty.localTime(format, LocalTime.DEFAULT_LOCALE, timeZone);
 	}
 	
-	static LocalTime localTime(final String format, final String localeId, final TimeZone timeZone) {
+	static LocalTime localTime(final String format, final Locale localeId, final TimeZone timeZone) {
 		return SelectProperty.localTime(format, localeId, Optional.of(timeZone));
 	}
 	
-	static LocalTime localTime(final String format, final String localeId) {
+	static LocalTime localTime(final String format, final Locale localeId) {
 		return SelectProperty.localTime(format, localeId, Optional.empty());
 	}
 	
-	static LocalTime localTime(final String format, final String localeId, final Optional<TimeZone> timeZone) {
-		return new LocalTime(format, localeId, timeZone);
+	static LocalTime localTime(final String format, final Locale locale, final Optional<TimeZone> timeZone) {
+		final LocalTime time = new LocalTime(format, locale, timeZone);
+		LocalTime.validate(time).getOrThrow(IllegalArgumentException::new);
+		return time;
 	}
 	
 	MapCodec<? extends SelectSwitch<?, ?>> codec();
@@ -219,45 +201,31 @@ public interface SelectProperty<T> {
 		}
 	}
 	
-	record LocalTime(String format, String locale, Optional<TimeZone> timeZone) implements SelectProperty<String> {
-		public static final String DEFAULT = "";
-		private static final Codec<TimeZone> TIME_ZONE_CODEC = Codec.STRING.comapFlatMap(str -> {
-			TimeZone timezone = TimeZone.getTimeZone(str);
-			return timezone.equals(TimeZone.UNKNOWN_ZONE)
-					? DataResult.error(() -> "Unknown timezone: " + str)
-					: DataResult.success(timezone);
-		}, TimeZone::getID);
-		public static final MapCodec<LocalTime> CODEC = RecordCodecBuilder.mapCodec(
-				p_389646_ -> p_389646_.group(
-						Codec.STRING.fieldOf("pattern").forGetter(p_390095_ -> p_390095_.format),
-						Codec.STRING.optionalFieldOf("locale", DEFAULT).forGetter(p_390090_ -> p_390090_.locale),
-						TIME_ZONE_CODEC.optionalFieldOf("time_zone").forGetter(p_390093_ -> p_390093_.timeZone)
-						).apply(p_389646_, LocalTime::new)
+	record LocalTime(String format, Locale locale, Optional<TimeZone> timeZone) implements SelectProperty<String> {
+		public static final Locale DEFAULT_LOCALE = Locale.of("");
+		
+		public static final MapCodec<LocalTime> CODEC = RecordCodecBuilder.<LocalTime>mapCodec(
+				instance -> instance.group(
+						Codec.STRING.fieldOf("pattern").forGetter(LocalTime::format),
+						ExtraCodecs.LOCALE.optionalFieldOf("locale", LocalTime.DEFAULT_LOCALE).forGetter(LocalTime::locale),
+						ExtraCodecs.TIME_ZONE.optionalFieldOf("time_zone").forGetter(LocalTime::timeZone)
+						).apply(instance, LocalTime::new)
 				).validate(LocalTime::validate);
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, Codec.STRING);
 		
-		public LocalTime(final String format, final String locale, final Optional<TimeZone> timeZone) {
+		public LocalTime(final String format, final Locale locale, final Optional<TimeZone> timeZone) {
 			this.format = Objects.requireNonNull(format, "format");
 			this.locale = Objects.requireNonNull(locale, "locale");
 			this.timeZone = Objects.requireNonNull(timeZone, "timeZone");
-			LocalTime.validate(this);
 		}
 		
 		private static DataResult<LocalTime> validate(LocalTime data) {
-			ULocale ulocale = new ULocale(data.locale);
-	        Calendar calendar = data.timeZone
-	            .map(p_389490_ -> Calendar.getInstance(p_389490_, ulocale))
-	            .orElseGet(() -> Calendar.getInstance(ulocale));
-	        SimpleDateFormat simpledateformat = new SimpleDateFormat(data.format, ulocale);
-	        simpledateformat.setCalendar(calendar);
-	        
-	        try {
-	            simpledateformat.format(new Date());
-	        } catch (Exception exception) {
-	            return DataResult.error(() -> "Invalid time format '" + simpledateformat + "': " + exception.getMessage());
+			try {
+				new SimpleDateFormat(data.format, data.locale);
+		        return DataResult.success(data);
+			} catch (final IllegalArgumentException e) {
+				return DataResult.error(e::toString);
 	        }
-	        
-	        return DataResult.success(data);
 		}
 		
 		@Override

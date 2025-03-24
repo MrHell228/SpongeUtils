@@ -14,33 +14,10 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface ConditionalProperty {
 	
-	final MapCodec<ConditionalProperty> CODEC = Registrar.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatchMap("property", ConditionalProperty::codec, Function.identity());
+	final LateBoundIdMapper<ResourceKey, MapCodec<? extends ConditionalProperty>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final class Registrar {
-		
-		private static final LateBoundIdMapper<ResourceKey, MapCodec<? extends ConditionalProperty>> ID_MAPPER = new LateBoundIdMapper<>();
-		
-		static {
-			ID_MAPPER.put(ResourceKey.minecraft("custom_model_data"), CustomModelData.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("using_item"), Using.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("broken"), Broken.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("damaged"), Damaged.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("fishing_rod/cast"), FishingRodCast.CODEC);
-			// TODO
-			// ID_MAPPER.put(ResourceKey.minecraft("has_component"), HasComponent.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("bundle/has_selected_item"), BundleHasSelectedItem.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("selected"), Selected.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("carried"), Carried.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("extended_view"), ExtendedView.CODEC);
-			// TODO
-			// ID_MAPPER.put(ResourceKey.minecraft("keybind_down"), KeybindDown.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("view_entity"), ViewingEntity.CODEC);
-		}
-		
-		private Registrar() {
-		}
-	}
+	final MapCodec<ConditionalProperty> CODEC = ConditionalProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatchMap("property", ConditionalProperty::codec, Function.identity());
 	
 	static Broken broken() {
 		return Broken.INSTANCE;

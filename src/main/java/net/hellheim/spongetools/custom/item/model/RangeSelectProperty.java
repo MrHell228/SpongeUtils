@@ -16,29 +16,10 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface RangeSelectProperty {
 	
-	final MapCodec<RangeSelectProperty> CODEC = Registrar.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatchMap("property", RangeSelectProperty::codec, Function.identity());
+	final LateBoundIdMapper<ResourceKey, MapCodec<? extends RangeSelectProperty>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final class Registrar {
-		
-		private static final LateBoundIdMapper<ResourceKey, MapCodec<? extends RangeSelectProperty>> ID_MAPPER = new LateBoundIdMapper<>();
-		
-		static {
-			ID_MAPPER.put(ResourceKey.minecraft("custom_model_data"), CustomModelData.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("bundle/fullness"), BundleFullness.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("damage"), Damage.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("cooldown"), Cooldown.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("time"), Time.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("compass"), CompassAngle.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("crossbow/pull"), CrossbowPull.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("use_cycle"), UseCycle.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("use_duration"), UseDuration.CODEC);
-	        ID_MAPPER.put(ResourceKey.minecraft("count"), Quantity.CODEC);
-		}
-		
-		private Registrar() {
-		}
-	}
+	final MapCodec<RangeSelectProperty> CODEC = RangeSelectProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatchMap("property", RangeSelectProperty::codec, Function.identity());
 	
 	static Cooldown cooldown() {
 		return Cooldown.INSTANCE;

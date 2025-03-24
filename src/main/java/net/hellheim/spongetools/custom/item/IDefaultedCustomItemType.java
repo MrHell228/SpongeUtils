@@ -1,19 +1,17 @@
 package net.hellheim.spongetools.custom.item;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.data.DataHolder;
-import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import net.hellheim.spongetools.custom.item.model.Item;
-import net.hellheim.spongetools.proxy.solid.data.DataHolderProxy;
+import net.hellheim.spongetools.object.DeferredValueContainer;
+import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
 import net.kyori.adventure.text.Component;
 
-public interface IDefaultedCustomItemType extends CustomItemType, DataHolderProxy {
+public interface IDefaultedCustomItemType extends CustomItemType, ValueContainerProxy {
 	
 	CustomItemTypeProperties properties();
 	
@@ -38,8 +36,8 @@ public interface IDefaultedCustomItemType extends CustomItemType, DataHolderProx
 	}
 	
 	@Override
-	default Set<Value<?>> data() {
-		return this.properties().data();
+	default DeferredValueContainer getAsData() {
+		return this.properties().getAsData();
 	}
 	
 	@Override
@@ -50,10 +48,5 @@ public interface IDefaultedCustomItemType extends CustomItemType, DataHolderProx
 	@Override
 	default ItemStackSnapshot getAsItemStackSnapshot() {
 		return this.properties().getAsItemStackSnapshot();
-	}
-	
-	@Override
-	default DataHolder getAsDataHolder() {
-		return this.properties().getAsDataHolder();
 	}
 }

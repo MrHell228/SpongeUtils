@@ -16,7 +16,7 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public record TexturedModel(ModelTemplate parent, Textures textures) {
 	
-	public static final MapCodec<TexturedModel> MAP_CODEC = RecordCodecBuilder.mapCodec(
+	public static final MapCodec<TexturedModel> MAP_CODEC = RecordCodecBuilder.<TexturedModel>mapCodec(
 			instance -> instance.group(
 					SpongeCodecs.RESOURCE_KEY.optionalFieldOf("parent").forGetter(TexturedModel::key),
 					Textures.CODEC.fieldOf("textures").forGetter(TexturedModel::textures)

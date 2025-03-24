@@ -10,7 +10,7 @@ import java.util.function.UnaryOperator;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
-import org.spongepowered.api.data.DataHolder;
+import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
@@ -20,7 +20,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
-import net.hellheim.spongetools.proxy.solid.data.DataHolderProxy;
+import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
 import net.hellheim.spongetools.proxy.solid.item.IItemProxy;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.hellheim.spongetools.proxy.solid.item.ItemTypeProxy;
@@ -32,7 +32,7 @@ import net.kyori.adventure.text.ComponentLike;
  * Wrapper for either {@link ItemType} or {@link CustomItemType}.
  */
 public sealed abstract class EitherItemType
-		implements ResourceKeyed, ComponentLike, DataHolderProxy, IconProxy, IItemProxy
+		implements ResourceKeyed, ComponentLike, ValueContainerProxy, IconProxy, IItemProxy
 		permits EitherItemType.Common, EitherItemType.Custom {
 	
 	public static final Codec<EitherItemType> CODEC = Codec
@@ -139,10 +139,10 @@ public sealed abstract class EitherItemType
 	@Override
 	public abstract boolean equals(Object obj);
 	
-	private static final class Common extends EitherItemType implements ItemTypeProxy {
+	protected static final class Common extends EitherItemType implements ItemTypeProxy {
 		
-		protected final ItemType type;
-		protected final IconProxy icon;
+		private final ItemType type;
+		private final IconProxy icon;
 		
 		protected Common(final ItemType type) {
 			this.type = Objects.requireNonNull(type, "type");
@@ -160,7 +160,7 @@ public sealed abstract class EitherItemType
 		}
 		
 		@Override
-		public DataHolder getAsDataHolder() {
+		public ValueContainer getAsData() {
 			return this.type;
 		}
 		
@@ -244,9 +244,9 @@ public sealed abstract class EitherItemType
 		}
 	}
 	
-	private static final class Custom extends EitherItemType implements ItemStackSnapshotProxy {
+	protected static final class Custom extends EitherItemType implements ItemStackSnapshotProxy {
 		
-		protected final CustomItemType type;
+		private final CustomItemType type;
 		
 		protected Custom(final CustomItemType type) {
 			this.type = Objects.requireNonNull(type, "type");
@@ -263,7 +263,7 @@ public sealed abstract class EitherItemType
 		}
 		
 		@Override
-		public DataHolder getAsDataHolder() {
+		public ValueContainer getAsData() {
 			return this.type;
 		}
 		

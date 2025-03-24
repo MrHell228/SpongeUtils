@@ -17,27 +17,10 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface ItemModelDefinition {
 	
-	final Codec<ItemModelDefinition> CODEC = Registrar.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatch(ItemModelDefinition::codec, Function.identity());
+	final LateBoundIdMapper<ResourceKey, MapCodec<? extends ItemModelDefinition>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final class Registrar {
-		
-		private static final LateBoundIdMapper<ResourceKey, MapCodec<? extends ItemModelDefinition>> ID_MAPPER = new LateBoundIdMapper<>();
-		
-		static {
-			ID_MAPPER.put(ResourceKey.minecraft("empty"), Empty.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("model"), Simple.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("range_dispatch"), RangeSelect.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("special"), Special.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("composite"), Composite.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("bundle/selected_item"), BundleSelectedItem.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("select"), Select.CODEC);
-			ID_MAPPER.put(ResourceKey.minecraft("condition"), Conditional.CODEC);
-		}
-		
-		private Registrar() {
-		}
-	}
+	final Codec<ItemModelDefinition> CODEC = ItemModelDefinition.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatch(ItemModelDefinition::codec, Function.identity());
 	
 	static Empty empty() {
 		return Empty.INSTANCE;
@@ -47,11 +30,11 @@ public interface ItemModelDefinition {
 		return BundleSelectedItem.INSTANCE;
 	}
 	
-	static Simple simple(final ResourceKey model, final ItemTintSource... tints) {
+	static Simple simple(final ResourceKey model, final TintSource... tints) {
 		return new Simple(model, List.of(tints));
 	}
 	
-	static Simple simple(final ResourceKey model, final Collection<? extends ItemTintSource> tints) {
+	static Simple simple(final ResourceKey model, final Collection<? extends TintSource> tints) {
 		return new Simple(model, List.copyOf(tints));
 	}
 	
@@ -164,14 +147,14 @@ public interface ItemModelDefinition {
 		}
 	}
 	
-	record Simple(ResourceKey model, List<ItemTintSource> tints) implements ItemModelDefinition {
+	record Simple(ResourceKey model, List<TintSource> tints) implements ItemModelDefinition {
 		public static final MapCodec<Simple> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
 						SpongeCodecs.RESOURCE_KEY.fieldOf("model").forGetter(Simple::model),
-						ItemTintSource.CODEC.listOf().optionalFieldOf("tints", List.of()).forGetter(Simple::tints)
+						TintSource.CODEC.listOf().optionalFieldOf("tints", List.of()).forGetter(Simple::tints)
 						).apply(instance, Simple::new));
 		
-		public Simple(final ResourceKey model, final List<ItemTintSource> tints) {
+		public Simple(final ResourceKey model, final List<TintSource> tints) {
 			this.model = Objects.requireNonNull(model, "model");
 			this.tints = Objects.requireNonNull(tints, "tints");
 		}
