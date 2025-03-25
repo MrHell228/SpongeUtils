@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model;
+package net.hellheim.spongetools.custom.model.item;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,8 @@ import com.mojang.serialization.Codec;
 import net.hellheim.spongetools.codec.list.MathCodecs;
 
 public record ItemTransforms(Map<ItemDisplayContext, Transform> transforms) {
+	
+	public static final ItemTransforms DEFAULT = new ItemTransforms(Map.of());
 	
 	public static final Codec<ItemTransforms> CODEC =
 			Codec.unboundedMap(ItemDisplayContext.CODEC, MathCodecs.TRANSFORM)

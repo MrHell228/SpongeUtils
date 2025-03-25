@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model;
+package net.hellheim.spongetools.custom.model.item;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -13,8 +13,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
-import net.hellheim.spongetools.custom.item.model.enums.CompassTarget;
-import net.hellheim.spongetools.custom.item.model.enums.TimeSource;
+import net.hellheim.spongetools.custom.model.item.enums.CompassTarget;
+import net.hellheim.spongetools.custom.model.item.enums.TimeSource;
 
 public interface RangeSelectProperty {
 	

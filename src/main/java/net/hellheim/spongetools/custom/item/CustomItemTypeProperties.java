@@ -3,15 +3,18 @@ package net.hellheim.spongetools.custom.item;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.registry.DefaultedRegistryReference;
+import org.spongepowered.api.registry.RegistryKey;
+import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.util.CopyableBuilder;
 import org.spongepowered.api.util.ResourceKeyedBuilder;
 
@@ -22,9 +25,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 
-import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
-import net.hellheim.spongetools.custom.item.model.Item;
+import net.hellheim.spongetools.custom.model.item.Item;
+import net.hellheim.spongetools.custom.model.item.ItemDefinition;
+import net.hellheim.spongetools.custom.model.item.TintSource;
 import net.hellheim.spongetools.object.DeferredValueContainer;
 import net.hellheim.spongetools.object.ItemBuilder;
 import net.hellheim.spongetools.object.ValueSetBuilder;
@@ -47,7 +51,7 @@ public class CustomItemTypeProperties implements
 	public static final Codec<CustomItemTypeProperties> CODEC = MAP_CODEC.codec();
 	
 	private final ResourceKey key;
-	private final ItemType base;
+	private final DefaultedRegistryReference<ItemType> base;
 	private final Optional<Item> model;
 	private final DeferredValueContainer data;
 	
@@ -58,7 +62,7 @@ public class CustomItemTypeProperties implements
 	protected CustomItemTypeProperties(final Builder builder) {
 		builder.validate();
 		this.key = builder.key;
-		this.base = builder.base;
+		this.base = builder.base.asDefaultedReference(Sponge::server);
 		this.model = Optional.ofNullable(builder.model);
 		
 		this.name = TranslationUtil.item(this.key);
@@ -74,10 +78,10 @@ public class CustomItemTypeProperties implements
 	}
 	
 	protected CustomItemTypeProperties(
-		final ResourceKey key, final ItemType base, final Optional<Item> model, DeferredValueContainer data
+		final ResourceKey key, final RegistryKey<ItemType> base, final Optional<Item> model, DeferredValueContainer data
 	) {
 		this.key = key;
-		this.base = base;
+		this.base = base.asDefaultedReference(Sponge::server);
 		this.model = model;
 		
 		this.name = TranslationUtil.item(this.key);
@@ -96,10 +100,10 @@ public class CustomItemTypeProperties implements
 		return new Builder();
 	}
 	
-	public static <T extends CustomItemTypeProperties> P4<Mu<T>, ResourceKey, ItemType, Optional<Item>, DeferredValueContainer> codecBuilder(Instance<T> instance) {
+	public static <T extends CustomItemTypeProperties> P4<Mu<T>, ResourceKey, RegistryKey<ItemType>, Optional<Item>, DeferredValueContainer> codecBuilder(Instance<T> instance) {
 		return instance.group(
 				SpongeCodecs.RESOURCE_KEY.fieldOf("key").forGetter(CustomItemTypeProperties::key),
-				RegistryCodecs.ITEM_TYPE.fieldOf("base").forGetter(CustomItemTypeProperties::base),
+				SpongeCodecs.registryKey(RegistryTypes.ITEM_TYPE).fieldOf("base").forGetter(CustomItemTypeProperties::base),
 				Item.CODEC.optionalFieldOf("model").forGetter(CustomItemTypeProperties::model),
 				DeferredValueContainer.codec(ItemStackSnapshot.empty()).optionalFieldOf("data", DeferredValueContainer.EMPTY).forGetter(CustomItemTypeProperties::getAsData)
 				);
@@ -120,7 +124,7 @@ public class CustomItemTypeProperties implements
 		return this.name;
 	}
 	
-	public ItemType base() {
+	public DefaultedRegistryReference<ItemType> base() {
 		return this.base;
 	}
 	
@@ -162,7 +166,7 @@ public class CustomItemTypeProperties implements
 			CopyableBuilder<CustomItemTypeProperties, Builder> {
 		
 		protected @Nullable ResourceKey key;
-		protected @Nullable ItemType base;
+		protected @Nullable RegistryKey<ItemType> base;
 		protected @Nullable Item model;
 		protected @Nullable DeferredValueContainer data;
 		
@@ -176,11 +180,7 @@ public class CustomItemTypeProperties implements
 			return this;
 		}
 		
-		public Builder base(final Supplier<ItemType> base) {
-			return this.base(Objects.requireNonNull(base, "base").get());
-		}
-		
-		public Builder base(final ItemType base) {
+		public Builder base(final RegistryKey<ItemType> base) {
 			this.base = Objects.requireNonNull(base, "base");
 			return this;
 		}
@@ -188,6 +188,17 @@ public class CustomItemTypeProperties implements
 		public Builder model(final Item model) {
 			this.model = Objects.requireNonNull(model, "model");
 			return this;
+		}
+		
+		public Builder model(final ItemDefinition definition) {
+			return this.model(Item.of(definition));
+		}
+		
+		public Builder simpleModel(final TintSource... tints) {
+			if (this.key == null) {
+				throw new IllegalStateException("key must be set");
+			}
+			return this.model(ItemDefinition.simple(this.key, tints));
 		}
 		
 		public Builder data(final DeferredValueContainer data) {
@@ -226,7 +237,7 @@ public class CustomItemTypeProperties implements
 			Objects.requireNonNull(this.key, "key must be set");
 			
 			if (this.base == null) {
-				this.base = ItemTypes.RABBIT_FOOT.get();
+				this.base = ItemTypes.RABBIT_FOOT;
 			}
 			
 			if (this.data == null) {

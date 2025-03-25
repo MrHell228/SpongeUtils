@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model;
+package net.hellheim.spongetools.custom.model.item;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -11,15 +11,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.custom.item.model.enums.GuiLight;
+import net.hellheim.spongetools.custom.model.ModelTemplate;
+import net.hellheim.spongetools.custom.model.TexturedModel;
+import net.hellheim.spongetools.custom.model.Textures;
+import net.hellheim.spongetools.custom.model.item.enums.GuiLight;
 
 public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight guiLight) {
 	
 	public static final Codec<ItemModel> CODEC = RecordCodecBuilder.create(
 			instance -> instance.group(
 					TexturedModel.MAP_CODEC.forGetter(ItemModel::model),
-					ItemTransforms.CODEC.fieldOf("display").forGetter(ItemModel::display),
-					GuiLight.CODEC.fieldOf("gui_light").forGetter(ItemModel::guiLight)
+					ItemTransforms.CODEC.optionalFieldOf("display", ItemTransforms.DEFAULT).forGetter(ItemModel::display),
+					GuiLight.CODEC.optionalFieldOf("gui_light", GuiLight.DEFAULT).forGetter(ItemModel::guiLight)
 					).apply(instance, ItemModel::new));
 	
 	public ItemModel(final TexturedModel model, final ItemTransforms display, final GuiLight guiLight) {
@@ -32,12 +35,36 @@ public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight gu
 		return SpongeTools.Registries.ITEM_MODEL;
 	}
 	
-	public static ItemModel of(final TexturedModel model, final ItemTransforms display) {
-		return new ItemModel(model, display, GuiLight.DEFAULT);
+	public static ItemModel of(final ModelTemplate parent, final Textures textures) {
+		return ItemModel.of(TexturedModel.of(parent, textures));
 	}
 	
 	public static ItemModel of(final ModelTemplate parent, final Textures textures, final ItemTransforms display) {
 		return ItemModel.of(TexturedModel.of(parent, textures), display);
+	}
+	
+	public static ItemModel of(final ModelTemplate parent, final Textures textures, final GuiLight light) {
+		return ItemModel.of(TexturedModel.of(parent, textures), light);
+	}
+	
+	public static ItemModel of(final ModelTemplate parent, final Textures textures, final ItemTransforms display, final GuiLight light) {
+		return ItemModel.of(TexturedModel.of(parent, textures), display, light);
+	}
+	
+	public static ItemModel of(final TexturedModel model) {
+		return ItemModel.of(model, ItemTransforms.DEFAULT, GuiLight.DEFAULT);
+	}
+	
+	public static ItemModel of(final TexturedModel model, final ItemTransforms display) {
+		return ItemModel.of(model, display, GuiLight.DEFAULT);
+	}
+	
+	public static ItemModel of(final TexturedModel model, final GuiLight light) {
+		return ItemModel.of(model, ItemTransforms.DEFAULT, light);
+	}
+	
+	public static ItemModel of(final TexturedModel model, final ItemTransforms display, final GuiLight light) {
+		return new ItemModel(model, display, light);
 	}
 	
 	public static Builder builder() {

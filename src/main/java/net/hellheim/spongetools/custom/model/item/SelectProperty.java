@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model;
+package net.hellheim.spongetools.custom.model.item;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -28,7 +28,7 @@ import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
-import net.hellheim.spongetools.custom.item.model.enums.ChargeType;
+import net.hellheim.spongetools.custom.model.item.enums.ChargeType;
 
 public interface SelectProperty<T> {
 	

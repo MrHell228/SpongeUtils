@@ -1,0 +1,723 @@
+package net.hellheim.spongetools.custom.model;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import org.spongepowered.api.ResourceKey;
+import org.spongepowered.api.util.CopyableBuilder;
+
+import com.mojang.serialization.Codec;
+
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.util.ModelUtil;
+
+public record Textures(Map<TextureSlot, ResourceKey> textures) {
+	
+	public static final Codec<Textures> CODEC =
+			Codec.unboundedMap(TextureSlot.CODEC, SpongeCodecs.RESOURCE_KEY)
+			.xmap(Textures::new, Textures::textures);
+	
+	public Textures(final Map<TextureSlot, ResourceKey> textures) {
+		this.textures = Map.copyOf(textures);
+	}
+	
+	public Set<TextureSlot> slots() {
+		return this.textures.keySet();
+	}
+	
+	public static Builder builder() {
+		return new Builder();
+	}
+	
+	// Generic builders
+	
+	public static Textures of(final Map<TextureSlot, ResourceKey> textures) {
+		return new Textures(textures);
+	}
+	
+	public static Textures of(
+		final TextureSlot slot, final ResourceKey texture
+	) {
+		return Textures.of(Map.of(
+				slot, texture
+				));
+	}
+	
+	public static Textures of(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2
+	) {
+		return Textures.of(Map.of(
+				slot1, texture1,
+				slot2, texture2
+				));
+	}
+	
+	public static Textures of(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3
+	) {
+		return Textures.of(Map.of(
+				slot1, texture1,
+				slot2, texture2,
+				slot3, texture3
+				));
+	}
+	
+	public static Textures of(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4
+	) {
+		return Textures.of(Map.of(
+				slot1, texture1,
+				slot2, texture2,
+				slot3, texture3,
+				slot4, texture4
+				));
+	}
+	
+	public static Textures of(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5
+	) {
+		return Textures.of(Map.of(
+				slot1, texture1,
+				slot2, texture2,
+				slot3, texture3,
+				slot4, texture4,
+				slot5, texture5
+				));
+	}
+	
+	public static Textures of(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5,
+		final TextureSlot slot6, final ResourceKey texture6
+	) {
+		return Textures.of(Map.of(
+				slot1, texture1,
+				slot2, texture2,
+				slot3, texture3,
+				slot4, texture4,
+				slot5, texture5,
+				slot6, texture6
+				));
+	}
+	
+	public static Textures of(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5,
+		final TextureSlot slot6, final ResourceKey texture6,
+		final TextureSlot slot7, final ResourceKey texture7
+	) {
+		return Textures.of(Map.of(
+				slot1, texture1,
+				slot2, texture2,
+				slot3, texture3,
+				slot4, texture4,
+				slot5, texture5,
+				slot6, texture6,
+				slot7, texture7
+				));
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot, final String suffix
+	) {
+		return Textures.of(
+				slot, ModelUtil.withSuffix(texture, suffix)
+				);
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withSuffix(texture, suffix1),
+				slot2, ModelUtil.withSuffix(texture, suffix2)
+				);
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withSuffix(texture, suffix1),
+				slot2, ModelUtil.withSuffix(texture, suffix2),
+				slot3, ModelUtil.withSuffix(texture, suffix3)
+				);
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withSuffix(texture, suffix1),
+				slot2, ModelUtil.withSuffix(texture, suffix2),
+				slot3, ModelUtil.withSuffix(texture, suffix3),
+				slot4, ModelUtil.withSuffix(texture, suffix4)
+				);
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withSuffix(texture, suffix1),
+				slot2, ModelUtil.withSuffix(texture, suffix2),
+				slot3, ModelUtil.withSuffix(texture, suffix3),
+				slot4, ModelUtil.withSuffix(texture, suffix4),
+				slot5, ModelUtil.withSuffix(texture, suffix5)
+				);
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5,
+		final TextureSlot slot6, final String suffix6
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withSuffix(texture, suffix1),
+				slot2, ModelUtil.withSuffix(texture, suffix2),
+				slot3, ModelUtil.withSuffix(texture, suffix3),
+				slot4, ModelUtil.withSuffix(texture, suffix4),
+				slot5, ModelUtil.withSuffix(texture, suffix5),
+				slot6, ModelUtil.withSuffix(texture, suffix6)
+				);
+	}
+	
+	public static Textures of(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5,
+		final TextureSlot slot6, final String suffix6,
+		final TextureSlot slot7, final String suffix7
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withSuffix(texture, suffix1),
+				slot2, ModelUtil.withSuffix(texture, suffix2),
+				slot3, ModelUtil.withSuffix(texture, suffix3),
+				slot4, ModelUtil.withSuffix(texture, suffix4),
+				slot5, ModelUtil.withSuffix(texture, suffix5),
+				slot6, ModelUtil.withSuffix(texture, suffix6),
+				slot7, ModelUtil.withSuffix(texture, suffix7)
+				);
+	}
+	
+	// Block-specific builders
+	
+	public static Textures block(
+		final TextureSlot slot, final ResourceKey texture
+	) {
+		return Textures.of(
+				slot, ModelUtil.withBlockPrefix(texture)
+				);
+	}
+	
+	public static Textures block(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withBlockPrefix(texture1),
+				slot2, ModelUtil.withBlockPrefix(texture2)
+				);
+	}
+	
+	public static Textures block(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withBlockPrefix(texture1),
+				slot2, ModelUtil.withBlockPrefix(texture2),
+				slot3, ModelUtil.withBlockPrefix(texture3)
+				);
+	}
+	
+	public static Textures block(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withBlockPrefix(texture1),
+				slot2, ModelUtil.withBlockPrefix(texture2),
+				slot3, ModelUtil.withBlockPrefix(texture3),
+				slot4, ModelUtil.withBlockPrefix(texture4)
+				);
+	}
+	
+	public static Textures block(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withBlockPrefix(texture1),
+				slot2, ModelUtil.withBlockPrefix(texture2),
+				slot3, ModelUtil.withBlockPrefix(texture3),
+				slot4, ModelUtil.withBlockPrefix(texture4),
+				slot5, ModelUtil.withBlockPrefix(texture5)
+				);
+	}
+	
+	public static Textures block(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5,
+		final TextureSlot slot6, final ResourceKey texture6
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withBlockPrefix(texture1),
+				slot2, ModelUtil.withBlockPrefix(texture2),
+				slot3, ModelUtil.withBlockPrefix(texture3),
+				slot4, ModelUtil.withBlockPrefix(texture4),
+				slot5, ModelUtil.withBlockPrefix(texture5),
+				slot6, ModelUtil.withBlockPrefix(texture6)
+				);
+	}
+	
+	public static Textures block(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5,
+		final TextureSlot slot6, final ResourceKey texture6,
+		final TextureSlot slot7, final ResourceKey texture7
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withBlockPrefix(texture1),
+				slot2, ModelUtil.withBlockPrefix(texture2),
+				slot3, ModelUtil.withBlockPrefix(texture3),
+				slot4, ModelUtil.withBlockPrefix(texture4),
+				slot5, ModelUtil.withBlockPrefix(texture5),
+				slot6, ModelUtil.withBlockPrefix(texture6),
+				slot7, ModelUtil.withBlockPrefix(texture7)
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot, final String suffix
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot, suffix
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4,
+				slot5, suffix5
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5,
+		final TextureSlot slot6, final String suffix6
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4,
+				slot5, suffix5,
+				slot6, suffix6
+				);
+	}
+	
+	public static Textures block(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5,
+		final TextureSlot slot6, final String suffix6,
+		final TextureSlot slot7, final String suffix7
+	) {
+		return Textures.of(ModelUtil.withBlockPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4,
+				slot5, suffix5,
+				slot6, suffix6,
+				slot7, suffix7
+				);
+	}
+	
+	// Item-specific builders
+	
+	public static Textures item(
+		final TextureSlot slot, final ResourceKey texture
+	) {
+		return Textures.of(
+				slot, ModelUtil.withItemPrefix(texture)
+				);
+	}
+	
+	public static Textures item(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withItemPrefix(texture1),
+				slot2, ModelUtil.withItemPrefix(texture2)
+				);
+	}
+	
+	public static Textures item(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withItemPrefix(texture1),
+				slot2, ModelUtil.withItemPrefix(texture2),
+				slot3, ModelUtil.withItemPrefix(texture3)
+				);
+	}
+	
+	public static Textures item(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withItemPrefix(texture1),
+				slot2, ModelUtil.withItemPrefix(texture2),
+				slot3, ModelUtil.withItemPrefix(texture3),
+				slot4, ModelUtil.withItemPrefix(texture4)
+				);
+	}
+	
+	public static Textures item(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withItemPrefix(texture1),
+				slot2, ModelUtil.withItemPrefix(texture2),
+				slot3, ModelUtil.withItemPrefix(texture3),
+				slot4, ModelUtil.withItemPrefix(texture4),
+				slot5, ModelUtil.withItemPrefix(texture5)
+				);
+	}
+	
+	public static Textures item(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5,
+		final TextureSlot slot6, final ResourceKey texture6
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withItemPrefix(texture1),
+				slot2, ModelUtil.withItemPrefix(texture2),
+				slot3, ModelUtil.withItemPrefix(texture3),
+				slot4, ModelUtil.withItemPrefix(texture4),
+				slot5, ModelUtil.withItemPrefix(texture5),
+				slot6, ModelUtil.withItemPrefix(texture6)
+				);
+	}
+	
+	public static Textures item(
+		final TextureSlot slot1, final ResourceKey texture1,
+		final TextureSlot slot2, final ResourceKey texture2,
+		final TextureSlot slot3, final ResourceKey texture3,
+		final TextureSlot slot4, final ResourceKey texture4,
+		final TextureSlot slot5, final ResourceKey texture5,
+		final TextureSlot slot6, final ResourceKey texture6,
+		final TextureSlot slot7, final ResourceKey texture7
+	) {
+		return Textures.of(
+				slot1, ModelUtil.withItemPrefix(texture1),
+				slot2, ModelUtil.withItemPrefix(texture2),
+				slot3, ModelUtil.withItemPrefix(texture3),
+				slot4, ModelUtil.withItemPrefix(texture4),
+				slot5, ModelUtil.withItemPrefix(texture5),
+				slot6, ModelUtil.withItemPrefix(texture6),
+				slot7, ModelUtil.withItemPrefix(texture7)
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot, final String suffix
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot, suffix
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4,
+				slot5, suffix5
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5,
+		final TextureSlot slot6, final String suffix6
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4,
+				slot5, suffix5,
+				slot6, suffix6
+				);
+	}
+	
+	public static Textures item(
+		final ResourceKey texture,
+		final TextureSlot slot1, final String suffix1,
+		final TextureSlot slot2, final String suffix2,
+		final TextureSlot slot3, final String suffix3,
+		final TextureSlot slot4, final String suffix4,
+		final TextureSlot slot5, final String suffix5,
+		final TextureSlot slot6, final String suffix6,
+		final TextureSlot slot7, final String suffix7
+	) {
+		return Textures.of(ModelUtil.withItemPrefix(texture),
+				slot1, suffix1,
+				slot2, suffix2,
+				slot3, suffix3,
+				slot4, suffix4,
+				slot5, suffix5,
+				slot6, suffix6,
+				slot7, suffix7
+				);
+	}
+	
+	// Other builders
+	// TODO remove?
+	
+	public static Textures all(final ResourceKey texture) {
+		return Textures.of(TextureSlots.ALL, texture);
+	}
+	
+	public static Textures column(final ResourceKey texture) {
+		return Textures.of(texture,
+				TextureSlots.SIDE, "_side",
+				TextureSlots.END, "_top");
+	}
+	
+	public static class Builder implements
+			org.spongepowered.api.util.Builder<Textures, Builder>,
+			CopyableBuilder<Textures, Builder> {
+		
+		private final Map<TextureSlot, ResourceKey> textures = new HashMap<>();
+		
+		public Builder put(final TextureSlot slot, final ResourceKey texture) {
+			this.textures.put(
+					Objects.requireNonNull(slot, "slot"),
+					Objects.requireNonNull(texture, "texture"));
+			return this;
+		}
+		
+		public Builder putIfAbsent(final TextureSlot slot, final ResourceKey texture) {
+			this.textures.putIfAbsent(
+					Objects.requireNonNull(slot, "slot"),
+					Objects.requireNonNull(texture, "texture"));
+			return this;
+		}
+		
+		public Builder putAll(final Map<? extends TextureSlot, ? extends ResourceKey> textures) {
+			Objects.requireNonNull(textures, "textures").forEach(this::put);
+			return this;
+		}
+		
+		public Builder putAll(final ResourceKey texture, final TextureSlot... slots) {
+			for (final TextureSlot slot : Objects.requireNonNull(slots, "slots")) {
+				this.put(slot, texture);
+			}
+			return this;
+		}
+		
+		public Builder putAll(final ResourceKey texture, final Iterable<? extends TextureSlot> slots) {
+			for (final TextureSlot slot : Objects.requireNonNull(slots, "slots")) {
+				this.put(slot, texture);
+			}
+			return this;
+		}
+		
+		@Override
+		public Builder from(final Textures value) {
+			this.reset();
+			this.textures.putAll(value.textures);
+			return this;
+		}
+		
+		@Override
+		public Builder reset() {
+			this.textures.clear();
+			return this;
+		}
+		
+		@Override
+		public Textures build() {
+			return new Textures(this.textures);
+		}
+	}
+}

@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model.enums;
+package net.hellheim.spongetools.custom.model.item.enums;
 
 public final class WoodTypes {
 	

@@ -5,8 +5,9 @@ import java.util.Optional;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.registry.DefaultedRegistryReference;
 
-import net.hellheim.spongetools.custom.item.model.Item;
+import net.hellheim.spongetools.custom.model.item.Item;
 import net.hellheim.spongetools.object.DeferredValueContainer;
 import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
 import net.kyori.adventure.text.Component;
@@ -26,7 +27,7 @@ public interface IDefaultedCustomItemType extends CustomItemType, ValueContainer
 	}
 	
 	@Override
-	default ItemType base() {
+	default DefaultedRegistryReference<ItemType> base() {
 		return this.properties().base();
 	}
 	

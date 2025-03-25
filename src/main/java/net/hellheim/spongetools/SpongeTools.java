@@ -10,8 +10,8 @@ import org.spongepowered.api.registry.RegistryRoots;
 import org.spongepowered.api.registry.RegistryType;
 
 import net.hellheim.spongetools.custom.item.CustomItemType;
-import net.hellheim.spongetools.custom.item.model.Item;
-import net.hellheim.spongetools.custom.item.model.ItemModel;
+import net.hellheim.spongetools.custom.model.item.Item;
+import net.hellheim.spongetools.custom.model.item.ItemModel;
 
 public final class SpongeTools {
 	

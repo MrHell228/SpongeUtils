@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.item.model;
+package net.hellheim.spongetools.custom.model.item;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
-import net.hellheim.spongetools.custom.item.model.enums.SkullType;
+import net.hellheim.spongetools.custom.model.item.enums.SkullType;
 
 public interface SpecialModel {
 	

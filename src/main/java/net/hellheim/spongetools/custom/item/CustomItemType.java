@@ -16,10 +16,11 @@ import org.spongepowered.api.data.persistence.Queries;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.custom.item.model.Item;
+import net.hellheim.spongetools.custom.model.item.Item;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.kyori.adventure.text.ComponentLike;
 
@@ -211,7 +212,7 @@ public interface CustomItemType extends
 	
 	// Methods to implement
 	
-	ItemType base();
+	DefaultedRegistryReference<ItemType> base();
 	
 	Optional<Item> model();
 	

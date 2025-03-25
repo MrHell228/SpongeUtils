@@ -87,7 +87,15 @@ public final class ExtraCodecs {
 		final IntFunction<? extends @Nullable E> decoder,
 		final int notFoundValue
 	) {
-		return ExtraCodecs.factory().idResolver(encoder, decoder, notFoundValue);
+		return Codec.INT.flatXmap(
+                id -> Optional.ofNullable(decoder.apply(id))
+                        .map(DataResult::success)
+                        .orElseGet(() -> DataResult.error(() -> "Unknown element id: " + id)),
+                value -> {
+                    int i = encoder.applyAsInt(value);
+                    return i == notFoundValue ? DataResult.error(() -> "Element with unknown id: " + value) : DataResult.success(i);
+                }
+            );
 	}
 	
 	public static <I, E> Codec<E> idResolver(
@@ -95,7 +103,13 @@ public final class ExtraCodecs {
 		final Function<? super I, ? extends @Nullable E> idToValue,
 		final Function<? super E, ? extends @Nullable I> valueToId
 	) {
-		return ExtraCodecs.factory().idResolver(idCodec, idToValue, valueToId);
+		return idCodec.flatXmap(id -> {
+			E e = idToValue.apply(id);
+			return e == null ? DataResult.error(() -> "Unknown element id: " + id) : DataResult.success(e);
+		}, value -> {
+			I i = valueToId.apply(value);
+			return i == null ? DataResult.error(() -> "Element with unknown id: " + value) : DataResult.success(i);
+		});
 	}
 	
 	public static <I, E> Codec<E> idResolver(final Codec<I> idCodec, final Index<I, E> index) {
@@ -251,17 +265,6 @@ public final class ExtraCodecs {
 		<P, I> Codec<I> interval(
 			Codec<P> codec, String minFieldName, String maxFieldName,
 			BiFunction<P, P, DataResult<I>> factory, Function<I, P> minGetter, Function<I, P> maxGetter
-		);
-		
-		<E> Codec<E> idResolver(
-			ToIntFunction<? super E> encoder,
-			IntFunction<? extends @Nullable E> decoder,
-			int notFoundValue);
-		
-		<I, E> Codec<E> idResolver(
-			Codec<I> idCodec,
-			Function<? super I, ? extends @Nullable E> idToValue,
-			Function<? super E, ? extends @Nullable I> valueToId
 		);
 		
 		<E> Codec<E> orCompressed(Codec<E> first, Codec<E> second);
