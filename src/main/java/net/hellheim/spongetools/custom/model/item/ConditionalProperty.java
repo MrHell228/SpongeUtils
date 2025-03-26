@@ -11,13 +11,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface ConditionalProperty {
+public interface ConditionalProperty extends MapCodecProxy<ConditionalProperty> {
 	
-	final LateBoundIdMapper<ResourceKey, MapCodec<? extends ConditionalProperty>> ID_MAPPER = new LateBoundIdMapper<>();
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends ConditionalProperty>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final MapCodec<ConditionalProperty> CODEC = ConditionalProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatchMap("property", ConditionalProperty::codec, Function.identity());
+	MapCodec<ConditionalProperty> CODEC = ConditionalProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatchMap("property", ConditionalProperty::mapCodec, Function.identity());
 	
 	static Broken broken() {
 		return Broken.INSTANCE;
@@ -63,14 +64,12 @@ public interface ConditionalProperty {
 		return new CustomModelData(index);
 	}
 	
-	MapCodec<? extends ConditionalProperty> codec();
-	
 	record Broken() implements ConditionalProperty {
 		public static final Broken INSTANCE = new Broken();
 		public static final MapCodec<Broken> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -80,7 +79,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<Damaged> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -90,7 +89,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<Carried> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -100,7 +99,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<Selected> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -110,7 +109,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<ExtendedView> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -120,7 +119,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<FishingRodCast> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -130,7 +129,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<BundleHasSelectedItem> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -140,7 +139,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<Using> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -150,7 +149,7 @@ public interface ConditionalProperty {
 		public static final MapCodec<ViewingEntity> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -168,7 +167,7 @@ public interface ConditionalProperty {
 		}
 		
 		@Override
-		public MapCodec<? extends ConditionalProperty> codec() {
+		public MapCodec<? extends ConditionalProperty> mapCodec() {
 			return CODEC;
 		}
 	}

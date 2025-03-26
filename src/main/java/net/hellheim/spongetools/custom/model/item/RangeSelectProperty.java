@@ -15,13 +15,14 @@ import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.custom.model.item.enums.CompassTarget;
 import net.hellheim.spongetools.custom.model.item.enums.TimeSource;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface RangeSelectProperty {
+public interface RangeSelectProperty extends MapCodecProxy<RangeSelectProperty> {
 	
-	final LateBoundIdMapper<ResourceKey, MapCodec<? extends RangeSelectProperty>> ID_MAPPER = new LateBoundIdMapper<>();
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends RangeSelectProperty>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final MapCodec<RangeSelectProperty> CODEC = RangeSelectProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatchMap("property", RangeSelectProperty::codec, Function.identity());
+	MapCodec<RangeSelectProperty> CODEC = RangeSelectProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatchMap("property", RangeSelectProperty::mapCodec, Function.identity());
 	
 	static Cooldown cooldown() {
 		return Cooldown.INSTANCE;
@@ -91,14 +92,12 @@ public interface RangeSelectProperty {
 		return new Time(wobble, source);
 	}
 	
-	MapCodec<? extends RangeSelectProperty> codec();
-	
 	record Cooldown() implements RangeSelectProperty {
 		public static final Cooldown INSTANCE = new Cooldown();
 		public static final MapCodec<Cooldown> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -108,7 +107,7 @@ public interface RangeSelectProperty {
 		public static final MapCodec<BundleFullness> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -118,7 +117,7 @@ public interface RangeSelectProperty {
 		public static final MapCodec<CrossbowPull> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -131,7 +130,7 @@ public interface RangeSelectProperty {
 						).apply(instance, Quantity::new));
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -144,7 +143,7 @@ public interface RangeSelectProperty {
 						).apply(instance, Damage::new));
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -162,7 +161,7 @@ public interface RangeSelectProperty {
 		}
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -180,7 +179,7 @@ public interface RangeSelectProperty {
 		}
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -193,7 +192,7 @@ public interface RangeSelectProperty {
 						).apply(instance, UseDuration::new));
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -212,7 +211,7 @@ public interface RangeSelectProperty {
 		}
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -231,7 +230,7 @@ public interface RangeSelectProperty {
 		}
 		
 		@Override
-		public MapCodec<? extends RangeSelectProperty> codec() {
+		public MapCodec<? extends RangeSelectProperty> mapCodec() {
 			return CODEC;
 		}
 	}

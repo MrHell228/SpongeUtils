@@ -15,9 +15,9 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public interface TintSource {
 	
-	final LateBoundIdMapper<ResourceKey, MapCodec<? extends TintSource>> ID_MAPPER = new LateBoundIdMapper<>();
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends TintSource>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final Codec<TintSource> CODEC = TintSource.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+	Codec<TintSource> CODEC = TintSource.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
 			.dispatch(TintSource::codec, Function.identity());
 	
 	static Constant constant(final int value) {

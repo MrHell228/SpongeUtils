@@ -14,13 +14,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface ItemDefinition {
+public interface ItemDefinition extends MapCodecProxy<ItemDefinition> {
 	
-	final LateBoundIdMapper<ResourceKey, MapCodec<? extends ItemDefinition>> ID_MAPPER = new LateBoundIdMapper<>();
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends ItemDefinition>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final Codec<ItemDefinition> CODEC = ItemDefinition.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatch(ItemDefinition::codec, Function.identity());
+	Codec<ItemDefinition> CODEC = ItemDefinition.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatch(ItemDefinition::mapCodec, Function.identity());
 	
 	static Empty empty() {
 		return Empty.INSTANCE;
@@ -117,8 +118,6 @@ public interface ItemDefinition {
 		return new Special(base, model);
 	}
 	
-	MapCodec<? extends ItemDefinition> codec();
-	
 	default Item asItem(final boolean handAnimationOnSwap) {
 		return Item.of(this, handAnimationOnSwap);
 	}
@@ -132,7 +131,7 @@ public interface ItemDefinition {
 		public static final MapCodec<Empty> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -142,7 +141,7 @@ public interface ItemDefinition {
 		public static final MapCodec<BundleSelectedItem> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -160,7 +159,7 @@ public interface ItemDefinition {
 		}
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -176,7 +175,7 @@ public interface ItemDefinition {
 		}
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -196,7 +195,7 @@ public interface ItemDefinition {
 		}
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -214,7 +213,7 @@ public interface ItemDefinition {
 		}
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -236,7 +235,7 @@ public interface ItemDefinition {
 		}
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -254,7 +253,7 @@ public interface ItemDefinition {
 		}
 		
 		@Override
-		public MapCodec<? extends ItemDefinition> codec() {
+		public MapCodec<? extends ItemDefinition> mapCodec() {
 			return CODEC;
 		}
 	}

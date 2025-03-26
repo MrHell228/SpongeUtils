@@ -17,13 +17,14 @@ import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
 import net.hellheim.spongetools.custom.model.item.enums.SkullType;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface SpecialModel {
+public interface SpecialModel extends MapCodecProxy<SpecialModel> {
 	
-	final LateBoundIdMapper<ResourceKey, MapCodec<? extends SpecialModel>> ID_MAPPER = new LateBoundIdMapper<>();
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends SpecialModel>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	final Codec<SpecialModel> CODEC = SpecialModel.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
-			.dispatch(SpecialModel::codec, Function.identity());
+	Codec<SpecialModel> CODEC = SpecialModel.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatch(SpecialModel::mapCodec, Function.identity());
 	
 	static Conduit conduit() {
 		return Conduit.INSTANCE;
@@ -121,14 +122,12 @@ public interface SpecialModel {
 		return new Skull(type, animation, textureOverride);
 	}
 	
-	MapCodec<? extends SpecialModel> codec();
-	
 	record Conduit() implements SpecialModel {
 		public static final Conduit INSTANCE = new Conduit();
 		public static final MapCodec<Conduit> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -138,7 +137,7 @@ public interface SpecialModel {
 		public static final MapCodec<DecoratedPot> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -148,7 +147,7 @@ public interface SpecialModel {
 		public static final MapCodec<Trident> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -158,7 +157,7 @@ public interface SpecialModel {
 		public static final MapCodec<Shield> CODEC = MapCodec.unit(INSTANCE);
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -174,7 +173,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -190,7 +189,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -209,7 +208,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -232,7 +231,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -250,7 +249,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -268,7 +267,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -289,7 +288,7 @@ public interface SpecialModel {
 		}
 		
 		@Override
-		public MapCodec<? extends SpecialModel> codec() {
+		public MapCodec<? extends SpecialModel> mapCodec() {
 			return CODEC;
 		}
 	}

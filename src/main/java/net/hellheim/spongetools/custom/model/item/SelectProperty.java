@@ -29,12 +29,13 @@ import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.custom.model.item.enums.ChargeType;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface SelectProperty<T> {
+public interface SelectProperty<T> extends MapCodecProxy<SelectSwitch<?, ?>> {
 	
-	final LateBoundIdMapper<ResourceKey, MapCodec<? extends SelectSwitch<?, ?>>> ID_MAPPER = new LateBoundIdMapper<>();
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends SelectSwitch<?, ?>>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-    final Codec<MapCodec<? extends SelectSwitch<?, ?>>> CODEC = SelectProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY);
+    Codec<MapCodec<? extends SelectSwitch<?, ?>>> CODEC = SelectProperty.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY);
 	
 	static Charge charge() {
 		return Charge.INSTANCE;
@@ -98,15 +99,13 @@ public interface SelectProperty<T> {
 		return time;
 	}
 	
-	MapCodec<? extends SelectSwitch<?, ?>> codec();
-	
 	record Charge() implements SelectProperty<ChargeType> {
 		public static final Charge INSTANCE = new Charge();
 		public static final MapCodec<Charge> CODEC = MapCodec.unit(INSTANCE);
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, ChargeType.CODEC);
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -117,7 +116,7 @@ public interface SelectProperty<T> {
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, SpongeCodecs.registryKey(RegistryTypes.WORLD_TYPE));
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -128,7 +127,7 @@ public interface SelectProperty<T> {
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, SpongeCodecs.registryKey(RegistryTypes.ENTITY_TYPE));
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -139,7 +138,7 @@ public interface SelectProperty<T> {
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, SpongeCodecs.registryKey(RegistryTypes.TRIM_MATERIAL));
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -150,7 +149,7 @@ public interface SelectProperty<T> {
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, ItemDisplayContext.CODEC);
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -161,7 +160,7 @@ public interface SelectProperty<T> {
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, RegistryCodecs.HAND_PREFERENCE);
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -180,7 +179,7 @@ public interface SelectProperty<T> {
 		}
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -197,7 +196,7 @@ public interface SelectProperty<T> {
 		}
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}
@@ -229,7 +228,7 @@ public interface SelectProperty<T> {
 		}
 		
 		@Override
-		public MapCodec<? extends SelectSwitch<?, ?>> codec() {
+		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {
 			return SWITCH;
 		}
 	}

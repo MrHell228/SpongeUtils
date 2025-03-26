@@ -13,7 +13,7 @@ public class LateBoundIdMapper<I, V> {
 	protected final BiMap<I, V> idToValue = HashBiMap.create();
 	
 	public Codec<V> codec(final Codec<I> idCodec) {
-		BiMap<V, I> bimap = this.idToValue.inverse();
+		final BiMap<V, I> bimap = this.idToValue.inverse();
 		return ExtraCodecs.idResolver(idCodec, this.idToValue::get, bimap::get);
 	}
 	

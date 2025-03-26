@@ -8,7 +8,7 @@ import com.mojang.serialization.MapCodec;
 
 public record SelectSwitch<T, P extends SelectProperty<T>>(P property, List<SelectSwitchCase<T>> cases) {
 	public static final MapCodec<SelectSwitch<?, ?>> CODEC = SelectProperty.CODEC
-            .dispatchMap("property", s -> s.property().codec(), Function.identity());
+            .dispatchMap("property", s -> s.property().mapCodec(), Function.identity());
 	
 	public SelectSwitch(final P property, final List<SelectSwitchCase<T>> cases) {
 		this.property = Objects.requireNonNull(property, "property");
