@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.data.type.HandPreference;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.display.ItemDisplayType;
 import org.spongepowered.api.item.recipe.smithing.TrimMaterial;
 import org.spongepowered.api.registry.RegistryKey;
 import org.spongepowered.api.registry.RegistryTypes;
@@ -28,6 +29,7 @@ import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
 import net.hellheim.spongetools.custom.model.item.enums.ChargeType;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
@@ -143,10 +145,10 @@ public interface SelectProperty<T> extends MapCodecProxy<SelectSwitch<?, ?>> {
 		}
 	}
 	
-	record Display() implements SelectProperty<ItemDisplayContext> {
+	record Display() implements SelectProperty<ItemDisplayType> {
 		public static final Display INSTANCE = new Display();
 		public static final MapCodec<Display> CODEC = MapCodec.unit(INSTANCE);
-		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, ItemDisplayContext.CODEC);
+		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, StringRepresentableCodecs.ITEM_DISPLAY_TYPE);
 		
 		@Override
 		public MapCodec<? extends SelectSwitch<?, ?>> mapCodec() {

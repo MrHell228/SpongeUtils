@@ -1,5 +1,7 @@
 package net.hellheim.spongetools.custom.item;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -14,11 +16,13 @@ import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.registry.RegistryTypes;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
+import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
 import net.hellheim.spongetools.proxy.solid.item.IItemProxy;
@@ -35,16 +39,27 @@ public sealed abstract class EitherItemType
 		implements ResourceKeyed, ComponentLike, ValueContainerProxy, IconProxy, IItemProxy
 		permits EitherItemType.Common, EitherItemType.Custom {
 	
+	private static final Map<ItemType, EitherItemType> COMMON_MAP = new IdentityHashMap<>();
+	private static final Map<CustomItemType, EitherItemType> CUSTOM_MAP = new IdentityHashMap<>();
+	
 	public static final Codec<EitherItemType> CODEC = Codec
-			.either(RegistryCodecs.ITEM_TYPE, RegistryCodecs.CUSTOM_ITEM)
+			.either(RegistryCodecs.ITEM_TYPE, RegistryCodecs.CUSTOM_ITEM_TYPE)
 			.xmap(EitherItemType::of, EitherItemType::either);
+	
+	public static final DefaultedRegistryType<EitherItemType> registry() {
+		return SpongeTools.Registries.EITHER_ITEM_TYPE;
+	}
+	
+	public static Codec<EitherItemType> registryCodec() {
+		return RegistryCodecs.EITHER_ITEM_TYPE;
+	}
 	
 	public static EitherItemType common(final Supplier<? extends ItemType> type) {
 		return EitherItemType.common(type.get());
 	}
 	
 	public static EitherItemType common(final ItemType type) {
-		return new EitherItemType.Common(type);
+		return EitherItemType.COMMON_MAP.computeIfAbsent(type, EitherItemType.Common::new);
 	}
 	
 	public static EitherItemType custom(final Supplier<? extends CustomItemType> type) {
@@ -52,7 +67,7 @@ public sealed abstract class EitherItemType
 	}
 	
 	public static EitherItemType custom(final CustomItemType type) {
-		return new EitherItemType.Custom(type);
+		return EitherItemType.CUSTOM_MAP.computeIfAbsent(type, EitherItemType.Custom::new);
 	}
 	
 	public static EitherItemType of(final ItemStackLike stack) {

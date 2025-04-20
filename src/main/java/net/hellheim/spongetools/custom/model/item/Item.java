@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.codec.list.RegistryCodecs;
 
 public record Item(ItemDefinition definition, boolean handAnimationOnSwap) {
 	
@@ -26,6 +27,10 @@ public record Item(ItemDefinition definition, boolean handAnimationOnSwap) {
 	
 	public static DefaultedRegistryType<Item> registry() {
 		return SpongeTools.Registries.ITEM;
+	}
+	
+	public static Codec<Item> registryCodec() {
+		return RegistryCodecs.ITEM;
 	}
 	
 	public static Item of(final ItemDefinition definition, final boolean handAnimationOnSwap) {

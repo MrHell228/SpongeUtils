@@ -93,8 +93,8 @@ import org.spongepowered.api.event.cause.entity.DismountType;
 import org.spongepowered.api.event.cause.entity.MovementType;
 import org.spongepowered.api.event.cause.entity.SpawnType;
 import org.spongepowered.api.event.cause.entity.damage.DamageEffect;
-import org.spongepowered.api.event.cause.entity.damage.DamageModifierType;
 import org.spongepowered.api.event.cause.entity.damage.DamageScaling;
+import org.spongepowered.api.event.cause.entity.damage.DamageStepType;
 import org.spongepowered.api.event.cause.entity.damage.DamageType;
 import org.spongepowered.api.fluid.FluidType;
 import org.spongepowered.api.item.FireworkShape;
@@ -170,8 +170,14 @@ import org.spongepowered.api.world.teleport.TeleportHelperFilter;
 import org.spongepowered.api.world.weather.WeatherType;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
+import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.custom.item.CustomItemType;
+import net.hellheim.spongetools.custom.item.EitherItemType;
+import net.hellheim.spongetools.custom.item.data.CustomConsumeEffect;
+import net.hellheim.spongetools.custom.model.item.Item;
+import net.hellheim.spongetools.custom.model.item.ItemModel;
 
 /**
  * Codecs for all {@link RegistryType}s provided by SpongeAPI.
@@ -180,7 +186,15 @@ public final class RegistryCodecs {
 	
 	// SpongeToolsAPI
 	
-	public static final Codec<CustomItemType> CUSTOM_ITEM = RegistryCodecs.register(CustomItemType.class, CustomItemType.registry());
+	public static final Codec<CustomItemType> CUSTOM_ITEM_TYPE = RegistryCodecs.register(CustomItemType.class, CustomItemType.registry());
+	
+	public static final Codec<EitherItemType> EITHER_ITEM_TYPE = RegistryCodecs.register(EitherItemType.class, EitherItemType.registry());
+	
+	public static final Codec<Item> ITEM = RegistryCodecs.register(Item.class, Item.registry());
+	
+	public static final Codec<ItemModel> ITEM_MODEL = RegistryCodecs.register(ItemModel.class, ItemModel.registry());
+	
+	public static final Codec<MapCodec<? extends CustomConsumeEffect>> CUSTOM_CONSUME_EFFECT_TYPE = RegistryCodecs.of(SpongeTools.Registries.CONSUME_EFFECT_TYPE);
 	
 	// SpongeAPI
 	
@@ -324,7 +338,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<Currency> CURRENCY = RegistryCodecs.register(Currency.class, RegistryTypes.CURRENCY);
 	
-	public static final Codec<DamageModifierType> DAMAGE_MODIFIER_TYPE = RegistryCodecs.register(DamageModifierType.class, RegistryTypes.DAMAGE_MODIFIER_TYPE);
+	public static final Codec<DamageStepType> DAMAGE_STEP_TYPE = RegistryCodecs.register(DamageStepType.class, RegistryTypes.DAMAGE_STEP_TYPE);
 	
 	public static final Codec<DamageType> DAMAGE_TYPE = RegistryCodecs.register(DamageType.class, RegistryTypes.DAMAGE_TYPE);
 	
@@ -508,7 +522,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<WeatherType> WEATHER_TYPE = RegistryCodecs.register(WeatherType.class, RegistryTypes.WEATHER_TYPE);
 	
-	public static final Codec<WolfVariant> WOLF_VARIANT = RegistryCodecs.register(WolfVariant.class, RegistryTypes.WOLF_VAIRANT);
+	public static final Codec<WolfVariant> WOLF_VARIANT = RegistryCodecs.register(WolfVariant.class, RegistryTypes.WOLF_VARIANT);
 	
 	public static final Codec<WorldArchetypeType> WORLD_ARCHETYPE_TYPE = RegistryCodecs.register(WorldArchetypeType.class, RegistryTypes.WORLD_ARCHETYPE_TYPE);
 	

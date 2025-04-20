@@ -19,7 +19,10 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
+import com.mojang.serialization.Codec;
+
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.custom.model.item.Item;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.kyori.adventure.text.ComponentLike;
@@ -33,19 +36,23 @@ public interface CustomItemType extends
 		ItemStackSnapshotProxy {
 	
 	static DefaultedRegistryType<CustomItemType> registry() {
-		return SpongeTools.Registries.CUSTOM_ITEM;
+		return SpongeTools.Registries.CUSTOM_ITEM_TYPE;
+	}
+	
+	static Codec<CustomItemType> registryCodec() {
+		return RegistryCodecs.CUSTOM_ITEM_TYPE;
 	}
 	
 	static Key<Value<CustomItemType>> dataKey() {
-		return SpongeTools.Keys.CUSTOM_ITEM;
+		return SpongeTools.Keys.ITEM_TYPE;
 	}
 	
 	static DataQuery dataQuery() {
-		return SpongeTools.Queries.CUSTOM_ITEM;
+		return SpongeTools.Queries.ITEM_TYPE;
 	}
 	
 	static int dataVersion() {
-		return SpongeTools.Versions.CUSTOM_ITEM;
+		return SpongeTools.Versions.ITEM_TYPE;
 	}
 	
 	static DataBuilder dataBuilder() {

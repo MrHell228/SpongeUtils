@@ -16,14 +16,15 @@ import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.codec.list.AdventureCodecs;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
-import net.hellheim.spongetools.proxy.solid.codec.CodecProxy;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 import net.kyori.adventure.text.Component;
 
-public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSectionLike {
+public interface MetadataSection extends MapCodecProxy<MetadataSection>, MetadataSectionLike {
 	
 	BiMap<String, Codec<? extends MetadataSection>> ID_MAPPER = HashBiMap.create();
 	
@@ -32,7 +33,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 	Codec<List<MetadataSection>> LIST_CODEC = MAP_CODEC.xmap(
 			map -> List.<MetadataSection>copyOf(map.values()),
 			list -> list.stream().collect(Collectors.toUnmodifiableMap(
-					section -> ID_MAPPER.inverse().get(section.codec()),
+					section -> ID_MAPPER.inverse().get(section.mapCodec().codec()),
 					Function.identity()
 					))
 			);
@@ -94,7 +95,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 							: DataResult.error(() -> "min_inclusive must be less than or equal to max_inclusive");
 				},
 				Pair::getFirst, Pair::getSecond);
-		public static final Codec<Pack> CODEC = RecordCodecBuilder.create(
+		public static final MapCodec<Pack> CODEC = RecordCodecBuilder.mapCodec(
 				p_337567_ -> p_337567_.group(
 						AdventureCodecs.COMPONENT.fieldOf("description").forGetter(Pack::description),
 						Codec.INT.fieldOf("pack_format").forGetter(Pack::format),
@@ -108,14 +109,14 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 		}
 		
 		@Override
-		public Codec<? extends MetadataSection> codec() {
+		public MapCodec<? extends MetadataSection> mapCodec() {
 			return CODEC;
 		}
 	}
 	
 	record Villager(VillagerHat hat) implements MetadataSection {
 		
-		public static final Codec<Villager> CODEC = RecordCodecBuilder.create(
+		public static final MapCodec<Villager> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
 						VillagerHat.CODEC.optionalFieldOf("hat", VillagerHat.NONE).forGetter(Villager::hat)
 						).apply(instance, Villager::new));
@@ -125,14 +126,14 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 		}
 		
 		@Override
-		public Codec<? extends MetadataSection> codec() {
+		public MapCodec<? extends MetadataSection> mapCodec() {
 			return CODEC;
 		}
 	}
 	
 	record Gui(GuiScaling scaling) implements MetadataSection {
 		
-		public static final Codec<Gui> CODEC = RecordCodecBuilder.create(
+		public static final MapCodec<Gui> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
 						GuiScaling.CODEC.optionalFieldOf("scaling", GuiScaling.DEFAULT).forGetter(Gui::scaling)
 						).apply(instance, Gui::new)
@@ -143,7 +144,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 		}
 		
 		@Override
-		public Codec<? extends MetadataSection> codec() {
+		public MapCodec<? extends MetadataSection> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -152,7 +153,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 	    
 		public static final boolean DEFAULT_BLUR = false;
 		public static final boolean DEFAULT_CLAMP = false;
-		public static final Codec<Texture> CODEC = RecordCodecBuilder.create(
+		public static final MapCodec<Texture> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
 						Codec.BOOL.optionalFieldOf("blur", Texture.DEFAULT_BLUR).forGetter(Texture::blur),
 						Codec.BOOL.optionalFieldOf("clamp", Texture.DEFAULT_CLAMP).forGetter(Texture::clamp)
@@ -164,7 +165,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 		}
 		
 		@Override
-		public Codec<? extends MetadataSection> codec() {
+		public MapCodec<? extends MetadataSection> mapCodec() {
 			return CODEC;
 		}
 	}
@@ -177,7 +178,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 		
 		public static final int DEFAULT_FRAME_TIME = 1;
 		public static final boolean DEFAULT_INTERPOLATE = false;
-		public static final Codec<Animation> CODEC = RecordCodecBuilder.create(
+		public static final MapCodec<Animation> CODEC = RecordCodecBuilder.mapCodec(
 				instance -> instance.group(
 						ExtraCodecs.POSITIVE_INT.optionalFieldOf("width").forGetter(Animation::width),
 						ExtraCodecs.POSITIVE_INT.optionalFieldOf("height").forGetter(Animation::height),
@@ -218,7 +219,7 @@ public interface MetadataSection extends CodecProxy<MetadataSection>, MetadataSe
 		}
 		
 		@Override
-		public Codec<? extends MetadataSection> codec() {
+		public MapCodec<? extends MetadataSection> mapCodec() {
 			return CODEC;
 		}
 		

@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.custom.model.ModelTemplate;
 import net.hellheim.spongetools.custom.model.TexturedModel;
 import net.hellheim.spongetools.custom.model.Textures;
@@ -33,6 +34,10 @@ public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight gu
 	
 	public static DefaultedRegistryType<ItemModel> registry() {
 		return SpongeTools.Registries.ITEM_MODEL;
+	}
+	
+	public static Codec<ItemModel> registryCodec() {
+		return RegistryCodecs.ITEM_MODEL;
 	}
 	
 	public static ItemModel of(final ModelTemplate parent, final Textures textures) {

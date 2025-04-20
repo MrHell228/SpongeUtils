@@ -7,7 +7,7 @@ import org.spongepowered.api.data.DataManipulator;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.value.Value;
 
-public class ValueSetBuilder implements DataHolderBuilder<ValueSetBuilder> {
+public class ValueSetBuilder implements DataOperator<ValueSetBuilder> {
 	
 	protected final Set<Value<?>> values = new HashSet<>();
 	

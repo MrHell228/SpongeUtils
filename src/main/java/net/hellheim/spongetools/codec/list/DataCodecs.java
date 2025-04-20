@@ -14,14 +14,23 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.persistence.DataBuilder;
 import org.spongepowered.api.data.persistence.DataContainer;
+import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.data.persistence.DataSerializable;
+import org.spongepowered.api.data.persistence.DataView;
 import org.spongepowered.api.data.persistence.InvalidDataException;
 import org.spongepowered.api.data.persistence.StringDataFormat;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.data.value.ValueContainer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 
 /**
  * Codecs for SpongeAPI's DataAPI types
@@ -104,7 +113,7 @@ public final class DataCodecs {
 				}
 				
 				return DataResult.success(value.get());
-			} catch (InvalidDataException e) {
+			} catch (final InvalidDataException e) {
 				return DataResult.error(e::toString);
 			}
 		}, DataSerializable::toContainer);
@@ -115,21 +124,62 @@ public final class DataCodecs {
 	}
 	
 	public static Codec<DataContainer> container(final StringDataFormat format) {
+		return DataCodecs.CONTAINERS.computeIfAbsent(format, f -> DataCodecs.container(Codec.STRING, format));
+	}
+	
+	public static Codec<DataContainer> container(final Codec<String> stringCodec, final Supplier<? extends StringDataFormat> format) {
+		return DataCodecs.container(stringCodec, format.get());
+	}
+	
+	public static Codec<DataContainer> container(final Codec<String> stringCodec, final StringDataFormat format) {
 		return DataCodecs.CONTAINERS.computeIfAbsent(format, f -> {
-			return Codec.STRING.flatXmap(string -> {
+			return stringCodec.flatXmap(string -> {
 				try {
 					return DataResult.success(f.read(string));
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					return DataResult.error(e::toString);
 				}
 			}, container -> {
 				try {
 					return DataResult.success(f.write(container));
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					return DataResult.error(e::toString);
 				}
 			});
 		});
+	}
+	
+	private static final Gson GSON = new GsonBuilder().create();
+	public static <T> DataContainer toContainer(final Codec<? super T> codec, final T value) {
+		final DataResult<JsonElement> encoded = codec.encodeStart(JsonOps.INSTANCE, value);
+		final JsonElement json = encoded.getOrThrow(IllegalArgumentException::new);
+		final String str = GSON.toJson(json);
+		try {
+			return DataFormats.JSON.get().read(str);
+		} catch (final IOException | InvalidDataException e) {
+			// Should never happen
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static <T> T fromContainer(final Codec<T> codec, final DataView container) throws InvalidDataException {
+		try {
+			final String str = DataFormats.JSON.get().write(container);
+			final JsonElement json = JsonParser.parseString(str);
+			final DataResult<T> decoded = codec.decode(JsonOps.INSTANCE, json).map(Pair::getFirst);
+			return decoded.getOrThrow(InvalidDataException::new);
+		} catch (final IOException | JsonParseException e) {
+			throw new InvalidDataException(e);
+		}
+	}
+	
+	public static <T extends DataSerializable> DataBuilder<T> dataBuilder(final Codec<T> codec) {
+		return new DataBuilder<>() {
+			@Override
+			public Optional<T> build(final DataView container) throws InvalidDataException {
+				return Optional.of(DataCodecs.fromContainer(codec, container));
+			}
+		};
 	}
 	
 	private static <E, V extends Value<E>> Value.Immutable<E> entryToValue(

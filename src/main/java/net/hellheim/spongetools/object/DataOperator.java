@@ -6,7 +6,7 @@ import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.data.value.ValueContainer;
 
-public interface DataHolderBuilder<B extends DataHolderBuilder<B>> {
+public interface DataOperator<B extends DataOperator<B>> {
 	
 	/**
 	 * Adds all the {@link Value}s from the {@link ValueContainer} to the builder.

@@ -62,7 +62,7 @@ public class CustomItemTypeProperties implements
 	protected CustomItemTypeProperties(final Builder builder) {
 		builder.validate();
 		this.key = builder.key;
-		this.base = builder.base.asDefaultedReference(Sponge::server);
+		this.base = builder.base.asScopedReference();
 		this.model = Optional.ofNullable(builder.model);
 		
 		this.name = TranslationUtil.item(this.key);
