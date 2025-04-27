@@ -2,7 +2,7 @@ package net.hellheim.spongetools.custom.block;
 
 import java.util.Objects;
 
-import net.hellheim.spongetools.custom.behaviour.block.state.BlockStateExtension;
+import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 
 public class DefaultedCustomBlockType implements CustomBlockType {
 	

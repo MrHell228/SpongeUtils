@@ -25,7 +25,7 @@ public interface BehaviourHolder {
 	 * @param type The type of the behaviour
 	 * @return The behaviour, if present
 	 */
-	default <B extends Behaviour> Optional<B> get(final BehaviourType<B> type) {
+	default <B extends Behaviour<?, ?>> Optional<B> get(final BehaviourType<B> type) {
 		return BehaviourManager.get().get(this.unwrap(), type);
 	}
 	
@@ -37,7 +37,7 @@ public interface BehaviourHolder {
 	 * @return The behaviour
 	 * @throws NoSuchElementException if the type is not present on this {@link BehaviourHolder}
 	 */
-	default <B extends Behaviour> B require(final BehaviourType<B> type) {
+	default <B extends Behaviour<?, ?>> B require(final BehaviourType<B> type) {
 		return this.get(type).orElseThrow(() -> new NoSuchElementException(String.format(
 				"No behaviour of type %s is present for holder %s",
 				type, this.unwrap()

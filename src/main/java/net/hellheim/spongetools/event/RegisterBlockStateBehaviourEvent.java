@@ -1,7 +1,6 @@
 package net.hellheim.spongetools.event;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -11,9 +10,8 @@ import org.spongepowered.api.event.lifecycle.LifecycleEvent;
 
 import com.google.common.collect.Streams;
 
-import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
-import net.hellheim.spongetools.custom.behaviour.BehaviourType;
-import net.hellheim.spongetools.custom.behaviour.block.state.BlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.ModifiableBehaviour;
+import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 
 public interface RegisterBlockStateBehaviourEvent extends LifecycleEvent {
 	
@@ -83,63 +81,6 @@ public interface RegisterBlockStateBehaviourEvent extends LifecycleEvent {
 	}
 	
 	
-	interface BehaviourStep {
-		
-		BehaviourManager manager();
-		
-		<C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void append(BehaviourType<B> type, C callback);
-		
-		<C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void prepend(BehaviourType<B> type, C callback);
-		
-		<C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void set(BehaviourType<B> type, C callback);
-		
-		default <C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void appendBefore(
-			final BehaviourType<B> type, final B behaviour
-		) {
-			Objects.requireNonNull(behaviour, "behaviour");
-			this.append(type, this.manager().callbackConverterBefore(type).apply(behaviour));
-		}
-		
-		default <C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void appendAfter(
-			final BehaviourType<B> type, final B behaviour
-		) {
-			Objects.requireNonNull(behaviour, "behaviour");
-			this.append(type, this.manager().callbackConverterAfter(type).apply(behaviour));
-		}
-		
-		default <C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void prependBefore(
-			final BehaviourType<B> type, final B behaviour
-		) {
-			Objects.requireNonNull(behaviour, "behaviour");
-			this.prepend(type, this.manager().callbackConverterBefore(type).apply(behaviour));
-		}
-		
-		default <C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void prependAfter(
-			final BehaviourType<B> type, final B behaviour
-		) {
-			Objects.requireNonNull(behaviour, "behaviour");
-			this.prepend(type, this.manager().callbackConverterAfter(type).apply(behaviour));
-		}
-		
-		default <C extends BlockStateBehaviour.Callback<?>, B extends BlockStateBehaviour<C>> void setBehaviour(
-			final BehaviourType<B> type, final B behaviour
-		) {
-			Objects.requireNonNull(behaviour, "behaviour");
-			this.set(type, this.manager().callbackConverter(type).apply(behaviour));
-		}
-		
-		default <R, C extends BlockStateBehaviour.Callback<R>, B extends BlockStateBehaviour<C>> void set(
-			final BehaviourType<B> type, final R value
-		) {
-			Objects.requireNonNull(value, "value");
-			this.set(type, this.manager().callbackProvider(type).apply(value));
-		}
-		
-		default <R, C extends BlockStateBehaviour.Callback<R>, B extends BlockStateBehaviour<C>> void set(
-			final BehaviourType<B> type, final Supplier<? extends R> valueSupplier
-		) {
-			Objects.requireNonNull(valueSupplier, "valueSupplier");
-			this.set(type, valueSupplier.get());
-		}
+	interface BehaviourStep extends ModifiableBehaviour<BlockStateExtension> {
 	}
 }

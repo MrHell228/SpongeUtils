@@ -5,35 +5,25 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
 
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
-import net.hellheim.spongetools.custom.behaviour.block.state.AnalogSignalPowerBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.BlockStateExtension;
-import net.hellheim.spongetools.custom.behaviour.block.state.MapColorBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.PushReactionBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.ReplaceBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.ShapeUpdateBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.SignalConductorBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.SignalPowerBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.SignalUpdateBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.SpawnValidatorBlockStateBehaviour;
-import net.hellheim.spongetools.custom.behaviour.block.state.TickBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.*;
 
 public final class BlockStateBehaviours {
 	
-	public static final BehaviourType<SpawnValidatorBlockStateBehaviour> SPAWN_VALIDATOR = BehaviourType.create();
+	public static final BehaviourType<SpawnValidator> SPAWN_VALIDATOR = BehaviourType.create();
 	
-	public static final BehaviourType<MapColorBlockStateBehaviour> MAP_COLOR = BehaviourType.create();
+	public static final BehaviourType<MapColor> MAP_COLOR = BehaviourType.create();
 	
 	/**
 	 * Used by {@link BlockTypes#PISTON} and {@link BlockTypes#STICKY_PISTON}.
 	 */
-	public static final BehaviourType<PushReactionBlockStateBehaviour> PUSH_REACTION = BehaviourType.create();
+	public static final BehaviourType<PistonPushReaction> PUSH_REACTION = BehaviourType.create();
 	
-	public static final BehaviourType<SignalConductorBlockStateBehaviour> SIGNAL_CONDUCTOR = BehaviourType.create();
+	public static final BehaviourType<SignalConductor> SIGNAL_CONDUCTOR = BehaviourType.create();
 	
 	/**
 	 * Signal that will power neighbour blocks.
 	 */
-	public static final BehaviourType<SignalPowerBlockStateBehaviour> SIGNAL_POWER = BehaviourType.create();
+	public static final BehaviourType<SignalPower> SIGNAL_POWER = BehaviourType.create();
 	
 	/**
 	 * Signal that will go through neighbour blocks. <br>
@@ -44,31 +34,31 @@ public final class BlockStateBehaviours {
 	 * 
 	 * Used by {@link BlockTypes#REPEATER} (horizontally) and other redstone-related blocks (upwards).
 	 */
-	public static final BehaviourType<SignalPowerBlockStateBehaviour> DIRECT_SIGNAL_POWER = BehaviourType.create();
+	public static final BehaviourType<SignalPower> DIRECT_SIGNAL_POWER = BehaviourType.create();
 	
 	/**
 	 * Result of this behaviour is usually used by {@link BlockTypes#COMPARATOR}.
 	 */
-	public static final BehaviourType<AnalogSignalPowerBlockStateBehaviour> ANALOG_SIGNAL_POWER = BehaviourType.create();
+	public static final BehaviourType<AnalogSignalPower> ANALOG_SIGNAL_POWER = BehaviourType.create();
 	
 	/**
 	 * Adding this behaviour doesn't make block ticking "naturally". <br>
 	 * Ticks must be scheduled through {@link UpdatableVolume#scheduledBlockUpdates()}. <br>
 	 * For example, ticks could be scheduled in {@link #PLACE}, {@link #SHAPE_UPDATE} or in {@link #TICK} itself.
 	 */
-	public static final BehaviourType<TickBlockStateBehaviour> TICK = BehaviourType.create();
+	public static final BehaviourType<Tick> TICK = BehaviourType.create();
 	
-	public static final BehaviourType<TickBlockStateBehaviour> RANDOM_TICK = BehaviourType.create();
+	public static final BehaviourType<Tick> RANDOM_TICK = BehaviourType.create();
 	
 	/**
 	 * Called when {@link BlockState} enters the world.
 	 */
-	public static final BehaviourType<ReplaceBlockStateBehaviour> PLACE = BehaviourType.create();
+	public static final BehaviourType<Replace> PLACE = BehaviourType.create();
 	
 	/**
 	 * Called when {@link BlockState} leaves the world.
 	 */
-	public static final BehaviourType<ReplaceBlockStateBehaviour> REMOVE = BehaviourType.create();
+	public static final BehaviourType<Replace> REMOVE = BehaviourType.create();
 	
 	/**
 	 * Called when neighbour {@link BlockState}s are changed. <br>
@@ -78,7 +68,7 @@ public final class BlockStateBehaviours {
 	 * 
 	 * @see #SIGNAL_UPDATE
 	 */
-	public static final BehaviourType<ShapeUpdateBlockStateBehaviour> SHAPE_UPDATE = BehaviourType.create();
+	public static final BehaviourType<ShapeUpdate> SHAPE_UPDATE = BehaviourType.create();
 	
 	/**
 	 * Called when neighbour {@link BlockState}s are changed (mostly due to signal changes). <br>
@@ -86,7 +76,7 @@ public final class BlockStateBehaviours {
 	 * 
 	 * @see #SHAPE_UPDATE
 	 */
-	public static final BehaviourType<SignalUpdateBlockStateBehaviour> SIGNAL_UPDATE = BehaviourType.create();
+	public static final BehaviourType<SignalUpdate> SIGNAL_UPDATE = BehaviourType.create();
 	
 	private BlockStateBehaviours() {
 	}

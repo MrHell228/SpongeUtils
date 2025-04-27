@@ -6,10 +6,9 @@ package net.hellheim.spongetools.custom.behaviour;
  * @param <H> Behaviour holder
  * @param <R> Return type
  * @param <A> Behaviour arguments
- * @param <B> Behaviour
  */
 @FunctionalInterface
-public interface BehaviourCallback<H, R, A extends BehaviourArgs, B extends Behaviour<H, R, A>> {
+public interface BehaviourCallback<H, R, A extends BehaviourArgs> {
 	
-	R call(H holder, B origin, A args);
+	R call(H holder, Behaviour<R, A> origin, A args);
 }

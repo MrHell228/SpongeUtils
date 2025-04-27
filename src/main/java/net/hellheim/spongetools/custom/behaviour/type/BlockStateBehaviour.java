@@ -1,101 +1,233 @@
 package net.hellheim.spongetools.custom.behaviour.type;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.data.type.PushReaction;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.RandomProvider;
+import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.api.world.volume.game.PrimitiveGameVolume;
+import org.spongepowered.api.world.volume.game.Region;
+import org.spongepowered.api.world.volume.game.UpdatableVolume;
 import org.spongepowered.math.vector.Vector3i;
 
 import net.hellheim.spongetools.custom.behaviour.Behaviour;
 import net.hellheim.spongetools.custom.behaviour.BehaviourArgs;
-import net.hellheim.spongetools.custom.behaviour.block.state.BlockStateExtension;
+import net.hellheim.spongetools.custom.behaviour.world.SignalOrientation;
 
-public interface BlockStateBehaviour<R, A extends BehaviourArgs> extends Behaviour<BlockStateExtension, R, A> {
+public interface BlockStateBehaviour<R, A extends BehaviourArgs> extends Behaviour<R, A> {
 	
 	interface SpawnValidator extends BlockStateBehaviour<Boolean, SpawnValidator.Args> {
 		
-		default boolean call(final PrimitiveGameVolume volume, final Vector3i position, final EntityType<?> entity) {
-			return this.call(new Args(volume, position, entity));
+		@Override
+		default Boolean call(final Args args) {
+			return this.call(args.volume(), args.position(), args.entity());
 		}
 		
-		record Args(PrimitiveGameVolume volume, Vector3i position, EntityType<?> entity) implements BehaviourArgs {
+		boolean call(PrimitiveGameVolume volume, Vector3i position, EntityType<?> entity);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<PrimitiveGameVolume, Args>,
+				BehaviourArgs.Positional<Args> {
 			
-			public Args(final PrimitiveGameVolume volume, final Vector3i position, final EntityType<?> entity) {
-				this.volume = Objects.requireNonNull(volume, "volume");
-				this.position = Objects.requireNonNull(position, "position");
-				this.entity = Objects.requireNonNull(entity, "entity");
-			}
+			EntityType<?> entity();
 			
-			public Args withVolume(final PrimitiveGameVolume volume) {
-				return new Args(volume, this.position, this.entity);
-			}
-			
-			public Args withPosition(final Vector3i position) {
-				return new Args(this.volume, position, this.entity);
-			}
-			
-			public Args withEntity(final EntityType<?> entity) {
-				return new Args(this.volume, this.position, entity);
-			}
+			Args withEntity(EntityType<?> entity);
+		}
+	}
+	
+	interface MapColor extends BlockStateBehaviour<MapColorType, MapColor.Args> {
+		
+		@Override
+		default MapColorType call(final Args args) {
+			return this.call(args.volume(), args.position());
+		}
+		
+		MapColorType call(PrimitiveGameVolume volume, Vector3i position);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<PrimitiveGameVolume, Args>,
+				BehaviourArgs.Positional<Args> {
+		}
+	}
+	
+	interface PistonPushReaction extends BlockStateBehaviour<PushReaction, BehaviourArgs> {
+		
+		@Override
+		default PushReaction call(final BehaviourArgs args) {
+			return this.call();
+		}
+		
+		PushReaction call();
+	}
+	
+	interface SignalConductor extends BlockStateBehaviour<Boolean, SignalConductor.Args> {
+		
+		@Override
+		default Boolean call(final Args args) {
+			return this.call(args.volume(), args.position());
+		}
+		
+		boolean call(PrimitiveGameVolume volume, Vector3i position);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<PrimitiveGameVolume, Args>,
+				BehaviourArgs.Positional<Args> {
 		}
 	}
 	
 	interface SignalPower extends BlockStateBehaviour<Integer, SignalPower.Args> {
 		
-		default int call(final PrimitiveGameVolume volume, final Vector3i position, final Direction direction) {
-			return this.call(new Args(volume, position, direction));
+		@Override
+		default Integer call(final Args args) {
+			return this.call(args.volume(), args.position(), args.direction());
 		}
 		
-		record Args(PrimitiveGameVolume volume, Vector3i position, Direction direction) implements BehaviourArgs {
-			
-			public Args(final PrimitiveGameVolume volume, final Vector3i position, final Direction direction) {
-				this.volume = Objects.requireNonNull(volume, "volume");
-				this.position = Objects.requireNonNull(position, "position");
-				this.direction = Objects.requireNonNull(direction, "direction");
-			}
-			
-			public Args withVolume(final PrimitiveGameVolume volume) {
-				return new Args(volume, this.position, this.direction);
-			}
-			
-			public Args withPosition(final Vector3i position) {
-				return new Args(this.volume, position, this.direction);
-			}
-			
-			public Args withDirection(final Direction direction) {
-				return new Args(this.volume, this.position, direction);
-			}
+		int call(PrimitiveGameVolume volume, Vector3i position, Direction direction);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<PrimitiveGameVolume, Args>,
+				BehaviourArgs.Positional<Args>,
+				BehaviourArgs.Directional<Args> {
+		}
+	}
+	
+	interface AnalogSignalPower extends BlockStateBehaviour<Integer, AnalogSignalPower.Args> {
+		
+		@Override
+		default Integer call(final Args args) {
+			return this.call(args.volume(), args.position());
+		}
+		
+		int call(World<?, ?> volume, Vector3i position);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<World<?, ?>, Args>,
+				BehaviourArgs.Positional<Args> {
 		}
 	}
 	
 	interface Tick extends BlockStateBehaviour<Void, Tick.Args> {
 		
-		default void call(final ServerWorld world, final Vector3i position, final RandomProvider.Source random) {
-			this.call(new Args(world, position, random));
+		@Override
+		default Void call(final Args args) {
+			this.call(args.volume(), args.position(), args.random());
+			return null;
 		}
 		
-		record Args(ServerWorld world, Vector3i position, RandomProvider.Source random) implements BehaviourArgs {
+		void call(ServerWorld world, Vector3i position, RandomProvider.Source random);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<ServerWorld, Args>,
+				BehaviourArgs.Positional<Args>,
+				BehaviourArgs.Randomized<Args> {
+		}
+	}
+	
+	interface Replace extends BlockStateBehaviour<Void, Replace.Args> {
+		
+		@Override
+		default Void call(final Args args) {
+			this.call(args.volume(), args.position(), args.otherState(), args.movedByPiston());
+			return null;
+		}
+		
+		void call(World<?, ?> world, Vector3i position, BlockState otherState, boolean movedByPiston);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<World<?, ?>, Args>,
+				BehaviourArgs.Positional<Args> {
 			
-			public Args(final ServerWorld world, final Vector3i position, final RandomProvider.Source random) {
-				this.world = Objects.requireNonNull(world, "world");
-				this.position = Objects.requireNonNull(position, "position");
-				this.random = Objects.requireNonNull(random, "random");
+			BlockState otherState();
+			
+			boolean movedByPiston();
+			
+			Args withOtherState(BlockState otherState);
+			
+			Args withMovedByPiston(boolean movedByPiston);
+		}
+	}
+	
+	interface ShapeUpdate extends BlockStateBehaviour<BlockState, ShapeUpdate.Args> {
+		
+		@Override
+		default BlockState call(final Args args) {
+			return this.call(args.volume(), args.updates(), args.position(), args.direction(), args.neighbourPosition(), args.neighbourState(), args.random());
+		}
+		
+		BlockState call(
+			Region<?> volume, UpdatableVolume updates, Vector3i position,
+			Direction direction, Vector3i neighbourPosition, BlockState neighbourState,
+			RandomProvider.Source random
+		);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<Region<?>, Args>,
+				BehaviourArgs.Positional<Args>,
+				BehaviourArgs.Directional<Args>,
+				BehaviourArgs.Randomized<Args> {
+			
+			UpdatableVolume updates();
+			
+			Vector3i neighbourPosition();
+			
+			BlockState neighbourState();
+			
+			Args withUpdates(UpdatableVolume updates);
+			
+			Args withNeighbourPosition(Vector3i neighbourPosition);
+			
+			Args withNeighbourState(BlockState neighbourState);
+		}
+	}
+	
+	interface SignalUpdate extends BlockStateBehaviour<Void, SignalUpdate.Args> {
+		
+		@Override
+		default Void call(final Args args) {
+			this.call(args.volume(), args.position(), args.notifier(), args.orientation(), args.movedByPiston());
+			return null;
+		}
+		
+		void call(
+			World<?, ?> volume, Vector3i position, BlockType notifier,
+			Optional<SignalOrientation> orientation, boolean movedByPiston
+		);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<World<?, ?>, Args>,
+				BehaviourArgs.Positional<Args> {
+			
+			BlockType notifier();
+			
+			Optional<SignalOrientation> orientation();
+			
+			boolean movedByPiston();
+			
+			Args withNotifier(BlockType notifier);
+			
+			default Args withNotifier(Supplier<? extends BlockType> notifierSupplier) {
+				return this.withNotifier(Objects.requireNonNull(notifierSupplier, "notifierSupplier").get());
 			}
 			
-			public Args withWorld(final ServerWorld world) {
-				return new Args(world, this.position, this.random);
+			Args withOrientation(Optional<SignalOrientation> orientation);
+			
+			default Args withOrientation(final SignalOrientation orientation) {
+				return this.withOrientation(Optional.of(Objects.requireNonNull(orientation, "orientation")));
 			}
 			
-			public Args withPosition(final Vector3i position) {
-				return new Args(this.world, position, this.random);
+			default Args withoutOrientation() {
+				return this.withOrientation(Optional.empty());
 			}
 			
-			public Args withRandom(final RandomProvider.Source random) {
-				return new Args(this.world, this.position, random);
-			}
+			Args withMovedByPiston(boolean movedByPiston);
 		}
 	}
 }

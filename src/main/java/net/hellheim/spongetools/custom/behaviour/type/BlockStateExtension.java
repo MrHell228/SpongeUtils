@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.behaviour.block.state;
+package net.hellheim.spongetools.custom.behaviour.type;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
