@@ -14,13 +14,13 @@ public interface BehaviourManager {
 	
 	<H> boolean supports(H holder, BehaviourType<?> type);
 	
-	<H, B extends Behaviour> Optional<B> get(H holder, BehaviourType<B> type);
+	<H, B extends Behaviour<?, ?>> Optional<B> get(H holder, BehaviourType<B> type);
 	
 	<H> BehaviourRegistration<H> create(Class<H> holder);
 	
 	interface BehaviourRegistration<H> {
 		
-		<B extends Behaviour> BehaviourRegistration<H> register(
+		<B extends Behaviour<?, ?>> BehaviourRegistration<H> register(
 			BehaviourType<B> type, Function<H, @Nullable B> behaviourProvider
 		);
 	}

@@ -25,11 +25,7 @@ public interface ModifiableBehaviour<H> {
 	 * @param type The behaviour type
 	 * @return The current behaviour callback for the given type, if present
 	 */
-	<A extends BehaviourArgs> Optional<BehaviourCallback.Action<H, A>> getAction(BehaviourType<? extends Behaviour.Action<A>> type);
-	
-	<R, A extends BehaviourArgs> Optional<BehaviourCallback.Product<H, R, A>> getProduct(BehaviourType<? extends Behaviour.Product<R, A>> type);
-	
-	<A extends BehaviourArgs> ModifiableBehaviour<H> set(BehaviourType<? extends Behaviour.Action<A>> type, BehaviourCallback.Action<H, A> callback);
+	<R, A extends BehaviourArgs> Optional<BehaviourCallback<H, R, A>> get(BehaviourType<? extends Behaviour<R, A>> type);
 	
 	/**
 	 * Sets the given behaviour callback for the given type. <br>
@@ -41,20 +37,23 @@ public interface ModifiableBehaviour<H> {
 	 * @param callback The behaviour callback
 	 * @return This modifiable behaviour, for chaining
 	 */
-	<R, A extends BehaviourArgs> ModifiableBehaviour<H> set(BehaviourType<? extends Behaviour.Product<R, A>> type, BehaviourCallback.Product<H, R, A> callback);
-	
-	default <A extends BehaviourArgs, B extends Behaviour.Action<A>> ModifiableBehaviour<H> set(
-		final BehaviourType<? extends Behaviour.Action<A>> type, final Behaviour.Action<A> behaviour
-	) {
-		Objects.requireNonNull(behaviour, "behaviour");
-		return this.set(type, (holder, origin, args) -> behaviour.call(args));
-	}
+	<R, A extends BehaviourArgs> ModifiableBehaviour<H> set(BehaviourType<? extends Behaviour<R, A>> type, BehaviourCallback<H, R, A> callback);
 	
 	default <R, A extends BehaviourArgs> ModifiableBehaviour<H> set(
-		final BehaviourType<? extends Behaviour.Product<R, A>> type, final Behaviour.Product<R, A> behaviour
+		final BehaviourType<? extends Behaviour<R, A>> type, final Function<A, R> behaviour
 	) {
 		Objects.requireNonNull(behaviour, "behaviour");
-		return this.set(type, (holder, origin, args) -> behaviour.call(args));
+		return this.set(type, (holder, origin, args) -> behaviour.apply(args));
+	}
+	
+	default <A extends BehaviourArgs> ModifiableBehaviour<H> set(
+		final BehaviourType<? extends Behaviour<Void, A>> type, final Consumer<A> behaviour
+	) {
+		Objects.requireNonNull(behaviour, "behaviour");
+		return this.set(type, (holder, origin, args) -> {
+			behaviour.accept(args);
+			return null;
+		});
 	}
 	
 	/**
@@ -67,7 +66,7 @@ public interface ModifiableBehaviour<H> {
 	 * @return This modifiable behaviour, for chaining
 	 */
 	default <R, A extends BehaviourArgs> ModifiableBehaviour<H> setValue(
-		final BehaviourType<? extends Behaviour.Product<R, A>> type, final R value
+		final BehaviourType<? extends Behaviour<R, A>> type, final R value
 	) {
 		Objects.requireNonNull(value, "value");
 		return this.set(type, (holder, origin, args) -> value);
@@ -83,10 +82,17 @@ public interface ModifiableBehaviour<H> {
 	 * @return This modifiable behaviour, for chaining
 	 */
 	default <R, A extends BehaviourArgs> ModifiableBehaviour<H> setValue(
-		final BehaviourType<? extends Behaviour.Product<R, A>> type, final Supplier<? extends R> valueSupplier
+		final BehaviourType<? extends Behaviour<R, A>> type, final Supplier<? extends R> valueSupplier
 	) {
 		Objects.requireNonNull(valueSupplier, "valueSupplier");
 		return this.setValue(type, valueSupplier.get());
+	}
+	
+	default <R, A extends BehaviourArgs, B extends Behaviour<R, A>> ModifiableBehaviour<H> setBehaviour(
+		final BehaviourType<B> type, final B behaviour
+	) {
+		Objects.requireNonNull(behaviour, "behaviour");
+		return this.set(type, (holder, origin, args) -> behaviour.call(args));
 	}
 	
 	/**
@@ -100,22 +106,12 @@ public interface ModifiableBehaviour<H> {
 	 * @param callback The behaviour callback
 	 * @return This modifiable behaviour, for chaining
 	 */
-	default <A extends BehaviourArgs> ModifiableBehaviour<H> append(
-		final BehaviourType<? extends Behaviour.Action<A>> type, final BehaviourCallback.Action<H, A> callback
-	) {
-		Objects.requireNonNull(callback, "callback");
-		return this.set(type, this.getAction(type)
-				.<BehaviourCallback.Action<H, A>>map(old -> (holder, origin, args) ->
-						callback.call(holder, (newArgs) -> old.call(holder, origin, newArgs), args))
-				.orElse(callback));
-	}
-	
 	default <R, A extends BehaviourArgs> ModifiableBehaviour<H> append(
-		final BehaviourType<? extends Behaviour.Product<R, A>> type, final BehaviourCallback.Product<H, R, A> callback
+		final BehaviourType<? extends Behaviour<R, A>> type, final BehaviourCallback<H, R, A> callback
 	) {
 		Objects.requireNonNull(callback, "callback");
-		return this.set(type, this.getProduct(type)
-				.<BehaviourCallback.Product<H, R, A>>map(old -> (holder, origin, args) ->
+		return this.set(type, this.get(type)
+				.<BehaviourCallback<H, R, A>>map(old -> (holder, origin, args) ->
 						callback.call(holder, (newArgs) -> old.call(holder, origin, newArgs), args))
 				.orElse(callback));
 	}
@@ -131,22 +127,12 @@ public interface ModifiableBehaviour<H> {
 	 * @param callback The behaviour callback
 	 * @return This modifiable behaviour, for chaining
 	 */
-	default <A extends BehaviourArgs> ModifiableBehaviour<H> prepend(
-		final BehaviourType<? extends Behaviour.Action<A>> type, final BehaviourCallback.Action<H, A> callback
-	) {
-		Objects.requireNonNull(callback, "callback");
-		return this.set(type, this.getAction(type)
-				.<BehaviourCallback.Action<H, A>>map(old -> (holder, origin, args) ->
-						old.call(holder, (newArgs) -> callback.call(holder, origin, newArgs), args))
-				.orElse(callback));
-	}
-	
 	default <R, A extends BehaviourArgs> ModifiableBehaviour<H> prepend(
-		final BehaviourType<? extends Behaviour.Product<R, A>> type, final BehaviourCallback.Product<H, R, A> callback
+		final BehaviourType<? extends Behaviour<R, A>> type, final BehaviourCallback<H, R, A> callback
 	) {
 		Objects.requireNonNull(callback, "callback");
-		return this.set(type, this.getProduct(type)
-				.<BehaviourCallback.Product<H, R, A>>map(old -> (holder, origin, args) ->
+		return this.set(type, this.get(type)
+				.<BehaviourCallback<H, R, A>>map(old -> (holder, origin, args) ->
 						old.call(holder, (newArgs) -> callback.call(holder, origin, newArgs), args))
 				.orElse(callback));
 	}
