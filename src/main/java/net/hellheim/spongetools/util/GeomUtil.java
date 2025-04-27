@@ -1,11 +1,13 @@
 package net.hellheim.spongetools.util;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.spongepowered.api.util.Axis;
 import org.spongepowered.api.util.Direction;
@@ -33,6 +35,16 @@ public final class GeomUtil {
 	public static final Rotation ROT_270 = Rotations.COUNTERCLOCKWISE_90.get();
 	private static final List<Rotation> ROTATION_VALUES =
 			List.of(ROT_0, ROT_90, ROT_180, ROT_270);
+	
+	private static final List<Direction> DIR_CARDINAL = Arrays.stream(Direction.values())
+			.filter(Direction::isCardinal)
+			.collect(Collectors.toUnmodifiableList());
+	private static final List<Direction> DIR_ORDINAL = Arrays.stream(Direction.values())
+			.filter(Direction::isOrdinal)
+			.collect(Collectors.toUnmodifiableList());
+	private static final List<Direction> DIR_SECONDARY_ORDINAL = Arrays.stream(Direction.values())
+			.filter(Direction::isSecondaryOrdinal)
+			.collect(Collectors.toUnmodifiableList());
 	
 	public static boolean is(final Supplier<Rotation> r1, final Rotation r2) {
 		return GeomUtil.is(r1.get(), r2);
@@ -92,6 +104,18 @@ public final class GeomUtil {
 	
 	public static List<Rotation> rotations() {
 		return ROTATION_VALUES;
+	}
+	
+	public static List<Direction> cardinalDirections() {
+		return DIR_CARDINAL;
+	}
+	
+	public static List<Direction> ordinalDirections() {
+		return DIR_ORDINAL;
+	}
+	
+	public static List<Direction> secondaryOrdinalDirections() {
+		return DIR_SECONDARY_ORDINAL;
 	}
 	
 	public static Optional<Rotation> rotation(final Direction from, final Direction to) {
@@ -339,6 +363,19 @@ public final class GeomUtil {
 				action.accept(x0 + x, y0 - y);
 			}
 		}
+	}
+	
+	public static void forEachCardinalNeighbour(final Vector3i pos, final IntTriConsumer action) {
+		GeomUtil.forEachCardinalNeighbour(pos.x(), pos.y(), pos.z(), action);
+	}
+	
+	public static void forEachCardinalNeighbour(final int x, final int y, final int z, final IntTriConsumer action) {
+		action.accept(x, y, z + 1);
+		action.accept(x, y, z - 1);
+		action.accept(x, y + 1, z);
+		action.accept(x, y - 1, z);
+		action.accept(x + 1, y, z);
+		action.accept(x - 1, y, z);
 	}
 	
 	private GeomUtil() {

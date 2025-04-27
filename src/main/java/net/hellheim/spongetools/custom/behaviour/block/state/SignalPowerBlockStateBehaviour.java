@@ -4,6 +4,7 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.volume.game.PrimitiveGameVolume;
 import org.spongepowered.math.vector.Vector3i;
 
+@FunctionalInterface
 public interface SignalPowerBlockStateBehaviour
 		extends BlockStateBehaviour<SignalPowerBlockStateBehaviour.Callback> {
 	

@@ -16,6 +16,18 @@ public interface BehaviourManager {
 		BehaviourType<B> type
 	);
 	
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> Function<B, C> callbackConverter(
+		BehaviourType<B> type
+	);
+	
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> Function<B, C> callbackConverterBefore(
+		BehaviourType<B> type
+	);
+	
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> Function<B, C> callbackConverterAfter(
+		BehaviourType<B> type
+	);
+	
 	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> BehaviourMerger<C> callbackMerger(
 		BehaviourType<B> type
 	);
@@ -24,11 +36,23 @@ public interface BehaviourManager {
 	
 	<H, B extends Behaviour> Optional<B> get(H holder, BehaviourType<B> type);
 	
-	<R, C extends Behaviour.Callback<R>, B extends Behaviour.Extendable<C>> void register(
+	<R, C extends Behaviour.Callback<R>, B extends Behaviour.Extendable<C>> void registerProvider(
 		BehaviourType<B> type, Function<R, C> callbackProvider
 	);
 	
-	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> void register(
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> void registerConverter(
+		BehaviourType<B> type, Function<B, C> callbackConverter
+	);
+	
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> void registerConverterBefore(
+		BehaviourType<B> type, Function<B, C> callbackConverterBefore
+	);
+	
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> void registerConverterAfter(
+		BehaviourType<B> type, Function<B, C> callbackConverterAfter
+	);
+	
+	<C extends Behaviour.Callback<?>, B extends Behaviour.Extendable<C>> void registerMerger(
 		BehaviourType<B> type, BehaviourMerger<C> callbackMerger
 	);
 	

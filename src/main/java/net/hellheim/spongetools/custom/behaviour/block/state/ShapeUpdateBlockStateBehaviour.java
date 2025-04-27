@@ -7,6 +7,7 @@ import org.spongepowered.api.world.volume.game.Region;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
 import org.spongepowered.math.vector.Vector3i;
 
+@FunctionalInterface
 public interface ShapeUpdateBlockStateBehaviour
 		extends BlockStateBehaviour<ShapeUpdateBlockStateBehaviour.Callback> {
 	

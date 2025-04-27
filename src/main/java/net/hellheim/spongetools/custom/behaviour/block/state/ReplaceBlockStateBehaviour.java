@@ -4,6 +4,7 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.world.World;
 import org.spongepowered.math.vector.Vector3i;
 
+@FunctionalInterface
 public interface ReplaceBlockStateBehaviour
 		extends BlockStateBehaviour<ReplaceBlockStateBehaviour.Callback> {
 	

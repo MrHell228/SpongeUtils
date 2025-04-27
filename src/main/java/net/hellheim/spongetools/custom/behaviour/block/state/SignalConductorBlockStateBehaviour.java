@@ -3,6 +3,7 @@ package net.hellheim.spongetools.custom.behaviour.block.state;
 import org.spongepowered.api.world.volume.game.PrimitiveGameVolume;
 import org.spongepowered.math.vector.Vector3i;
 
+@FunctionalInterface
 public interface SignalConductorBlockStateBehaviour
 		extends BlockStateBehaviour<SignalConductorBlockStateBehaviour.Callback> {
 	

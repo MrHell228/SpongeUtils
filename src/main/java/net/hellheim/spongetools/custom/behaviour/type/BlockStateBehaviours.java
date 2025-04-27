@@ -1,10 +1,21 @@
-package net.hellheim.spongetools.custom.behaviour.block.state;
+package net.hellheim.spongetools.custom.behaviour.type;
 
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
 
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
+import net.hellheim.spongetools.custom.behaviour.block.state.AnalogSignalPowerBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.BlockStateExtension;
+import net.hellheim.spongetools.custom.behaviour.block.state.MapColorBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.PushReactionBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.ReplaceBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.ShapeUpdateBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.SignalConductorBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.SignalPowerBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.SignalUpdateBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.SpawnValidatorBlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.block.state.TickBlockStateBehaviour;
 
 public final class BlockStateBehaviours {
 	
@@ -50,32 +61,32 @@ public final class BlockStateBehaviours {
 	public static final BehaviourType<TickBlockStateBehaviour> RANDOM_TICK = BehaviourType.create();
 	
 	/**
-	 * Called when block enters the world.
+	 * Called when {@link BlockState} enters the world.
 	 */
 	public static final BehaviourType<ReplaceBlockStateBehaviour> PLACE = BehaviourType.create();
 	
 	/**
-	 * Called when block leaves the world.
+	 * Called when {@link BlockState} leaves the world.
 	 */
 	public static final BehaviourType<ReplaceBlockStateBehaviour> REMOVE = BehaviourType.create();
 	
 	/**
 	 * Called when neighbour {@link BlockState}s are changed. <br>
-	 * This is usually used to update properties that could
-	 * considered as "shape" depending on neighbour blocks
-	 * and by waterlogged blocks to schedule liquid ticks.
+	 * This is usually used to update properties that could be
+	 * considered as "shape" depending on neighbour blocks and
+	 * by waterlogged blocks to schedule liquid ticks.
 	 * 
-	 * @see #NEIGHBOUR_UPDATE
+	 * @see #SIGNAL_UPDATE
 	 */
 	public static final BehaviourType<ShapeUpdateBlockStateBehaviour> SHAPE_UPDATE = BehaviourType.create();
 	
 	/**
-	 * Called when neighbour {@link BlockState}s are changed. <br>
+	 * Called when neighbour {@link BlockState}s are changed (mostly due to signal changes). <br>
 	 * This is usually used to update properties that rely on redstone signal
 	 * 
 	 * @see #SHAPE_UPDATE
 	 */
-	public static final BehaviourType<NeighbourUpdateBlockStateBehaviour> NEIGHBOUR_UPDATE = BehaviourType.create();
+	public static final BehaviourType<SignalUpdateBlockStateBehaviour> SIGNAL_UPDATE = BehaviourType.create();
 	
 	private BlockStateBehaviours() {
 	}

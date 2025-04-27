@@ -4,6 +4,7 @@ import org.spongepowered.api.util.RandomProvider;
 import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.math.vector.Vector3i;
 
+@FunctionalInterface
 public interface TickBlockStateBehaviour
 		extends BlockStateBehaviour<TickBlockStateBehaviour.Callback> {
 	
