@@ -13,8 +13,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
-import net.hellheim.spongetools.custom.model.item.enums.CompassTarget;
-import net.hellheim.spongetools.custom.model.item.enums.TimeSource;
+import net.hellheim.spongetools.custom.model.util.CompassTarget;
+import net.hellheim.spongetools.custom.model.util.TimeSource;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
 public interface RangeSelectProperty extends MapCodecProxy<RangeSelectProperty> {

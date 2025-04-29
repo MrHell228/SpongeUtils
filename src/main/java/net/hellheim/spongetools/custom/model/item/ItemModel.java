@@ -15,7 +15,7 @@ import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.custom.model.ModelTemplate;
 import net.hellheim.spongetools.custom.model.TexturedModel;
 import net.hellheim.spongetools.custom.model.Textures;
-import net.hellheim.spongetools.custom.model.item.enums.GuiLight;
+import net.hellheim.spongetools.custom.model.util.GuiLight;
 
 public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight guiLight) {
 	

@@ -16,7 +16,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
-import net.hellheim.spongetools.custom.model.item.enums.SkullType;
+import net.hellheim.spongetools.custom.model.util.SkullType;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
 public interface SpecialModel extends MapCodecProxy<SpecialModel> {

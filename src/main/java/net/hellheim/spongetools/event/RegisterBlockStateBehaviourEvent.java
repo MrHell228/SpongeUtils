@@ -10,7 +10,7 @@ import org.spongepowered.api.event.lifecycle.LifecycleEvent;
 
 import com.google.common.collect.Streams;
 
-import net.hellheim.spongetools.custom.behaviour.ModifiableBehaviour;
+import net.hellheim.spongetools.custom.behaviour.BehaviourHolderProxy;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 
 public interface RegisterBlockStateBehaviourEvent extends LifecycleEvent {
@@ -81,6 +81,6 @@ public interface RegisterBlockStateBehaviourEvent extends LifecycleEvent {
 	}
 	
 	
-	interface BehaviourStep extends ModifiableBehaviour<BlockStateExtension> {
+	interface BehaviourStep extends BehaviourHolderProxy.Mutable<BlockStateExtension, BehaviourStep> {
 	}
 }

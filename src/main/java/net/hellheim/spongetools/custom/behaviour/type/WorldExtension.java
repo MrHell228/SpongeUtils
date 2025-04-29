@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.behaviour.world;
+package net.hellheim.spongetools.custom.behaviour.type;
 
 import java.util.Objects;
 

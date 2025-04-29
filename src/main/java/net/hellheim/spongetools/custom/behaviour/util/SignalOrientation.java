@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.behaviour.world;
+package net.hellheim.spongetools.custom.behaviour.util;
 
 import java.util.Optional;
 import java.util.stream.Stream;

@@ -2,11 +2,14 @@ package net.hellheim.spongetools.custom.behaviour;
 
 import java.util.Objects;
 
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.RandomProvider;
 import org.spongepowered.api.world.volume.Volume;
 import org.spongepowered.math.vector.Vector3d;
 import org.spongepowered.math.vector.Vector3i;
+
+import net.hellheim.spongetools.custom.behaviour.util.HitResult;
 
 public interface BehaviourArgs {
 	
@@ -17,7 +20,8 @@ public interface BehaviourArgs {
 		A withRandom(RandomProvider.Source random);
 		
 		default A withRandom(final RandomProvider randomProvider) {
-			return this.withRandom(Objects.requireNonNull(randomProvider, "randomProvider").random());
+			Objects.requireNonNull(randomProvider, "randomProvider");
+			return this.withRandom(randomProvider.random());
 		}
 	}
 	
@@ -35,6 +39,7 @@ public interface BehaviourArgs {
 		A withPosition(Vector3i position);
 		
 		default A withPosition(final Vector3d position) {
+			Objects.requireNonNull(position, "position");
 			return this.withPosition(position.toInt());
 		}
 		
@@ -52,5 +57,19 @@ public interface BehaviourArgs {
 		V volume();
 		
 		A withVolume(V volume);
+	}
+	
+	interface EntitySource<E extends Entity, A extends EntitySource<E, A>> {
+		
+		E entity();
+		
+		A withEntity(E entity);
+	}
+	
+	interface RayTraced<H extends HitResult, A extends RayTraced<H, A>> {
+		
+		H hit();
+		
+		A withHit(H hit);
 	}
 }

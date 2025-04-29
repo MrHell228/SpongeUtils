@@ -30,7 +30,7 @@ import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
-import net.hellheim.spongetools.custom.model.item.enums.ChargeType;
+import net.hellheim.spongetools.custom.model.util.ChargeType;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
 public interface SelectProperty<T> extends MapCodecProxy<SelectSwitch<?, ?>> {

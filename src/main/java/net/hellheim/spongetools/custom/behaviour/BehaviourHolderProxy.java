@@ -14,4 +14,11 @@ public interface BehaviourHolderProxy<H> extends BehaviourHolder {
 	 * @return The owner of this extension
 	 */
 	H owner();
+	
+	/**
+	 * 
+	 * @param <H> The type of the actual behaviour holder
+	 */
+	interface Mutable<H, M extends Mutable<H, M>> extends BehaviourHolder.Mutable<H, M>, BehaviourHolderProxy<H> {
+	}
 }
