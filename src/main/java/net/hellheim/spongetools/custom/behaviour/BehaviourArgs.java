@@ -1,8 +1,8 @@
 package net.hellheim.spongetools.custom.behaviour;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
-import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.RandomProvider;
 import org.spongepowered.api.world.volume.Volume;
@@ -59,17 +59,28 @@ public interface BehaviourArgs {
 		A withVolume(V volume);
 	}
 	
-	interface EntitySource<E extends Entity, A extends EntitySource<E, A>> {
+	interface EntitySource<E, A extends EntitySource<E, A>> extends BehaviourArgs {
 		
 		E entity();
 		
 		A withEntity(E entity);
+		
+		default A withEntity(final Supplier<? extends E> entitySupplier) {
+			return this.withEntity(Objects.requireNonNull(entitySupplier, "entitySupplier").get());
+		}
 	}
 	
-	interface RayTraced<H extends HitResult, A extends RayTraced<H, A>> {
+	interface RayTraced<H extends HitResult, A extends RayTraced<H, A>> extends BehaviourArgs {
 		
 		H hit();
 		
 		A withHit(H hit);
+	}
+	
+	interface Contextual<C, A extends Contextual<C, A>> extends BehaviourArgs {
+		
+		C context();
+		
+		A withContext(C context);
 	}
 }

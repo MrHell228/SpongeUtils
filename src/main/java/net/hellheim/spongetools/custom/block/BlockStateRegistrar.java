@@ -8,7 +8,7 @@ import org.spongepowered.api.block.BlockState;
 
 public final class BlockStateRegistrar {
 	
-	public static final Set<BlockState> OCCUPIED_STATES = new HashSet<>();
+	private static final Set<BlockState> OCCUPIED_STATES = new HashSet<>();
 	
 	public static boolean isOccupied(final BlockState state) {
 		return BlockStateRegistrar.OCCUPIED_STATES.contains(Objects.requireNonNull(state, "state"));

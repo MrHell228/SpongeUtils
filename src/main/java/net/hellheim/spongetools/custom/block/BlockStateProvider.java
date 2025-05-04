@@ -2,6 +2,7 @@ package net.hellheim.spongetools.custom.block;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -18,17 +19,25 @@ import org.spongepowered.api.tag.BlockTypeTags;
 
 public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*/ {
 	
+	static Any any(final BlockStateProvider... providers) {
+		return new Any(List.of(providers));
+	}
+	
+	static Any any(final Collection<? extends BlockStateProvider> providers) {
+		return new Any(List.copyOf(providers));
+	}
+	
 	@SafeVarargs
-	static Any any(final Supplier<? extends BlockType>... blocks) {
-		return new Any(Arrays.stream(blocks).map(Supplier::get).collect(Collectors.toUnmodifiableSet()));
+	static AnyBlock anyBlock(final Supplier<? extends BlockType>... blocks) {
+		return new AnyBlock(Arrays.stream(blocks).map(Supplier::get).collect(Collectors.toUnmodifiableSet()));
 	}
 	
-	static Any any(final BlockType... blocks) {
-		return new Any(Set.of(blocks));
+	static AnyBlock anyBlock(final BlockType... blocks) {
+		return new AnyBlock(Set.of(blocks));
 	}
 	
-	static Any any(final Collection<? extends BlockType> blocks) {
-		return new Any(Set.copyOf(blocks));
+	static AnyBlock anyBlock(final Collection<? extends BlockType> blocks) {
+		return new AnyBlock(Set.copyOf(blocks));
 	}
 	
 	static Slab slab() {
@@ -36,15 +45,21 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 	}
 	
 	
-	default BlockState provide() throws NoAvailableStateException {
+	/**
+	 * @throws NoAvailableStateException
+	 */
+	default BlockState provide() {
 		return this.provide($ -> true);
 	}
 	
-	default BlockState provide(final Predicate<? super BlockState> predicate) throws NoAvailableStateException {
+	/**
+	 * @throws NoAvailableStateException
+	 */
+	default BlockState provide(final Predicate<? super BlockState> predicate) {
 		return this.availableStates()
 				.filter(predicate)
 				.findAny()
-				.orElseThrow(this::createException);
+				.orElseThrow(() -> new NoAvailableStateException(this.toString()));
 	}
 	
 	default Stream<BlockState> availableStates() {
@@ -53,14 +68,27 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 	
 	Stream<BlockState> allStates();
 	
-	default NoAvailableStateException createException() {
-		return new NoAvailableStateException();
+	
+	record Any(List<? extends BlockStateProvider> providers) implements BlockStateProvider {
+		
+		public Any(final List<? extends BlockStateProvider> providers) {
+			this.providers = List.copyOf(providers);
+		}
+		
+		@Override
+		public Stream<BlockState> allStates() {
+			return this.providers.stream().flatMap(BlockStateProvider::allStates).distinct();
+		}
+		
+		@Override
+		public final String toString() {
+			return this.providers.toString();
+		}
 	}
 	
-	
-	record Any(Set<BlockType> blocks) implements BlockStateProvider {
+	record AnyBlock(Set<BlockType> blocks) implements BlockStateProvider {
 		
-		public Any(final Set<BlockType> blocks) {
+		public AnyBlock(final Set<BlockType> blocks) {
 			this.blocks = Set.copyOf(blocks);
 		}
 		
@@ -70,8 +98,8 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		}
 		
 		@Override
-		public NoAvailableStateException createException() {
-			return new NoAvailableStateException(this.blocks.toString());
+		public String toString() {
+			return this.blocks.toString();
 		}
 	}
 	

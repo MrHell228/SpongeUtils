@@ -92,7 +92,8 @@ public record TexturedModel(ModelTemplate parent, Textures textures) {
 		}
 		
 		for (final ModelTemplate template : templates) {
-			if (template.slots().equals(textures.slots())) {
+			if (textures.slots().size() == template.slots().size()
+					&& textures.slots().containsAll(template.slots())) {
 				return new TexturedModel(template, textures);
 			}
 		}
