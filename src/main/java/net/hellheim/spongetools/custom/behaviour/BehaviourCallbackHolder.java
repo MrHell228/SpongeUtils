@@ -26,7 +26,12 @@ public interface BehaviourCallbackHolder<H> {
 	
 	<R, A extends BehaviourArgs> @Nullable BehaviourCallback<H, R, A> callbackOrNull(BehaviourType<? extends Behaviour<R, A>> type);
 	
+	@SuppressWarnings("unchecked")
 	interface Mutable<H, M extends Mutable<H, M>> extends BehaviourCallbackHolder<H> {
+		
+		private M cast() {
+			return (M) this;
+		}
 		
 		/**
 		 * Sets the given behaviour callback for the given type. <br>
@@ -62,11 +67,39 @@ public interface BehaviourCallbackHolder<H> {
 			return this.offer(callback.type(), callback.callback());
 		}
 		
-		default M offerAll(final BehaviourCallbackHolder<H> holder) {
+		default M offerFrom(final BehaviourCallbackHolder<H> holder) {
 			Objects.requireNonNull(holder, "holder").callbacks().forEach(this::offer);
-			@SuppressWarnings("unchecked")
-			final M $this = (M) this;
-			return $this;
+			return this.cast();
+		}
+		
+		default <R, A extends BehaviourArgs> M offerFrom(
+			final BehaviourType<? extends Behaviour<R, A>> type,
+			final BehaviourCallbackHolder<H> holder
+		) {
+			Objects.requireNonNull(holder, "holder").callback(type).ifPresent(callback -> this.offer(type,  callback));
+			return this.cast();
+		}
+		
+		default M offerFrom(
+			final BehaviourCallbackHolder<H> holder,
+			final BehaviourType<?> firstType,
+			final BehaviourType<?>... otherTypes
+		) {
+			this.offerFrom((BehaviourType<? extends Behaviour<Object, BehaviourArgs>>) firstType, holder);
+			for (final BehaviourType<? extends Behaviour<?, ?>> type : Objects.requireNonNull(otherTypes, "otherTypes")) {
+				this.offerFrom((BehaviourType<? extends Behaviour<Object, BehaviourArgs>>) type, holder);
+			}
+			return this.cast();
+		}
+		
+		default M offerFrom(
+			final BehaviourCallbackHolder<H> holder,
+			final Iterable<? extends BehaviourType<?>> types
+		) {
+			for (final BehaviourType<? extends Behaviour<?, ?>> type : Objects.requireNonNull(types, "types")) {
+				this.offerFrom((BehaviourType<? extends Behaviour<Object, BehaviourArgs>>) type, holder);
+			}
+			return this.cast();
 		}
 		
 		/**

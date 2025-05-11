@@ -18,7 +18,7 @@ public interface InteractionResult {
 	
 	InteractionResult PASS = InteractionResult.factory().pass();
 	
-	InteractionResult TRY_EMPTY_HAND = InteractionResult.factory().tryEmptyHand();
+	InteractionResult TRY_WITHOUT_ITEM = InteractionResult.factory().tryWithoutItem();
 	
 	static InteractionResult.Success success(final SwingType swing, final boolean isInteraction) {
 		return InteractionResult.success(swing, isInteraction, Optional.empty());
@@ -87,7 +87,7 @@ public interface InteractionResult {
 		
 		InteractionResult pass();
 		
-		InteractionResult tryEmptyHand();
+		InteractionResult tryWithoutItem();
 		
 		InteractionResult.Success success(SwingType swing, boolean isInteraction, Optional<ItemStack> result);
 	}

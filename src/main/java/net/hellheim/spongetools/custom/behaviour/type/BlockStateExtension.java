@@ -1,8 +1,8 @@
 package net.hellheim.spongetools.custom.behaviour.type;
 
+import java.util.Objects;
 import java.util.Optional;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 
 import net.hellheim.spongetools.custom.behaviour.Behaviour;
@@ -21,7 +21,7 @@ public interface BlockStateExtension extends
 		BlockStateProxy {
 	
 	static BlockStateExtension getFor(final BlockState state) {
-		return Sponge.game().factoryProvider().provide(Factory.class).getFor(state);
+		return (BlockStateExtension) Objects.requireNonNull(state, "state");
 	}
 	
 	BlockState state();
@@ -33,21 +33,16 @@ public interface BlockStateExtension extends
 	
 	@Override
 	default boolean supports(final BehaviourType<?> type) {
-		return BehaviourManager.get().supports(this.state(), type);
+		return BehaviourManager.get().supportsBehaviour(this.state(), type);
 	}
 	
 	@Override
 	default <B extends Behaviour<?, ?>> Optional<B> get(final BehaviourType<B> type) {
-		return BehaviourManager.get().get(this.state(), type);
+		return BehaviourManager.get().behaviour(this.state(), type);
 	}
 	
 	@Override
 	default <B extends Behaviour<?, ?>> B require(final BehaviourType<B> type) {
-		return BehaviourManager.get().require(this.state(), type);
-	}
-	
-	interface Factory {
-		
-		BlockStateExtension getFor(final BlockState state);
+		return BehaviourManager.get().requireBehaviour(this.state(), type);
 	}
 }

@@ -23,8 +23,8 @@ import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
-import net.hellheim.spongetools.custom.model.item.Item;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
+import net.hellheim.spongetools.resourcepack.item.Item;
 import net.kyori.adventure.text.ComponentLike;
 
 public interface CustomItemType extends

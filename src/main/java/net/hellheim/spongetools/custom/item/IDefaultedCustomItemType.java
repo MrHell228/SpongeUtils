@@ -7,9 +7,9 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.registry.DefaultedRegistryReference;
 
-import net.hellheim.spongetools.custom.model.item.Item;
 import net.hellheim.spongetools.object.DeferredValueContainer;
 import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
+import net.hellheim.spongetools.resourcepack.item.Item;
 import net.kyori.adventure.text.Component;
 
 public interface IDefaultedCustomItemType extends CustomItemType, ValueContainerProxy {

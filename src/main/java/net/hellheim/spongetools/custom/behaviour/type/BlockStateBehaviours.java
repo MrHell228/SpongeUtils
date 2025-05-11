@@ -91,6 +91,8 @@ public final class BlockStateBehaviours {
 	
 	/**
 	 * Used to decide whether block should recieve natural random ticks.
+	 * 
+	 * @see #RANDOM_TICK
 	 */
 	public static final BehaviourType<SimpleBoolean> HAS_RANDOM_TICK = BehaviourType.create();
 	

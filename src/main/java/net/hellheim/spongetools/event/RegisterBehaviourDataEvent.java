@@ -9,7 +9,7 @@ public interface RegisterBehaviourDataEvent extends LifecycleEvent {
 	
 	BehaviourManager manager();
 	
-	default <H> BehaviourRegistration<H> create(final Class<H> holder) {
-		return this.manager().create(holder);
+	default <H> BehaviourRegistration<H> behaviour(final Class<H> holder) {
+		return this.manager().behaviour(holder);
 	}
 }

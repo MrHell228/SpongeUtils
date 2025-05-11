@@ -26,14 +26,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
-import net.hellheim.spongetools.custom.model.item.Item;
-import net.hellheim.spongetools.custom.model.item.ItemDefinition;
-import net.hellheim.spongetools.custom.model.item.TintSource;
 import net.hellheim.spongetools.object.DeferredValueContainer;
 import net.hellheim.spongetools.object.ItemBuilder;
 import net.hellheim.spongetools.object.ValueSetBuilder;
 import net.hellheim.spongetools.proxy.solid.data.ValueContainerProxy;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
+import net.hellheim.spongetools.resourcepack.item.Item;
+import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
+import net.hellheim.spongetools.resourcepack.item.TintSource;
 import net.hellheim.spongetools.util.TranslationUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;

@@ -27,6 +27,14 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		return new Any(List.copyOf(providers));
 	}
 	
+	static AnyState anyState(final BlockState... states) {
+		return new AnyState(Set.of(states));
+	}
+	
+	static AnyState anyState(final Collection<? extends BlockState> states) {
+		return new AnyState(Set.copyOf(states));
+	}
+	
 	@SafeVarargs
 	static AnyBlock anyBlock(final Supplier<? extends BlockType>... blocks) {
 		return new AnyBlock(Arrays.stream(blocks).map(Supplier::get).collect(Collectors.toUnmodifiableSet()));
@@ -83,6 +91,23 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		@Override
 		public final String toString() {
 			return this.providers.toString();
+		}
+	}
+	
+	record AnyState(Set<BlockState> states) implements BlockStateProvider {
+		
+		public AnyState(final Set<BlockState> states) {
+			this.states = Set.copyOf(states);
+		}
+		
+		@Override
+		public Stream<BlockState> allStates() {
+			return this.states.stream();
+		}
+		
+		@Override
+		public String toString() {
+			return this.states.toString();
 		}
 	}
 	

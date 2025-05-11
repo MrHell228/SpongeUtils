@@ -176,8 +176,8 @@ import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.custom.item.CustomItemType;
 import net.hellheim.spongetools.custom.item.EitherItemType;
 import net.hellheim.spongetools.custom.item.data.CustomConsumeEffect;
-import net.hellheim.spongetools.custom.model.item.Item;
-import net.hellheim.spongetools.custom.model.item.ItemModel;
+import net.hellheim.spongetools.resourcepack.item.Item;
+import net.hellheim.spongetools.resourcepack.item.ItemModel;
 
 /**
  * Codecs for all {@link RegistryType}s provided by SpongeAPI.
