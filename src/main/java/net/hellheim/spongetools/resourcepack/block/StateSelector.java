@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -22,7 +23,7 @@ import org.spongepowered.api.util.CopyableBuilder;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 
-public final class StateSelector implements StringRepresentable {
+public final class StateSelector implements StringRepresentable, StatePredicate {
 	
 	public static final Codec<StateSelector> CODEC = StateCodec.STATE_SELECTOR;
 	
@@ -75,6 +76,12 @@ public final class StateSelector implements StringRepresentable {
 		return this.values.values();
 	}
 	
+	public <T extends Comparable<T>> Optional<T> get(final StateProperty<T> property) {
+		@SuppressWarnings("unchecked")
+		final @Nullable StatePropertyValue<T> value = (StatePropertyValue<T>) this.values.get(property);
+		return value == null ? Optional.empty() : Optional.of(value.value());
+	}
+	
 	public boolean overlaps(final StateSelector selector) {
 		final var commonProperties = Sets.intersection(this.properties(), selector.properties());
 		for (final StateProperty<?> property : commonProperties) {
@@ -88,27 +95,25 @@ public final class StateSelector implements StringRepresentable {
 		return true;
 	}
 	
-	public boolean test(final StateSelector selector) {
-		Objects.requireNonNull(selector, "selector");
-		return this.test(property -> {
-			final @Nullable StatePropertyValue<?> value = selector.values.get(property);
-			return value == null ? null : value.value();
-		});
-	}
-	
-	public boolean test(final State<?> state) {
-		Objects.requireNonNull(state, "state");
-		return this.test(property -> state.stateProperty(property).orElse(null));
-	}
-	
-	private boolean test(final Function<StateProperty<?>, @Nullable Comparable<?>> valueLookup) {
+	@Override
+	public boolean test(final Function<StateProperty<?>, Optional<? extends Comparable<?>>> propertyLookup) {
 		for (final StatePropertyValue<?> value : this.values()) {
-			if (!Objects.equals(value.value(), valueLookup.apply(value.property()))) {
+			if (propertyLookup.apply(value.property()).map(value.value()::equals).orElse(false)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/*private boolean test(final Function<StateProperty<?>, @Nullable Comparable<?>> propertyLookup) {
+		for (final StatePropertyValue<?> value : this.values()) {
+			if (!Objects.equals(value.value(), propertyLookup.apply(value.property()))) {
 				return false;
 			}
 		}
 		return true;
-	}
+	}*/
 	
 	public Builder toBuilder() {
 		return StateSelector.builder().from(this);

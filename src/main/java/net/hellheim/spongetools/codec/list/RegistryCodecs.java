@@ -173,11 +173,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
 import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.custom.item.CustomItemType;
-import net.hellheim.spongetools.custom.item.EitherItemType;
-import net.hellheim.spongetools.custom.item.data.CustomConsumeEffect;
-import net.hellheim.spongetools.resourcepack.item.Item;
-import net.hellheim.spongetools.resourcepack.item.ItemModel;
+import net.hellheim.spongetools.custom.type.block.CustomBlockType;
+import net.hellheim.spongetools.custom.type.block.EitherBlockType;
+import net.hellheim.spongetools.custom.type.item.CustomItemType;
+import net.hellheim.spongetools.custom.type.item.EitherItemType;
+import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
+import net.hellheim.spongetools.resourcepack.Model;
+import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
+import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 
 /**
  * Codecs for all {@link RegistryType}s provided by SpongeAPI.
@@ -188,11 +191,17 @@ public final class RegistryCodecs {
 	
 	public static final Codec<CustomItemType> CUSTOM_ITEM_TYPE = RegistryCodecs.register(CustomItemType.class, CustomItemType.registry());
 	
+	public static final Codec<CustomBlockType> CUSTOM_BLOCK_TYPE = RegistryCodecs.register(CustomBlockType.class, CustomBlockType.registry());
+	
 	public static final Codec<EitherItemType> EITHER_ITEM_TYPE = RegistryCodecs.register(EitherItemType.class, EitherItemType.registry());
 	
-	public static final Codec<Item> ITEM = RegistryCodecs.register(Item.class, Item.registry());
+	public static final Codec<EitherBlockType> EITHER_BLOCK_TYPE = RegistryCodecs.register(EitherBlockType.class, EitherBlockType.registry());
 	
-	public static final Codec<ItemModel> ITEM_MODEL = RegistryCodecs.register(ItemModel.class, ItemModel.registry());
+	public static final Codec<ItemDefinition> ITEM_DEFINITION = RegistryCodecs.register(ItemDefinition.class, ItemDefinition.registry());
+	
+	public static final Codec<BlockDefinition> BLOCK_DEFINITION = RegistryCodecs.register(BlockDefinition.class, BlockDefinition.registry());
+	
+	public static final Codec<Model> MODEL = RegistryCodecs.register(Model.class, Model.registry());
 	
 	public static final Codec<MapCodec<? extends CustomConsumeEffect>> CUSTOM_CONSUME_EFFECT_TYPE = RegistryCodecs.of(SpongeTools.Registries.CONSUME_EFFECT_TYPE);
 	

@@ -1,6 +1,7 @@
 package net.hellheim.spongetools.resourcepack.block;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.spongepowered.api.state.State;
 import org.spongepowered.api.state.StateContainer;
@@ -24,6 +25,12 @@ public final class StateOps<T, S extends State<S>> implements DynamicOpsProxy<T>
 		final DynamicOps<T> ops, final StateContainer<S> container
 	) {
 		return new StateOps<>(ops, container);
+	}
+	
+	public static <T, S extends State<S>> StateOps<T, S> of(
+		final DynamicOps<T> ops, final Supplier<? extends StateContainer<S>> containerSupplier
+	) {
+		return new StateOps<>(ops, Objects.requireNonNull(containerSupplier, "containerSupplier").get());
 	}
 	
 	@Override

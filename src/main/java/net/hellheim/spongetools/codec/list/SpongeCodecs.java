@@ -7,8 +7,10 @@ import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
 import org.spongepowered.api.registry.RegistryKey;
 import org.spongepowered.api.registry.RegistryType;
+import org.spongepowered.api.util.Axis;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.Ticks;
+import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.util.weighted.RandomObjectTable;
 import org.spongepowered.api.util.weighted.TableEntry;
 import org.spongepowered.api.util.weighted.VariableAmount;
@@ -24,6 +26,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import net.hellheim.spongetools.codec.StringRepresentableCodec;
 import net.hellheim.spongetools.codec.dispatched.TableEntryCodecs;
 import net.hellheim.spongetools.codec.dispatched.VariableAmountCodecs;
+import net.hellheim.spongetools.util.GeomUtil;
 
 /**
  * Codecs for SpongeAPI types
@@ -35,6 +38,36 @@ public final class SpongeCodecs {
 	public static final Codec<ResourceKey> SPONGE_RESOURCE_KEY = SpongeCodecs.resourceKey(ResourceKey.SPONGE_NAMESPACE);
 	
 	public static final Codec<VariableAmount> VARIABLE_AMOUNT = VariableAmountCodecs.CODEC;
+	
+	public static final Codec<Axis> AXIS = StringRepresentableCodec.fromValues(Axis::values);
+	
+	public static final Codec<Rotation> ROTATION_BY_ANGLE = Codec.INT.flatXmap(
+			angle -> {
+				if (angle == 0) {
+					return DataResult.success(GeomUtil.ROT_0);
+				} else if (angle == 90) {
+					return DataResult.success(GeomUtil.ROT_90);
+				} else if (angle == 180) {
+					return DataResult.success(GeomUtil.ROT_180);
+				} else if (angle == 270) {
+					return DataResult.success(GeomUtil.ROT_270);
+				} else {
+					return DataResult.error(() -> "Rotation angle must be 0, 90, 180 or 270: " + angle);
+				}
+			},
+			rotation -> {
+				if (GeomUtil.is0(rotation)) {
+					return DataResult.success(0);
+				} else if (GeomUtil.is90(rotation)) {
+					return DataResult.success(90);
+				} else if (GeomUtil.is180(rotation)) {
+					return DataResult.success(180);
+				} else if (GeomUtil.is270(rotation)) {
+					return DataResult.success(270);
+				} else {
+					return DataResult.error(() -> "Unknown rotation: " + rotation);
+				}
+			});
 	
 	public static final Codec<Direction> DIRECTION = StringRepresentableCodec.fromValues(Direction::values);
 	

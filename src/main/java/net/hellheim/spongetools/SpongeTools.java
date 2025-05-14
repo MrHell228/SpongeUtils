@@ -11,11 +11,14 @@ import org.spongepowered.api.registry.RegistryType;
 
 import com.mojang.serialization.MapCodec;
 
-import net.hellheim.spongetools.custom.item.CustomItemType;
-import net.hellheim.spongetools.custom.item.EitherItemType;
-import net.hellheim.spongetools.custom.item.data.CustomConsumeEffect;
-import net.hellheim.spongetools.resourcepack.item.Item;
-import net.hellheim.spongetools.resourcepack.item.ItemModel;
+import net.hellheim.spongetools.custom.type.block.CustomBlockType;
+import net.hellheim.spongetools.custom.type.block.EitherBlockType;
+import net.hellheim.spongetools.custom.type.item.CustomItemType;
+import net.hellheim.spongetools.custom.type.item.EitherItemType;
+import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
+import net.hellheim.spongetools.resourcepack.Model;
+import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
+import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 
 public final class SpongeTools {
 	
@@ -27,19 +30,28 @@ public final class SpongeTools {
 	
 	public static final class Registries {
 		
-		public static final DefaultedRegistryType<CustomItemType> CUSTOM_ITEM_TYPE = Registries.key("item");
+		public static final DefaultedRegistryType<CustomItemType> CUSTOM_ITEM_TYPE = Registries.key("custom_item");
+		
+		public static final DefaultedRegistryType<CustomBlockType> CUSTOM_BLOCK_TYPE = Registries.key("custom_block");
 		
 		public static final DefaultedRegistryType<EitherItemType> EITHER_ITEM_TYPE = Registries.key("either_item");
 		
+		public static final DefaultedRegistryType<EitherBlockType> EITHER_BLOCK_TYPE = Registries.key("either_block");
+		
 		/**
-		 * Items from this registry will be included in built ResourcePack.
+		 * Definitions from this registry will be included in built ResourcePack.
 		 */
-		public static final DefaultedRegistryType<Item> ITEM = Registries.key("items");
+		public static final DefaultedRegistryType<ItemDefinition> ITEM_DEFINITION = Registries.key("items");
+		
+		/**
+		 * Definitions from this registry will be included in built ResourcePack.
+		 */
+		public static final DefaultedRegistryType<BlockDefinition> BLOCK_DEFINITION = Registries.key("blockstates");
 		
 		/**
 		 * Models from this registry will be included in built ResourcePack.
 		 */
-		public static final DefaultedRegistryType<ItemModel> ITEM_MODEL = Registries.key("models/item");
+		public static final DefaultedRegistryType<Model> MODEL = Registries.key("models");
 		
 		public static final DefaultedRegistryType<MapCodec<? extends CustomConsumeEffect>> CONSUME_EFFECT_TYPE = Registries.key("consume_effect_type");
 		

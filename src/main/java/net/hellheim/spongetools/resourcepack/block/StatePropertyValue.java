@@ -2,9 +2,11 @@ package net.hellheim.spongetools.resourcepack.block;
 
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.StringRepresentable;
+import org.spongepowered.api.state.State;
 import org.spongepowered.api.state.StateProperty;
 
 import com.mojang.serialization.Codec;
@@ -32,9 +34,16 @@ public interface StatePropertyValue<T extends Comparable<T>> extends StringRepre
 		return StatePropertyValue.of(property, (T) value);
 	}
 	
+	static Stream<StatePropertyValue<?>> allOf(final State<?> state) {
+		return state.statePropertyMap().entrySet().stream()
+				.map(e -> StatePropertyValue.ofRaw(e.getKey(), e.getValue()));
+	}
+	
 	StateProperty<T> property();
 	
 	T value();
+	
+	String valueName();
 	
 	interface Factory {
 		

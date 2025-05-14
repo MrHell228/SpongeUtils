@@ -1,168 +1,260 @@
 package net.hellheim.spongetools.resourcepack.item;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.Optional;
+import java.util.function.Function;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.api.registry.DefaultedRegistryType;
-import org.spongepowered.api.util.CopyableBuilder;
+import org.spongepowered.api.ResourceKey;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.codec.list.RegistryCodecs;
-import net.hellheim.spongetools.resourcepack.ModelTemplate;
-import net.hellheim.spongetools.resourcepack.TexturedModel;
-import net.hellheim.spongetools.resourcepack.Textures;
-import net.hellheim.spongetools.resourcepack.util.GuiLight;
+import net.hellheim.spongetools.codec.LateBoundIdMapper;
+import net.hellheim.spongetools.codec.list.SpongeCodecs;
+import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public record ItemModel(TexturedModel model, ItemTransforms display, GuiLight guiLight) {
+public interface ItemModel extends MapCodecProxy<ItemModel> {
 	
-	public static final Codec<ItemModel> CODEC = RecordCodecBuilder.create(
-			instance -> instance.group(
-					TexturedModel.MAP_CODEC.forGetter(ItemModel::model),
-					ItemTransforms.CODEC.optionalFieldOf("display", ItemTransforms.DEFAULT).forGetter(ItemModel::display),
-					GuiLight.CODEC.optionalFieldOf("gui_light", GuiLight.DEFAULT).forGetter(ItemModel::guiLight)
-					).apply(instance, ItemModel::new));
+	LateBoundIdMapper<ResourceKey, MapCodec<? extends ItemModel>> ID_MAPPER = new LateBoundIdMapper<>();
 	
-	public ItemModel(final TexturedModel model, final ItemTransforms display, final GuiLight guiLight) {
-		this.model = Objects.requireNonNull(model, "model");
-		this.display = Objects.requireNonNull(display, "display");
-		this.guiLight = Objects.requireNonNull(guiLight, "guiLight");
+	Codec<ItemModel> CODEC = ItemModel.ID_MAPPER.codec(SpongeCodecs.RESOURCE_KEY)
+			.dispatch(ItemModel::mapCodec, Function.identity());
+	
+	static Empty empty() {
+		return Empty.INSTANCE;
 	}
 	
-	public static DefaultedRegistryType<ItemModel> registry() {
-		return SpongeTools.Registries.ITEM_MODEL;
+	static BundleSelectedItem bundleSelectedItem() {
+		return BundleSelectedItem.INSTANCE;
 	}
 	
-	public static Codec<ItemModel> registryCodec() {
-		return RegistryCodecs.ITEM_MODEL;
+	static Simple simple(final ResourceKey model, final TintSource... tints) {
+		return new Simple(model, List.of(tints));
 	}
 	
-	public static ItemModel of(final ModelTemplate parent, final Textures textures) {
-		return ItemModel.of(TexturedModel.of(parent, textures));
+	static Simple simple(final ResourceKey model, final Collection<? extends TintSource> tints) {
+		return new Simple(model, List.copyOf(tints));
 	}
 	
-	public static ItemModel of(final ModelTemplate parent, final Textures textures, final ItemTransforms display) {
-		return ItemModel.of(TexturedModel.of(parent, textures), display);
+	static Composite composite(final ItemModel... models) {
+		return new Composite(List.of(models));
 	}
 	
-	public static ItemModel of(final ModelTemplate parent, final Textures textures, final GuiLight light) {
-		return ItemModel.of(TexturedModel.of(parent, textures), light);
+	static Composite composote(final Collection<? extends ItemModel> models) {
+		return new Composite(List.copyOf(models));
 	}
 	
-	public static ItemModel of(final ModelTemplate parent, final Textures textures, final ItemTransforms display, final GuiLight light) {
-		return ItemModel.of(TexturedModel.of(parent, textures), display, light);
+	static Conditional conditional(final ConditionalProperty property, final ItemModel onTrue, final ItemModel onFalse) {
+		return new Conditional(property, onTrue, onFalse);
 	}
 	
-	public static ItemModel of(final TexturedModel model) {
-		return ItemModel.of(model, ItemTransforms.DEFAULT, GuiLight.DEFAULT);
+	@SafeVarargs
+	static <T> Select select(final SelectProperty<T> property, final SelectSwitchCase<T>... cases) {
+		return ItemModel.select(property, Optional.empty(), cases);
 	}
 	
-	public static ItemModel of(final TexturedModel model, final ItemTransforms display) {
-		return ItemModel.of(model, display, GuiLight.DEFAULT);
+	@SafeVarargs
+	static <T> Select select(final SelectProperty<T> property, final ItemModel fallback, final SelectSwitchCase<T>... cases) {
+		return ItemModel.select(property, Optional.of(fallback), cases);
 	}
 	
-	public static ItemModel of(final TexturedModel model, final GuiLight light) {
-		return ItemModel.of(model, ItemTransforms.DEFAULT, light);
+	@SafeVarargs
+	static <T> Select select(final SelectProperty<T> property, final Optional<ItemModel> fallback, final SelectSwitchCase<T>... cases) {
+		return ItemModel.select(SelectSwitch.of(property, List.of(cases)), fallback);
 	}
 	
-	public static ItemModel of(final TexturedModel model, final ItemTransforms display, final GuiLight light) {
-		return new ItemModel(model, display, light);
+	static <T> Select select(final SelectProperty<T> property, final Collection<SelectSwitchCase<T>> cases) {
+		return ItemModel.select(property, Optional.empty(), cases);
 	}
 	
-	public static Builder builder() {
-		return new Builder();
+	static <T> Select select(final SelectProperty<T> property, final ItemModel fallback, final Collection<SelectSwitchCase<T>> cases) {
+		return ItemModel.select(property, Optional.of(fallback), cases);
 	}
 	
-	public ModelTemplate parent() {
-		return this.model.parent();
+	static <T> Select select(final SelectProperty<T> property, final Optional<ItemModel> fallback, final Collection<SelectSwitchCase<T>> cases) {
+		return ItemModel.select(SelectSwitch.of(property, List.copyOf(cases)), fallback);
 	}
 	
-	public Textures textures() {
-		return this.model.textures();
+	static Select select(final SelectSwitch<?, ?> body) {
+		return ItemModel.select(body, Optional.empty());
 	}
 	
-	public static class Builder implements
-			org.spongepowered.api.util.Builder<ItemModel, Builder>,
-			CopyableBuilder<ItemModel, Builder> {
+	static Select select(final SelectSwitch<?, ?> body, final ItemModel fallback) {
+		return ItemModel.select(body, Optional.of(fallback));
+	}
+	
+	static Select select(final SelectSwitch<?, ?> body, final Optional<ItemModel> fallback) {
+		return new Select(body, fallback);
+	}
+	
+	static RangeSelect rangeSelect(final RangeSelectProperty property, final float scale, final RangeSelectEntry... entries) {
+		return ItemModel.rangeSelect(property, scale, Optional.empty(), entries);
+	}
+	
+	static RangeSelect rangeSelect(final RangeSelectProperty property, final float scale, final ItemModel fallback, final RangeSelectEntry... entries) {
+		return ItemModel.rangeSelect(property, scale, Optional.of(fallback), entries);
+	}
+	
+	static RangeSelect rangeSelect(final RangeSelectProperty property, final float scale, final Optional<ItemModel> fallback, final RangeSelectEntry... entries) {
+		return new RangeSelect(property, scale, fallback, List.of(entries));
+	}
+	
+	static RangeSelect rangeSelect(final RangeSelectProperty property, final float scale, final Collection<RangeSelectEntry> entries) {
+		return ItemModel.rangeSelect(property, scale, Optional.empty(), entries);
+	}
+	
+	static RangeSelect rangeSelect(final RangeSelectProperty property, final float scale, final ItemModel fallback, final Collection<RangeSelectEntry> entries) {
+		return ItemModel.rangeSelect(property, scale, Optional.of(fallback), entries);
+	}
+	
+	static RangeSelect rangeSelect(final RangeSelectProperty property, final float scale, final Optional<ItemModel> fallback, final Collection<RangeSelectEntry> entries) {
+		return new RangeSelect(property, scale, fallback, List.copyOf(entries));
+	}
+	
+	static Special special(final ResourceKey base, final SpecialModel model) {
+		return new Special(base, model);
+	}
+	
+	default ItemDefinition asDefinition(final boolean handAnimationOnSwap) {
+		return ItemDefinition.of(this, handAnimationOnSwap);
+	}
+	
+	default ItemDefinition asDefinition() {
+		return ItemDefinition.of(this);
+	}
+	
+	record Empty() implements ItemModel {
+		public static final Empty INSTANCE = new Empty();
+		public static final MapCodec<Empty> CODEC = MapCodec.unit(INSTANCE);
 		
-		private @Nullable ModelTemplate parent;
-		private @Nullable Textures textures;
-		private @Nullable ItemTransforms display;
-		private @Nullable GuiLight guiLight;
-		
-		public Builder() {
-			this.reset();
+		@Override
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
 		}
+	}
+	
+	record BundleSelectedItem() implements ItemModel {
+		public static final BundleSelectedItem INSTANCE = new BundleSelectedItem();
+		public static final MapCodec<BundleSelectedItem> CODEC = MapCodec.unit(INSTANCE);
 		
-		public Builder model(final TexturedModel model) {
-			Objects.requireNonNull(model, "model");
-			return this.parent(model.parent()).textures(model.textures());
+		@Override
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
 		}
+	}
+	
+	record Simple(ResourceKey model, List<TintSource> tints) implements ItemModel {
+		public static final MapCodec<Simple> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						SpongeCodecs.RESOURCE_KEY.fieldOf("model").forGetter(Simple::model),
+						TintSource.CODEC.listOf().optionalFieldOf("tints", List.of()).forGetter(Simple::tints)
+						).apply(instance, Simple::new));
 		
-		public Builder parent(final ModelTemplate parent) {
-			this.parent = Objects.requireNonNull(parent, "parent");
-			return this;
-		}
-		
-		public Builder textures(final Textures textures) {
-			this.textures = Objects.requireNonNull(textures, "textures");
-			return this;
-		}
-		
-		public Builder textures(final Textures.Builder builder) {
-			return this.textures(Objects.requireNonNull(builder, "builder").build());
-		}
-		
-		public Builder textures(final Consumer<Textures.Builder> configurator) {
-			final Textures.Builder builder = Textures.builder();
-			Objects.requireNonNull(configurator, "configurator").accept(builder);
-			return this.textures(builder);
-		}
-		
-		public Builder display(final ItemTransforms display) {
-			this.display = Objects.requireNonNull(display, "display");
-			return this;
-		}
-		
-		public Builder display(final ItemTransforms.Builder builder) {
-			return this.display(Objects.requireNonNull(builder, "builder").build());
-		}
-		
-		public Builder display(final Consumer<ItemTransforms.Builder> configurator) {
-			final ItemTransforms.Builder builder = ItemTransforms.builder();
-			Objects.requireNonNull(configurator, "configurator").accept(builder);
-			return this.display(builder);
-		}
-		
-		public Builder light(final GuiLight guiLight) {
-			this.guiLight = Objects.requireNonNull(guiLight, "guiLight");
-			return this;
+		public Simple(final ResourceKey model, final List<TintSource> tints) {
+			this.model = Objects.requireNonNull(model, "model");
+			this.tints = Objects.requireNonNull(tints, "tints");
 		}
 		
 		@Override
-		public Builder from(final ItemModel value) {
-			this.parent = value.parent();
-			this.textures = value.textures();
-			this.display = value.display();
-			this.guiLight = value.guiLight;
-			return this;
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
+		}
+	}
+	
+	record Composite(List<ItemModel> models) implements ItemModel {
+		public static final MapCodec<Composite> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						ItemModel.CODEC.listOf().fieldOf("models").forGetter(Composite::models)
+						).apply(instance, Composite::new));
+		
+		public Composite(final List<ItemModel> models) {
+			this.models = Objects.requireNonNull(models, "models");
 		}
 		
 		@Override
-		public Builder reset() {
-			this.parent = null;
-			this.textures = null;
-			this.display = null;
-			this.guiLight = null;
-			return this;
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
+		}
+	}
+	
+	record Conditional(ConditionalProperty property, ItemModel onTrue, ItemModel onFalse) implements ItemModel {
+		public static final MapCodec<Conditional> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						ConditionalProperty.CODEC.forGetter(Conditional::property),
+						ItemModel.CODEC.fieldOf("on_true").forGetter(Conditional::onTrue),
+						ItemModel.CODEC.fieldOf("on_false").forGetter(Conditional::onFalse))
+						.apply(instance, Conditional::new));
+		
+		public Conditional(final ConditionalProperty property, final ItemModel onTrue, final ItemModel onFalse) {
+			this.property = Objects.requireNonNull(property, "property");
+			this.onTrue = Objects.requireNonNull(onTrue, "onTrue");
+			this.onFalse = Objects.requireNonNull(onFalse, "onFalse");
 		}
 		
 		@Override
-		public ItemModel build() {
-			return new ItemModel(TexturedModel.of(this.parent, this.textures), this.display, this.guiLight);
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
+		}
+	}
+	
+	record Select(SelectSwitch<?, ?> body, Optional<ItemModel> fallback) implements ItemModel {
+		public static final MapCodec<Select> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						SelectSwitch.CODEC.forGetter(Select::body),
+						ItemModel.CODEC.optionalFieldOf("fallback").forGetter(Select::fallback)
+						).apply(instance, Select::new));
+		
+		public Select(final SelectSwitch<?, ?> body, final Optional<ItemModel> fallback) {
+			this.body = Objects.requireNonNull(body, "body");
+			this.fallback = Objects.requireNonNull(fallback, "fallback");
+		}
+		
+		@Override
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
+		}
+	}
+	
+	record RangeSelect(RangeSelectProperty property, float scale, Optional<ItemModel> fallback, List<RangeSelectEntry> entries) implements ItemModel {
+		public static final MapCodec<RangeSelect> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						RangeSelectProperty.CODEC.forGetter(RangeSelect::property),
+						Codec.FLOAT.optionalFieldOf("scale", Float.valueOf(1.0F)).forGetter(RangeSelect::scale),
+						ItemModel.CODEC.optionalFieldOf("fallback").forGetter(RangeSelect::fallback),
+						RangeSelectEntry.CODEC.listOf().fieldOf("entries").forGetter(RangeSelect::entries)
+						).apply(instance, RangeSelect::new));
+		
+		public RangeSelect(final RangeSelectProperty property, final float scale, final Optional<ItemModel> fallback, final List<RangeSelectEntry> entries) {
+			this.property = Objects.requireNonNull(property, "property");
+			this.scale = scale;
+			this.fallback = Objects.requireNonNull(fallback, "fallback");
+			this.entries = Objects.requireNonNull(entries, "entries");
+		}
+		
+		@Override
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
+		}
+	}
+	
+	record Special(ResourceKey base, SpecialModel model) implements ItemModel {
+		public static final MapCodec<Special> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						SpongeCodecs.RESOURCE_KEY.fieldOf("base").forGetter(Special::base),
+						SpecialModel.CODEC.fieldOf("model").forGetter(Special::model)
+						).apply(instance, Special::new));
+		
+		public Special(final ResourceKey base, final SpecialModel model) {
+			this.base = Objects.requireNonNull(base, "base");
+			this.model = Objects.requireNonNull(model, "model");
+		}
+		
+		@Override
+		public MapCodec<? extends ItemModel> mapCodec() {
+			return CODEC;
 		}
 	}
 }

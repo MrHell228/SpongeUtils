@@ -25,7 +25,7 @@ import net.hellheim.spongetools.function.TriFunction;
 public class StateDispatch {
 	
 	public static final Codec<StateDispatch> CODEC = Codec
-			.unboundedMap(StateSelector.CODEC, Variant.CODEC.listOf())
+			.unboundedMap(StateSelector.CODEC, Variant.LIST_CODEC)
 			.xmap(StateDispatch::new, StateDispatch::values);
 	
 	private final Set<StateProperty<?>> properties;
@@ -669,10 +669,7 @@ public class StateDispatch {
 		
 		private void validateInput(final StateSelector selector, final Collection<Variant> variants) {
 			Objects.requireNonNull(selector, "selector");
-			Objects.requireNonNull(variants, "variants");
-			if (variants.isEmpty()) {
-				throw new IllegalArgumentException("At least one variant must be provided");
-			}
+			Variant.validate(variants);
 		}
 		
 		private RuntimeException overlap(final StateSelector given, final StateSelector current) {

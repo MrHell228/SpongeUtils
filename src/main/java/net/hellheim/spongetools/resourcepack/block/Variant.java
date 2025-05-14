@@ -12,6 +12,7 @@ import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.util.CopyableBuilder;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 
 public final class Variant {
 	
@@ -19,6 +20,9 @@ public final class Variant {
 			list -> Variant.builder().addAll(list).build(),
 			variant -> List.copyOf(variant.values())
 			);
+	
+	public static final Codec<List<Variant>> LIST_CODEC = Variant.CODEC.listOf()
+			.validate(Variant::validateCodec);
 	
 	private static final Variant EMPTY = new Variant(Map.of());
 	
@@ -38,6 +42,17 @@ public final class Variant {
 	
 	public static Variant model(final ResourceKey model) {
 		return Variant.builder().add(VariantProperties.MODEL, model).build();
+	}
+	
+	protected static <C extends Collection<Variant>> C validate(final C variants) {
+		return Variant.validateCodec(Objects.requireNonNull(variants, "variants"))
+				.getOrThrow(IllegalArgumentException::new);
+	}
+	
+	private static <C extends Collection<Variant>> DataResult<C> validateCodec(final C variants) {
+		return variants.isEmpty()
+				? DataResult.error(() -> "At least one variant must be provided")
+				: DataResult.success(variants);
 	}
 	
 	public Set<VariantProperty<?>> properties() {

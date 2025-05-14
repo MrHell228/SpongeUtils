@@ -1,49 +1,99 @@
 package net.hellheim.spongetools.resourcepack.block;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.state.StateContainer;
+import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.api.util.CopyableBuilder;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.codec.list.RegistryCodecs;
+
+/**
+ * @see <a href=https://minecraft.wiki/w/Blockstates_definition> Minecraft Wiki </a>
+ */
 public interface BlockDefinition {
 	
-	static MultiVariant.Builder multiVariant(final Supplier<? extends StateContainer<?>> containerSupplier) {
-		return BlockDefinition.multiVariant(Objects.requireNonNull(containerSupplier, "containerSupplier").get());
+	Codec<BlockDefinition> CODEC = StateCodec.BLOCK_DEFINITION;
+	
+	public static DefaultedRegistryType<BlockDefinition> registry() {
+		return SpongeTools.Registries.BLOCK_DEFINITION;
 	}
 	
-	static MultiVariant.Builder multiVariant(final StateContainer<?> container) {
-		return new MultiVariant.Builder(containerSupplier);
+	public static Codec<BlockDefinition> registryCodec() {
+		return RegistryCodecs.BLOCK_DEFINITION;
 	}
 	
-	final record MultiVariant(StateDispatch dispatch) implements BlockDefinition {
+	static MultiVariant.Builder variant(final Supplier<? extends BlockType> blockSupplier) {
+		return BlockDefinition.variant(Objects.requireNonNull(blockSupplier, "blockSupplier").get());
+	}
+	
+	static MultiVariant.Builder variant(final BlockType block) {
+		return new MultiVariant.Builder(block);
+	}
+	
+	static MultiPart.Builder part(final Supplier<? extends BlockType> blockSupplier) {
+		return BlockDefinition.part(Objects.requireNonNull(blockSupplier, "blockSupplier").get());
+	}
+	
+	static MultiPart.Builder part(final BlockType block) {
+		return new MultiPart.Builder(block);
+	}
+	
+	BlockType block();
+	
+	Builder<?, ?> toBuilder();
+	
+	BlockDefinition expandWith(BlockState state, List<Variant> variants);
+	
+	final class MultiVariant implements BlockDefinition {
 		
-		public static final Codec<MultiVariant> CODEC = RecordCodecBuilder.create(
-				instance -> instance.group(
-						StateDispatch.CODEC.fieldOf("variants").forGetter(null)
-						).apply(null, null)).validate(null);
+		public static final Codec<MultiVariant> CODEC = StateCodec.MULTI_VARIANT;
 		
-		public MultiVariant(final StateDispatch dispatch) {
-			this.dispatch = Objects.requireNonNull(dispatch, "dispatch");
+		private final BlockType block;
+		private final StateDispatch dispatch;
+		
+		private MultiVariant(final BlockType block, final StateDispatch dispatch) {
+			this.block = block;
+			this.dispatch = dispatch;
 		}
 		
-		public Builder toBuilder(final StateContainer<?> container) {
-			return BlockDefinition.multiVariant(container).from(this);
+		@Override
+		public BlockType block() {
+			return this.block;
+		}
+		
+		public StateDispatch dispatch() {
+			return this.dispatch;
+		}
+		
+		@Override
+		public Builder toBuilder() {
+			return BlockDefinition.variant(this.block()).from(this);
+		}
+		
+		@Override
+		public MultiVariant expandWith(final BlockState state, final List<Variant> variants) {
+			return this.withDispatchBuilder(b -> b.add(state, variants));
+		}
+		
+		public MultiVariant withDispatchBuilder(final UnaryOperator<StateDispatch.Builder<?>> dispatchBuilderOperator) {
+			Objects.requireNonNull(dispatchBuilderOperator, "dispatchBuilderOperator");
+			return this.withDispatch(dispatch -> dispatchBuilderOperator.apply(dispatch.toBuilder()).build());
 		}
 		
 		public MultiVariant withDispatch(final UnaryOperator<StateDispatch> dispatchOperator) {
@@ -53,13 +103,13 @@ public interface BlockDefinition {
 		
 		public static final class Builder implements BlockDefinition.Builder<MultiVariant, Builder> {
 			
-			private final StateContainer<?> container;
+			private final BlockType block;
 			private final List<Variant> baseVariants = new ArrayList<>();
 			private final List<StateDispatch> dispatches = new ArrayList<>();
 			private final Set<StateProperty<?>> seenProperties = new HashSet<>();
 			
-			private Builder(StateContainer<?> container) {
-				this.container = Objects.requireNonNull(container, "container");
+			private Builder(BlockType block) {
+				this.block = Objects.requireNonNull(block, "block");
 				this.reset();
 			}
 			
@@ -101,10 +151,10 @@ public interface BlockDefinition {
 			private void tryDispatch(final StateDispatch dispatch) {
 				Objects.requireNonNull(dispatch, "dispatch");
 				for (final StateProperty<?> property : dispatch.properties()) {
-					if (this.container.findStateProperty(property.name()).orElse(null) != property) {
-						throw new IllegalStateException("Property " + property + " is not defined for container " + this.container);
+					if (!this.block.stateProperties().contains(property)) {
+						throw new IllegalStateException("Property " + property + " is not defined for block " + this.block);
 					} else if (!this.seenProperties.add(property)) {
-						throw new IllegalStateException("Values of property " + property + " already defined for container " + this.container);
+						throw new IllegalStateException("Values of property " + property + " already defined for block " + this.block);
 					}
 				}
 				
@@ -140,7 +190,7 @@ public interface BlockDefinition {
 				
 				final var builder = StateDispatch.raw();
 				stream.forEach(pair -> builder.add(pair.getFirst(), pair.getSecond()));
-				return new MultiVariant(builder.build());
+				return new MultiVariant(this.block, builder.build());
 			}
 			
 			private static List<Variant> mergeVariants(
@@ -155,10 +205,113 @@ public interface BlockDefinition {
 		}
 	}
 	
-	record MultiPart() implements BlockDefinition {
+	final class MultiPart implements BlockDefinition {
 		
+		private final BlockType block;
+		private final List<StatePart> parts;
 		
+		private MultiPart(final BlockType block, final List<StatePart> parts) {
+			this.block = block;
+			this.parts = List.copyOf(parts);
+		}
 		
+		@Override
+		public BlockType block() {
+			return this.block;
+		}
+		
+		public List<StatePart> parts() {
+			return this.parts;
+		}
+		
+		@Override
+		public Builder toBuilder() {
+			return BlockDefinition.part(this.block()).from(this);
+		}
+		
+		@Override
+		public BlockDefinition expandWith(final BlockState state, final List<Variant> variants) {
+			final Builder builder = BlockDefinition.part(this.block);
+			final StateCondition isState = StateCondition.is(state);
+			builder.add(StatePart.of(isState, variants));
+			
+			final StateCondition notState = isState.negate();
+			this.parts.forEach(part -> {
+				final Optional<StateCondition> oldCondition = part.condition();
+				final StateCondition newCondition = oldCondition.isEmpty()
+						? notState
+						: StateCondition.and(oldCondition.get(), notState);
+				builder.add(StatePart.of(newCondition, part.variants()));
+			});
+			
+			return builder.build();
+		}
+		
+		public static final class Builder implements BlockDefinition.Builder<MultiPart, Builder> {
+			
+			private final BlockType block;
+			private final List<StatePart> parts = new ArrayList<>();
+			private final Set<StateProperty<?>> seenProperties = new HashSet<>();
+			
+			private Builder(final BlockType block) {
+				this.block = Objects.requireNonNull(block, "block");
+			}
+			
+			public Builder add(final StatePart... parts) {
+				for (final StatePart part : Objects.requireNonNull(parts, "parts")) {
+					this.addPart(part);
+				}
+				
+				return this;
+			}
+			
+			public Builder add(final Iterable<? extends StatePart> parts) {
+				for (final StatePart part : Objects.requireNonNull(parts, "parts")) {
+					this.addPart(part);
+				}
+				
+				return this;
+			}
+			
+			private void addPart(final StatePart part) {
+				Objects.requireNonNull(part, "part");
+				if (part.condition().orElse(null) == StateCondition.alwaysFalse()) {
+					// @see #build
+					// return;
+				}
+				
+				for (final StateProperty<?> property : part.properties()) {
+					if (!this.block.stateProperties().contains(property)) {
+						throw new IllegalStateException("Property " + property + " is not defined for block " + this.block);
+					}
+				}
+			}
+			
+			@Override
+			public Builder from(final MultiPart definition) {
+				return this.reset().add(Objects.requireNonNull(definition, "definition").parts());
+			}
+			
+			@Override
+			public Builder reset() {
+				this.parts.clear();
+				this.seenProperties.clear();
+				return this;
+			}
+			
+			@Override
+			public MultiPart build() {
+				if (this.parts.isEmpty()) {
+					// Client will throw exception if there is no
+					// at least one StatePart with at least one Variant
+					// even if this part will never apply (e.g. with StateCondition#alwaysFalse).
+					// Maybe it's fine to just add always-false part if no parts are provided.
+					throw new IllegalStateException("At least one StatePart must be provided");
+				}
+				
+				return new MultiPart(this.block, this.parts);
+			}
+		}
 	}
 	
 	interface Builder<D extends BlockDefinition, B extends Builder<D, B>> extends
