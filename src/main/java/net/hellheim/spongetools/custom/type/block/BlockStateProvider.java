@@ -67,7 +67,8 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		return this.availableStates()
 				.filter(predicate)
 				.findAny()
-				.orElseThrow(() -> new NoAvailableStateException(this.toString()));
+				.orElseThrow(() -> new IllegalStateException(
+						"No available states for provider " + this.toString()));
 	}
 	
 	default Stream<BlockState> availableStates() {

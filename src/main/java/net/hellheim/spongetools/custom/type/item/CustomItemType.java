@@ -23,11 +23,13 @@ import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
+import net.hellheim.spongetools.custom.type.CustomType;
 import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.kyori.adventure.text.ComponentLike;
 
 public interface CustomItemType extends
+		CustomType,
 		ResourceKeyed,
 		ComponentLike,
 		DataSerializable,

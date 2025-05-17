@@ -67,9 +67,13 @@ public interface BehaviourCallbackHolder<H> {
 			return this.offer(callback.type(), callback.callback());
 		}
 		
-		default M offerFrom(final BehaviourCallbackHolder<H> holder) {
-			Objects.requireNonNull(holder, "holder").callbacks().forEach(this::offer);
+		default M offerAll(final Iterable<TypedBehaviourCallback<H, ?, ?>> callbacks) {
+			Objects.requireNonNull(callbacks, "callbacks").forEach(t -> this.offer(t));
 			return this.cast();
+		}
+		
+		default M offerFrom(final BehaviourCallbackHolder<H> holder) {
+			return this.offerAll(Objects.requireNonNull(holder, "holder").callbacks());
 		}
 		
 		default <R, A extends BehaviourArgs> M offerFrom(

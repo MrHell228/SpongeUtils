@@ -134,6 +134,22 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 	}
 	
 	
+	public B from(final CustomBlockType type) {
+		Objects.requireNonNull(type, "type");
+		return this.reset()
+				.offerFrom(type)
+				.state(type.stateProvider())
+				.model(type.model());
+	}
+	
+	public B from(final CustomBlockTypeProperties properties) {
+		Objects.requireNonNull(properties, "properties");
+		return this.reset()
+				.offerFrom(properties)
+				.state(properties.stateProvider())
+				.model(properties.model());
+	}
+	
 	public B reset() {
 		this.callbacks = BehaviourCallbackHolderLogic.mutable();
 		this.stateProvider = null;
@@ -149,7 +165,11 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 		return this.cast();
 	}
 	
+	public CustomBlockTypeProperties buildProperties() {
+		return new CustomBlockTypeProperties(this);
+	}
+	
 	public CustomBlockType build() {
-		return new BasicCustomBlockType(this);
+		return new BasicCustomBlockType(this.buildProperties());
 	}
 }

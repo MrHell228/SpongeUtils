@@ -2,7 +2,9 @@ package net.hellheim.spongetools.custom.type.block;
 
 import org.spongepowered.api.block.BlockState;
 
-public interface BlockStateHolder {
+import net.hellheim.spongetools.proxy.solid.block.BlockStateProxy;
+
+public interface BlockStateHolder extends BlockStateProxy {
 	
 	/**
 	 * @return The state bound to this holder
@@ -24,4 +26,9 @@ public interface BlockStateHolder {
 	 * @throws IllegalStateException if state is already bound
 	 */
 	void bind(BlockState state);
+	
+	@Override
+	default BlockState getAsBlockState() {
+		return this.state();
+	}
 }

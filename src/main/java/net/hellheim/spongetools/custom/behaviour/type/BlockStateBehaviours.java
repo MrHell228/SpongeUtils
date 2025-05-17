@@ -8,6 +8,7 @@ import org.spongepowered.api.data.type.PushReaction;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.fluid.FluidState;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.util.AABB;
@@ -44,18 +45,18 @@ public final class BlockStateBehaviours {
 	/**
 	 * Signal that will power neighbour blocks.
 	 */
-	public static final BehaviourType<SignalPower> WEAK_SIGNAL = BehaviourType.create();
+	public static final BehaviourType<SignalPower> DIRECT_SIGNAL = BehaviourType.create();
 	
 	/**
 	 * Signal that will go through neighbour blocks. <br>
 	 * 
 	 * In vanilla this behaviour usually filters result of
 	 * {@link BlockStateExtension#get(BehaviourType)}
-	 * for {@link #WEAK_SIGNAL} behaviour by side. <br>
+	 * for {@link #DIRECT_SIGNAL} behaviour by side. <br>
 	 * 
 	 * Used by {@link BlockTypes#REPEATER} (horizontally) and other redstone-related blocks (upwards).
 	 */
-	public static final BehaviourType<SignalPower> STRONG_SIGNAL = BehaviourType.create();
+	public static final BehaviourType<SignalPower> INDIRECT_SIGNAL = BehaviourType.create();
 	
 	/**
 	 * Result of this behaviour is usually used by {@link BlockTypes#COMPARATOR}.
@@ -147,6 +148,8 @@ public final class BlockStateBehaviours {
 	 * Used by {@link BlockTypes#NOTE_BLOCK}.
 	 */
 	public static final BehaviourType<SimpleObject<InstrumentType>> INSTRUMENT = BehaviourType.create();
+	
+	public static final BehaviourType<SimpleObject<FluidState>> FLUID = BehaviourType.create();
 	
 	public static final BehaviourType<SimpleBoolean> REQUIRE_TOOL = BehaviourType.create();
 	

@@ -1,40 +1,30 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.spongepowered.api.block.BlockState;
 
-import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
-import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
-import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderProxy;
 import net.hellheim.spongetools.custom.behaviour.BehaviourHolder;
-import net.hellheim.spongetools.custom.behaviour.BehaviourHolderProxy;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
-import net.hellheim.spongetools.resourcepack.block.Variant;
 
-public class BasicCustomBlockType implements
-		CustomBlockType,
-		BehaviourHolderProxy,
-		BehaviourCallbackHolderProxy<BlockStateExtension> {
+public class BasicCustomBlockType implements DefaultedCustomBlockType {
 	
-	private final BehaviourCallbackHolderLogic<BlockStateExtension> callbacks;
-	private final BlockStateProvider stateProvider;
-	private final List<Variant> model;
+	private final CustomBlockTypeProperties propeties;
 	private @MonotonicNonNull BlockState state;
 	private @MonotonicNonNull BlockStateExtension stateExtension;
 	
+	public BasicCustomBlockType(final CustomBlockTypeProperties propeties) {
+		this.propeties = Objects.requireNonNull(propeties, "propeties");
+	}
+	
 	public BasicCustomBlockType(final CustomBlockTypeBuilder<?> builder) {
-		Objects.requireNonNull(builder, "builder").validate();
-		this.callbacks = builder.callbacks.asImmutable();
-		this.stateProvider = builder.stateProvider;
-		this.model = List.copyOf(builder.model);
+		this(Objects.requireNonNull(builder, "builder").buildProperties());
 	}
 	
 	@Override
-	public BlockStateProvider stateProvider() {
-		return this.stateProvider;
+	public CustomBlockTypeProperties properties() {
+		return this.propeties;
 	}
 	
 	@Override
@@ -56,18 +46,7 @@ public class BasicCustomBlockType implements
 		this.stateExtension = BlockStateExtension.getFor(state);
 	}
 	
-	@Override
-	public List<Variant> model() {
-		return this.model;
-	}
-	
-	@Override
-	public BehaviourHolder getAsBehaviourHolder() {
+	public BehaviourHolder stateExtension() {
 		return this.stateExtension;
-	}
-	
-	@Override
-	public BehaviourCallbackHolder<BlockStateExtension> getAsBehaviourCallbackHolder() {
-		return this.callbacks;
 	}
 }
