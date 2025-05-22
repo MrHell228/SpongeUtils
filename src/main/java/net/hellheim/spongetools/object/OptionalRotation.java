@@ -1,37 +1,41 @@
 package net.hellheim.spongetools.object;
 
-import java.util.Optional;
+import java.util.Objects;
+import java.util.OptionalDouble;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.math.vector.Vector3d;
 
-public class OptionalRotation extends OptionalVector3d {
+import net.hellheim.spongetools.math.optional.vector.OptionalVector3d;
+
+public record OptionalRotation(OptionalVector3d rotation) {
 	
-	protected OptionalRotation(
-		final Optional<Double> pitch, final Optional<Double> yaw, final Optional<Double> roll
-	) {
-		super(pitch, yaw, roll);
+	public OptionalRotation(final OptionalVector3d rotation) {
+		this.rotation = Objects.requireNonNull(rotation, "rotation");
 	}
 	
-	public static Builder builder() {
-		return new Builder();
+	public static OptionalRotation of(final OptionalVector3d rotation) {
+		return new OptionalRotation(rotation);
 	}
 	
 	public static OptionalRotation ofPitch(final double pitch) {
-		return OptionalRotation.builder().pitch(pitch).build();
+		return OptionalRotation.of(OptionalVector3d.x(pitch));
 	}
 	
 	public static OptionalRotation ofYaw(final double yaw) {
-		return OptionalRotation.builder().yaw(yaw).build();
+		return OptionalRotation.of(OptionalVector3d.y(yaw));
 	}
 	
 	public static OptionalRotation of(final double pitch, final double yaw) {
-		return OptionalRotation.builder().pitch(pitch).yaw(yaw).build();
+		return OptionalRotation.of(OptionalVector3d.xy(pitch, yaw));
 	}
 	
 	public static OptionalRotation of(final double pitch, final double yaw, final double roll) {
-		return OptionalRotation.builder().pitch(pitch).yaw(yaw).roll(roll).build();
+		return OptionalRotation.of(OptionalVector3d.of(pitch, yaw, roll));
+	}
+	
+	public Vector3d transform(final Vector3d rotation) {
+		return this.rotation.set(rotation);
 	}
 	
 	public Vector3d transform(final Entity entity) {
@@ -42,63 +46,15 @@ public class OptionalRotation extends OptionalVector3d {
 		entity.setRotation(this.transform(entity));
 	}
 	
-	public Optional<Double> pitch() {
-		return this.x;
+	public OptionalDouble pitch() {
+		return this.rotation.x();
 	}
 	
-	public Optional<Double> yaw() {
-		return this.y;
+	public OptionalDouble yaw() {
+		return this.rotation.y();
 	}
 	
-	public Optional<Double> roll() {
-		return this.z;
-	}
-	
-	public static class Builder extends OptionalVector3d.Builder {
-		
-		@Override
-		public Builder x(final @Nullable Double x) {
-			super.x(x);
-			return this;
-		}
-		
-		@Override
-		public Builder y(final @Nullable Double y) {
-			super.y(y);
-			return this;
-		}
-		
-		@Override
-		public Builder z(final @Nullable Double z) {
-			super.z(z);
-			return this;
-		}
-		
-		public Builder pitch(final @Nullable Double pitch) {
-			return this.x(pitch);
-		}
-		
-		public Builder yaw(final @Nullable Double yaw) {
-			return this.y(yaw);
-		}
-		
-		public Builder roll(final @Nullable Double roll) {
-			return this.z(roll);
-		}
-		
-		@Override
-		public Builder reset() {
-			super.reset();
-			return this;
-		}
-		
-		@Override
-		public OptionalRotation build() {
-			return new OptionalRotation(
-					Optional.ofNullable(this.x),
-					Optional.ofNullable(this.y),
-					Optional.ofNullable(this.z)
-					);
-		}
+	public OptionalDouble roll() {
+		return this.rotation.z();
 	}
 }

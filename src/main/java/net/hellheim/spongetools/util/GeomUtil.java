@@ -25,6 +25,8 @@ import org.spongepowered.math.vector.Vector3l;
 
 import net.hellheim.spongetools.function.IntBiConsumer;
 import net.hellheim.spongetools.function.IntTriConsumer;
+import net.hellheim.spongetools.math.mutable.vector.MutableVector3i;
+import net.hellheim.spongetools.object.Streamable;
 
 public final class GeomUtil {
 	
@@ -365,17 +367,14 @@ public final class GeomUtil {
 		}
 	}
 	
-	public static void forEachCardinalNeighbour(final Vector3i pos, final IntTriConsumer action) {
-		GeomUtil.forEachCardinalNeighbour(pos.x(), pos.y(), pos.z(), action);
+	public static Streamable<MutableVector3i> cardinalNeighbours(final Vector3i pos) {
+		return GeomUtil.cardinalNeighbours(pos.x(), pos.y(), pos.z());
 	}
 	
-	public static void forEachCardinalNeighbour(final int x, final int y, final int z, final IntTriConsumer action) {
-		action.accept(x, y, z + 1);
-		action.accept(x, y, z - 1);
-		action.accept(x, y + 1, z);
-		action.accept(x, y - 1, z);
-		action.accept(x + 1, y, z);
-		action.accept(x - 1, y, z);
+	public static Streamable<MutableVector3i> cardinalNeighbours(final int x, final int y, final int z) {
+		final MutableVector3i cursor = MutableVector3i.zero();
+		return Streamable.stream(() -> GeomUtil.cardinalDirections().stream()
+				.map(dir -> cursor.set(x, y, z).add(dir.asBlockOffset())));
 	}
 	
 	private GeomUtil() {
