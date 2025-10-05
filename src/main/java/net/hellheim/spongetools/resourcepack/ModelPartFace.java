@@ -21,15 +21,15 @@ import net.hellheim.spongetools.util.GeomUtil;
 public final class ModelPartFace {
 	
 	public static final int DEFAULT_TINT = -1;
-	public static final Rotation DEFAULT_ROTATION = GeomUtil.ROT_0;
-	public static final Codec<ModelPartFace> CODEC = RecordCodecBuilder.create(
+	public static final Supplier<Rotation> DEFAULT_ROTATION = GeomUtil.ROT_0;
+	public static final Codec<ModelPartFace> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(
 			instance -> instance.group(
 					TextureSlot.CODEC_HASHED.fieldOf("texture").forGetter(ModelPartFace::texture),
 					MathCodecs.MATRIX2D.optionalFieldOf("uv").forGetter(ModelPartFace::uv),
 					SpongeCodecs.CARDINAL_DIRECTION.optionalFieldOf("cullface").forGetter(ModelPartFace::cullface),
-					SpongeCodecs.ROTATION_BY_ANGLE.optionalFieldOf("rotation", ModelPartFace.DEFAULT_ROTATION).forGetter(ModelPartFace::rotation),
+					SpongeCodecs.ROTATION_BY_ANGLE.optionalFieldOf("rotation", ModelPartFace.DEFAULT_ROTATION.get()).forGetter(ModelPartFace::rotation),
 					Codec.INT.optionalFieldOf("tintindex", ModelPartFace.DEFAULT_TINT).forGetter(ModelPartFace::tintIndex)
-					).apply(instance, ModelPartFace::new));
+					).apply(instance, ModelPartFace::new)));
 	
 	private final TextureSlot texture;
 	private final Optional<Matrix2d> uv;
@@ -150,7 +150,7 @@ public final class ModelPartFace {
 			this.texture = null;
 			this.uv = null;
 			this.cullface = null;
-			this.rotation = ModelPartFace.DEFAULT_ROTATION;
+			this.rotation = ModelPartFace.DEFAULT_ROTATION.get();
 			this.tintIndex = ModelPartFace.DEFAULT_TINT;
 			return this;
 		}

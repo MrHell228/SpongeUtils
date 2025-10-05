@@ -3,9 +3,6 @@ package net.hellheim.spongetools.menu;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +19,8 @@ import net.hellheim.spongetools.manager.IMenuManager;
 import net.hellheim.spongetools.menu.pagination.Pagination;
 import net.hellheim.spongetools.menu.pagination.PaginationInitStage;
 import net.hellheim.spongetools.menu.pagination.PaginationType;
+import net.hellheim.spongetools.object.TypedKey;
+import net.hellheim.spongetools.object.TypedKeyMap;
 import net.hellheim.spongetools.proxy.solid.PluginProxy;
 import net.hellheim.spongetools.util.TaskUtil;
 import net.kyori.adventure.text.Component;
@@ -29,7 +28,7 @@ import net.kyori.adventure.text.Component;
 /**
  * {@link Menu} is a wrapper for {@link InventoryMenu} with some useful additions: <br>
  * - History of visited {@link MenuType}s is stored to surf through them back and forth <br>
- * - Data can be stored via {@link MenuKey}s <br>
+ * - Data can be stored via {@link TypedKey}s <br>
  * - {@link Pagination} support <br>
  * <br>
  * Since menu creation requires {@link PluginContainer}, it's recommended to use {@link IMenuManager}. <br>
@@ -39,7 +38,7 @@ import net.kyori.adventure.text.Component;
  *
  * @param <M> The menu itself
  */
-public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiable {
+public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiable, TypedKeyMap.Proxy.Mutable {
 	
 	private final PluginContainer plugin;
 	private final UUID uniqueId;
@@ -48,7 +47,7 @@ public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiab
 	
 	private final Deque<IMenuType<M>> history = new ArrayDeque<>();
 	private final UnmodifiableDeque<IMenuType<M>> historyView = new UnmodifiableDeque<>(this.history);
-	private final Map<MenuKey<?>, Object> data = new HashMap<>();
+	private final TypedKeyMap.Mutable data = TypedKeyMap.create();
 	private @Nullable Pagination pagination = null;
 	
 	private IMenuType<M> type;
@@ -79,11 +78,6 @@ public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiab
 	@SuppressWarnings("unchecked")
 	private M cast() {
 		return (M) this;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <T> T castValue(final MenuKey<T> key, final Object value) {
-		return (T) value;
 	}
 	
 	private void registerHandlers() {
@@ -156,121 +150,9 @@ public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiab
 		return this.menu.inventory();
 	}
 	
-	
-	
-	/**
-	 * Sets value of unknown type for the specified {@link MenuKey} for this {@link Menu}. <br>
-	 * Useful when deleloper is sure about complex type compatability but IDE complains about it. <br>
-	 * <br>
-	 * <b>It's strongly advised to not use this method whenever possible.</b>
-	 * 
-	 * @param key The {@link MenuKey key}
-	 * @param value The value
-	 */
-	public void setUnsafe(final MenuKey<?> key, final @Nullable Object value) {
-		this.data.put(key, value);
-	}
-	
-	/**
-	 * Sets value for the specified {@link MenuKey} for this {@link Menu}. <br>
-	 * <code>Null</code> value is supported.
-	 * 
-	 * @param <T> The type of key and value
-	 * @param key The {@link MenuKey key}
-	 * @param value The value
-	 */
-	public <T> void set(final MenuKey<T> key, final @Nullable T value) {
-		this.data.put(key, value);
-	}
-	
-	/**
-	 * 
-	 * Sets value for the specified {@link MenuKey} for this {@link Menu} only if provided {@link Optional} is present.
-	 * 
-	 * @param <T> The type of key and value
-	 * @param key The key
-	 * @param optionalValue The optional value
-	 */
-	public <T> void setIfPresent(final MenuKey<T> key, final Optional<T> optionalValue) {
-		optionalValue.ifPresent(value -> this.set(key, value));
-	}
-	
-	/**
-	 * Removes provided {@link MenuKey} for this {@link Menu}. <br>
-	 * <br>
-	 * Returns the previous value assosiated with key, or null if there was no value for key.
-	 * 
-	 * @param <T> The type of key
-	 * @param key The key
-	 * @return The previous value assosiated with key, or null if there was no value for key.
-	 */
-	public <T> @Nullable T remove(final MenuKey<T> key) {
-		return this.castValue(key, this.data.remove(key));
-	}
-	
-	/**
-	 * Returns whether this {@link Menu} contains value for provided {@link MenuKey}.
-	 * 
-	 * @param key The key
-	 * @return True if this menu contains value for provided key.
-	 */
-	public boolean has(final MenuKey<?> key) {
-		return this.data.containsKey(key);
-	}
-	
-	/**
-	 * Returns the value assosiated with provided {@link MenuKey} for this {@link Menu},
-	 * or {@link Optional#empty()} if there is no value for key.
-	 * 
-	 * @param <T> The type of key
-	 * @param key The key
-	 * @return The value, if available
-	 */
-	public <T> Optional<T> get(final MenuKey<T> key) {
-		return this.data.containsKey(key) ? Optional.of(this.castValue(key, this.data.get(key))) : Optional.empty();
-	}
-	
-	/**
-	 * Returns the value assosiated with provided {@link MenuKey} for this {@link Menu},
-	 * or <code>defaultValue</code> if there is no value for key.
-	 * 
-	 * @param <T> The type of key and default value
-	 * @param key The key
-	 * @param defaultValue The default value
-	 * @return The value, or default if not set
-	 */
-	public <T> @Nullable T getOrElse(final MenuKey<T> key, T defaultValue) {
-		return this.castValue(key, this.data.getOrDefault(key, defaultValue));
-	}
-	
-	/**
-	 * Returns the value assosiated with provided {@link MenuKey} for this {@link Menu},
-	 * or <code>null</code> if there is no value for key.
-	 * 
-	 * @param <T> The type of key
-	 * @param key The key
-	 * @return The value, or null if not set
-	 */
-	public <T> @Nullable T getOrNull(final MenuKey<T> key) {
-		return this.castValue(key, this.data.get(key));
-	}
-	
-	/**
-	 * Returns the value assosiated with provided {@link MenuKey} for this {@link Menu}. <br>
-	 * <br>
-	 * If there is no value for key, {@link NoSuchElementException} will be thrown.
-	 * 
-	 * @param <T> The type of key
-	 * @param key The {@link MenuKey key}
-	 * @return The value
-	 * @throws NoSuchElementException If there is no value for provided key
-	 */
-	public <T> @Nullable T require(final MenuKey<T> key) {
-		if (!this.data.containsKey(key)) {
-			throw new NoSuchElementException("No value found for the specified menu key");
-		}
-		
-		return this.castValue(key, this.data.get(key));
+	@Override
+	public TypedKeyMap.Mutable data() {
+		return this.data;
 	}
 	
 	

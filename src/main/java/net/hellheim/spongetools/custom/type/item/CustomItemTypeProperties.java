@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
@@ -34,6 +33,7 @@ import net.hellheim.spongetools.proxy.solid.item.ItemStackSnapshotProxy;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.resourcepack.item.ItemModel;
 import net.hellheim.spongetools.resourcepack.item.TintSource;
+import net.hellheim.spongetools.util.ModelUtil;
 import net.hellheim.spongetools.util.TranslationUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -42,7 +42,6 @@ public class CustomItemTypeProperties implements
 		ResourceKeyed,
 		ComponentLike,
 		ValueContainerProxy,
-		IconProxy,
 		ItemStackSnapshotProxy {
 	
 	public static final MapCodec<CustomItemTypeProperties> MAP_CODEC = RecordCodecBuilder.mapCodec(
@@ -57,6 +56,7 @@ public class CustomItemTypeProperties implements
 	
 	private final Component name;
 	private final ItemStackSnapshotProxy icon;
+	private final ItemStackSnapshotProxy ingredientIcon;
 	private final ItemStackSnapshotProxy snapshot;
 	
 	protected CustomItemTypeProperties(final Builder builder) {
@@ -73,15 +73,16 @@ public class CustomItemTypeProperties implements
 		}
 		this.data = data;
 		
-		this.icon = ItemStackSnapshotProxy.of(() -> this.iconBuilder(builder).getAsItemStackSnapshot());
-		this.snapshot = ItemStackSnapshotProxy.of(() -> this.snapshotBuilder(builder).getAsItemStackSnapshot());
+		this.icon = ItemStackSnapshotProxy.of(() -> this.iconBuilder().getAsItemStackSnapshot());
+		this.ingredientIcon = ItemStackSnapshotProxy.of(() -> this.ingredientIconBuilder().getAsItemStackSnapshot());
+		this.snapshot = ItemStackSnapshotProxy.of(() -> this.snapshotBuilder().getAsItemStackSnapshot());
 	}
 	
 	protected CustomItemTypeProperties(
 		final ResourceKey key, final RegistryKey<ItemType> base, final Optional<ItemDefinition> model, DeferredValueContainer data
 	) {
 		this.key = key;
-		this.base = base.asDefaultedReference(Sponge::server);
+		this.base = base.asScopedReference();
 		this.model = model;
 		
 		this.name = TranslationUtil.item(this.key);
@@ -91,9 +92,9 @@ public class CustomItemTypeProperties implements
 		}
 		this.data = data;
 		
-		final Builder builder = this.asBuilder();
-		this.icon = ItemStackSnapshotProxy.of(() -> this.iconBuilder(builder).getAsItemStackSnapshot());
-		this.snapshot = ItemStackSnapshotProxy.of(() -> this.snapshotBuilder(builder).getAsItemStackSnapshot());
+		this.icon = ItemStackSnapshotProxy.of(() -> this.iconBuilder().getAsItemStackSnapshot());
+		this.ingredientIcon = ItemStackSnapshotProxy.of(() -> this.ingredientIconBuilder().getAsItemStackSnapshot());
+		this.snapshot = ItemStackSnapshotProxy.of(() -> this.snapshotBuilder().getAsItemStackSnapshot());
 	}
 	
 	public static Builder builder() {
@@ -137,9 +138,12 @@ public class CustomItemTypeProperties implements
 		return this.data;
 	}
 	
-	@Override
-	public ItemStackSnapshot getAsIcon() {
+	public ItemStackSnapshot icon() {
 		return this.icon.getAsItemStackSnapshot();
+	}
+	
+	public ItemStackSnapshot ingredientIcon() {
+		return this.ingredientIcon.getAsItemStackSnapshot();
 	}
 	
 	@Override
@@ -147,18 +151,19 @@ public class CustomItemTypeProperties implements
 		return this.snapshot.getAsItemStackSnapshot();
 	}
 	
-	protected ItemBuilder iconBuilder(final Builder builder) {
-		final ItemBuilder item = ItemBuilder.of(this.base).displayName(this.name);
-		this.data.getAsData().getValues().forEach(item::offer);
+	protected ItemBuilder iconBuilder() {
+		final ItemBuilder item = ItemBuilder.of(this.base);
+		this.getValue(Keys.ITEM_NAME).ifPresent(item::offer);
+		this.getValue(Keys.MODEL).ifPresent(item::offer);
 		return item;
 	}
 	
-	protected ItemBuilder snapshotBuilder(final Builder builder) {
-		return ItemBuilder.of(this.icon);
+	protected ItemBuilder ingredientIconBuilder() {
+		return this.snapshotBuilder();
 	}
 	
-	protected Builder asBuilder() {
-		return new Builder().from(this);
+	protected ItemBuilder snapshotBuilder() {
+		return ItemBuilder.of(this.icon).copyFrom(this.data);
 	}
 	
 	public static class Builder implements
@@ -198,7 +203,7 @@ public class CustomItemTypeProperties implements
 			if (this.key == null) {
 				throw new IllegalStateException("key must be set");
 			}
-			return this.model(ItemModel.simple(this.key, tints));
+			return this.model(ItemModel.simple(ModelUtil.withItemPrefix(this.key), tints));
 		}
 		
 		public Builder data(final DeferredValueContainer data) {
@@ -206,8 +211,21 @@ public class CustomItemTypeProperties implements
 			return this;
 		}
 		
+		public Builder dataBefore(final Consumer<ValueSetBuilder> data) {
+			return this.data == null
+					? this.data(DeferredValueContainer.of(data))
+					: this.data(this.data.withBefore(data));
+		}
+		
+		public Builder dataAfter(final Consumer<ValueSetBuilder> data) {
+			return this.data == null
+					? this.data(DeferredValueContainer.of(data))
+					: this.data(this.data.withAfter(data));
+		}
+		
+		// TODO keep or remove?
 		public Builder data(final Consumer<ValueSetBuilder> data) {
-			return this.data(DeferredValueContainer.of(data));
+			return this.dataAfter(data);
 		}
 		
 		@Override

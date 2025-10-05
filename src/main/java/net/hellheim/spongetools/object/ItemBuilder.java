@@ -92,7 +92,7 @@ public class ItemBuilder implements IItemProxy, TransitiveMutableDataHolderProxy
 	
 	@Override
 	public ItemStackLike getAsItemStackLike() {
-		return this.getAsItemStack();
+		return this.stack;
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package net.hellheim.spongetools.custom.type.item;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
@@ -16,6 +17,8 @@ import org.spongepowered.api.data.persistence.Queries;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.recipe.crafting.Ingredient;
 import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
@@ -34,7 +37,6 @@ public interface CustomItemType extends
 		ComponentLike,
 		DataSerializable,
 		ValueContainer,
-		IconProxy,
 		ItemStackSnapshotProxy {
 	
 	static DefaultedRegistryType<CustomItemType> registry() {
@@ -107,11 +109,21 @@ public interface CustomItemType extends
 		return itemToCompare != null && itemToCompare.isAnyOf(items);
 	}
 	
+	@SafeVarargs
+	static boolean isAny(final @Nullable CustomItemType itemToCompare, final Supplier<? extends CustomItemType>... items) {
+		return itemToCompare != null && itemToCompare.isAnyOf(items);
+	}
+	
 	static boolean isAny(final @Nullable CustomItemType itemToCompare, final Iterable<? extends CustomItemType> items) {
 		return itemToCompare != null && itemToCompare.isAnyOfItem(items);
 	}
 	
 	static boolean isAny(final @Nullable ValueContainer container, final CustomItemType... items) {
+		return container != null && CustomItemType.isAny(CustomItemType.getOrNull(container), items);
+	}
+	
+	@SafeVarargs
+	static boolean isAny(final @Nullable ValueContainer container, final Supplier<? extends CustomItemType>... items) {
 		return container != null && CustomItemType.isAny(CustomItemType.getOrNull(container), items);
 	}
 	
@@ -123,11 +135,21 @@ public interface CustomItemType extends
 		return !CustomItemType.isAny(itemToCompare, items);
 	}
 	
+	@SafeVarargs
+	static boolean isNone(final @Nullable CustomItemType itemToCompare, final Supplier<? extends CustomItemType>... items) {
+		return !CustomItemType.isAny(itemToCompare, items);
+	}
+	
 	static boolean isNone(final @Nullable CustomItemType itemToCompare, final Iterable<? extends CustomItemType> items) {
 		return !CustomItemType.isAny(itemToCompare, items);
 	}
 	
 	static boolean isNone(final @Nullable ValueContainer container, final CustomItemType... items) {
+		return !CustomItemType.isAny(container, items);
+	}
+	
+	@SafeVarargs
+	static boolean isNone(final @Nullable ValueContainer container, final Supplier<? extends CustomItemType>... items) {
 		return !CustomItemType.isAny(container, items);
 	}
 	
@@ -141,6 +163,10 @@ public interface CustomItemType extends
 		return item == this;
 	}
 	
+	default boolean is(final @Nullable Supplier<? extends CustomItemType> item) {
+		return item != null && this.is(item.get());
+	}
+	
 	default boolean is(final @Nullable ValueContainer container) {
 		return container != null && this.is(CustomItemType.getOrNull(container));
 	}
@@ -148,6 +174,17 @@ public interface CustomItemType extends
 	default boolean isAnyOf(final CustomItemType... items) {
 		for (final CustomItemType item : items) {
 			if (this.is(item)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	default boolean isAnyOf(final Supplier<? extends CustomItemType>... items) {
+		for (final Supplier<? extends CustomItemType> item : items) {
+			if (this.is(item.get())) {
 				return true;
 			}
 		}
@@ -204,6 +241,14 @@ public interface CustomItemType extends
 	default EitherItemType either() {
 		return EitherItemType.custom(this);
 	}
+	
+	default Ingredient ingredient() {
+		return CustomIngredients.singleton(this);
+	}
+	
+	ItemStackSnapshot icon();
+	
+	ItemStackSnapshot ingredientIcon();
 	
 	// Methods that may be overriden
 	

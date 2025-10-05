@@ -131,7 +131,7 @@ public interface BehaviourCallbackHolder<H> {
 		 * @param value The value to return
 		 * @return This modifiable behaviour, for chaining
 		 */
-		default <R, A extends BehaviourArgs> M set(
+		default <R, A extends BehaviourArgs> M supply(
 			final BehaviourType<? extends Behaviour<R, A>> type, final Supplier<? extends R> valueSupplier
 		) {
 			Objects.requireNonNull(valueSupplier, "valueSupplier");

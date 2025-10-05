@@ -14,7 +14,7 @@ import net.hellheim.spongetools.codec.list.SpongeCodecs;
 
 public final class ModelPartRotation {
 	
-	public static final Codec<ModelPartRotation> CODEC = RecordCodecBuilder.create(
+	public static final Codec<ModelPartRotation> CODEC = RecordCodecBuilder.<ModelPartRotation>create(
 			instance -> instance.group(
 					MathCodecs.VECTOR3D.fieldOf("origin").forGetter(ModelPartRotation::origin),
 					SpongeCodecs.AXIS.fieldOf("axis").forGetter(ModelPartRotation::axis),

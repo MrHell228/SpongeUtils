@@ -1,5 +1,7 @@
 package net.hellheim.spongetools.custom.behaviour.type;
 
+import java.util.Optional;
+
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -13,6 +15,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.util.AABB;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.WorldLike;
 import org.spongepowered.api.world.volume.game.PrimitiveGameVolume;
 import org.spongepowered.api.world.volume.game.Region;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
@@ -33,6 +36,7 @@ import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Signal
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Tick;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.UseWithItem;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.UseWithoutItem;
+import net.kyori.adventure.sound.Sound;
 
 public final class BlockStateBehaviours {
 	
@@ -178,6 +182,13 @@ public final class BlockStateBehaviours {
 	 * If block doesn't have an item representation, this behaviour would return {@link ItemStack#empty()}.
 	 */
 	public static final BehaviourType<CloneItem> CLONE_ITEM = BehaviourType.create();
+	
+	/**
+	 * TODO Can do something and return item filled "bucket".
+	 */
+	public static final BehaviourType<LocatableEntity<ItemStack, WorldLike<?>, Optional<Player>>> BUCKET_PICKUP_ITEM = BehaviourType.create();
+	
+	public static final BehaviourType<SimpleObject<Optional<Sound>>> BUCKET_PICKUP_SOUND = BehaviourType.create();
 	
 	private BlockStateBehaviours() {
 	}

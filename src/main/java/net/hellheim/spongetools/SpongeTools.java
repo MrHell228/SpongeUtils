@@ -15,6 +15,8 @@ import net.hellheim.spongetools.custom.type.block.CustomBlockType;
 import net.hellheim.spongetools.custom.type.block.EitherBlockType;
 import net.hellheim.spongetools.custom.type.item.CustomItemType;
 import net.hellheim.spongetools.custom.type.item.EitherItemType;
+import net.hellheim.spongetools.custom.type.item.LoreProcessor;
+import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
@@ -53,6 +55,10 @@ public final class SpongeTools {
 		 */
 		public static final DefaultedRegistryType<Model> MODEL = Registries.key("models");
 		
+		public static final DefaultedRegistryType<MapCodec<? extends LoreProcessor>> LORE_PROCESSOR_TYPE = Registries.key("lore_processor_type");
+		
+		public static final DefaultedRegistryType<MapCodec<? extends LoreProvider>> LORE_PROVIDER_TYPE = Registries.key("lore_provider_type");
+		
 		public static final DefaultedRegistryType<MapCodec<? extends CustomConsumeEffect>> CONSUME_EFFECT_TYPE = Registries.key("consume_effect_type");
 		
 	    private static <V> DefaultedRegistryType<V> key(final String key) {
@@ -66,6 +72,10 @@ public final class SpongeTools {
 	public static final class Keys {
 		
 		public static final Key<Value<CustomItemType>> ITEM_TYPE = Keys.key("item", CustomItemType.class);
+		
+		public static final Key<Value<LoreProcessor>> LORE_PROCESSOR = Keys.key("lore_processor", LoreProcessor.class);
+		
+		public static final Key<ListValue<LoreProvider>> LORE_PROVIDERS = Keys.listKey("lore_providers", LoreProvider.class);
 		
 		public static final Key<ListValue<CustomConsumeEffect>> CONSUME_EFFECTS = Keys.listKey("consume_effects", CustomConsumeEffect.class);
 		

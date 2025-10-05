@@ -202,8 +202,9 @@ public final class ItemUtil {
 	
 	
 	
-	public static boolean similar(final ItemStack i1, final ItemStack i2) {
-		return ItemStackComparators.TYPE.get().compare(i1, i2) == 0;//TODO replace TYPE with IGNORE_SIZE
+	public static boolean similar(final ItemStackLike i1, final ItemStackLike i2) {
+		// TODO change in API to use ItemStackLike
+		return ItemStackComparators.IGNORE_SIZE.get().compare(i1.asMutable(), i2.asMutable()) == 0;
 	}
 	
 	

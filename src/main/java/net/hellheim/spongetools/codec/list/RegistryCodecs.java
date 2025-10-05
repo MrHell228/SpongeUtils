@@ -76,7 +76,6 @@ import org.spongepowered.api.effect.particle.ParticleType;
 import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.effect.sound.music.MusicDisc;
-import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityCategory;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.ai.goal.GoalExecutorType;
@@ -177,6 +176,8 @@ import net.hellheim.spongetools.custom.type.block.CustomBlockType;
 import net.hellheim.spongetools.custom.type.block.EitherBlockType;
 import net.hellheim.spongetools.custom.type.item.CustomItemType;
 import net.hellheim.spongetools.custom.type.item.EitherItemType;
+import net.hellheim.spongetools.custom.type.item.LoreProcessor;
+import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
@@ -202,6 +203,10 @@ public final class RegistryCodecs {
 	public static final Codec<BlockDefinition> BLOCK_DEFINITION = RegistryCodecs.register(BlockDefinition.class, BlockDefinition.registry());
 	
 	public static final Codec<Model> MODEL = RegistryCodecs.register(Model.class, Model.registry());
+	
+	public static final Codec<MapCodec<? extends LoreProcessor>> LORE_PROCESSOR_TYPE = RegistryCodecs.of(SpongeTools.Registries.LORE_PROCESSOR_TYPE);
+	
+	public static final Codec<MapCodec<? extends LoreProvider>> LORE_PROVIDER_TYPE = RegistryCodecs.of(SpongeTools.Registries.LORE_PROVIDER_TYPE);
 	
 	public static final Codec<MapCodec<? extends CustomConsumeEffect>> CUSTOM_CONSUME_EFFECT_TYPE = RegistryCodecs.of(SpongeTools.Registries.CONSUME_EFFECT_TYPE);
 	
@@ -239,7 +244,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<EntityCategory> ENTITY_CATEGORY = RegistryCodecs.register(EntityCategory.class, RegistryTypes.ENTITY_CATEGORY);
 	
-	public static final Codec<EntityType<? extends Entity>> ENTITY_TYPE = RegistryCodecs.register(EntityType.class, RegistryTypes.ENTITY_TYPE);
+	public static final Codec<EntityType<?>> ENTITY_TYPE = RegistryCodecs.register(EntityType.class, RegistryTypes.ENTITY_TYPE);
 	
 	public static final Codec<Feature> FEATURE = RegistryCodecs.register(Feature.class, RegistryTypes.FEATURE);
 	
@@ -273,7 +278,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<PotionType> POTION_TYPE = RegistryCodecs.register(PotionType.class, RegistryTypes.POTION_TYPE);
 	
-	public static final Codec<RecipeType<? extends Recipe<?>>> RECIPE_TYPE = RegistryCodecs.register(RecipeType.class, RegistryTypes.RECIPE_TYPE);
+	public static final Codec<RecipeType<?>> RECIPE_TYPE = RegistryCodecs.register(RecipeType.class, RegistryTypes.RECIPE_TYPE);
 	
 	public static final Codec<SoundType> SOUND_TYPE = RegistryCodecs.register(SoundType.class, RegistryTypes.SOUND_TYPE);
 	
@@ -287,7 +292,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<StructureType> STRUCTURE_TYPE = RegistryCodecs.register(StructureType.class, RegistryTypes.STRUCTURE_TYPE);
 	
-	public static final Codec<Trigger<? extends Object>> TRIGGER = RegistryCodecs.register(Trigger.class, RegistryTypes.TRIGGER);
+	public static final Codec<Trigger<?>> TRIGGER = RegistryCodecs.register(Trigger.class, RegistryTypes.TRIGGER);
 	
 	public static final Codec<TrimMaterial> TRIM_MATERIAL = RegistryCodecs.register(TrimMaterial.class, RegistryTypes.TRIM_MATERIAL);
 	
@@ -339,7 +344,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<CommandRegistrarType<?>> COMMAND_REGISTRAR_TYPE = RegistryCodecs.register(CommandRegistrarType.class, RegistryTypes.COMMAND_REGISTRAR_TYPE);
 	
-	public static final Codec<CommandTreeNodeType<? extends Object>> COMMAND_TREE_NODE_TYPE = RegistryCodecs.register(CommandTreeNodeType.class, RegistryTypes.COMMAND_TREE_NODE_TYPE);
+	public static final Codec<CommandTreeNodeType<?>> COMMAND_TREE_NODE_TYPE = RegistryCodecs.register(CommandTreeNodeType.class, RegistryTypes.COMMAND_TREE_NODE_TYPE);
 	
 	public static final Codec<ComparatorMode> COMPARATOR_MODE = RegistryCodecs.register(ComparatorMode.class, RegistryTypes.COMPARATOR_MODE);
 	

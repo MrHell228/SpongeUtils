@@ -11,11 +11,10 @@ import java.util.stream.Stream;
 
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.type.SlabPortions;
-import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.state.BooleanStateProperties;
 import org.spongepowered.api.state.EnumStateProperties;
-import org.spongepowered.api.tag.BlockTypeTags;
 
 public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*/ {
 	
@@ -91,7 +90,7 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		
 		@Override
 		public final String toString() {
-			return this.providers.toString();
+			return "AnyProvider[" + this.providers.toString() + "]";
 		}
 	}
 	
@@ -108,7 +107,7 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		
 		@Override
 		public String toString() {
-			return this.states.toString();
+			return "AnyState[" + this.states.toString() + "]";
 		}
 	}
 	
@@ -125,7 +124,7 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		
 		@Override
 		public String toString() {
-			return this.blocks.toString();
+			return "AnyBlock[" + this.blocks.toString() + "]";
 		}
 	}
 	
@@ -135,7 +134,7 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 		
 		@Override
 		public Stream<BlockState> allStates() {
-			return RegistryTypes.BLOCK_TYPE.get().taggedValues(BlockTypeTags.SLABS).stream()
+			return BlockTypes.registry().stream()
 					.flatMap(block -> block.validStates().stream())
 					.filter(state -> state
 							.stateProperty(EnumStateProperties.property_SLAB_TYPE()).orElse(null) == SlabPortions.DOUBLE.get())

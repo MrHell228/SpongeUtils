@@ -23,6 +23,8 @@ import org.spongepowered.math.vector.Vector3f;
 import org.spongepowered.math.vector.Vector3i;
 import org.spongepowered.math.vector.Vector3l;
 
+import com.google.common.base.Suppliers;
+
 import net.hellheim.spongetools.function.IntBiConsumer;
 import net.hellheim.spongetools.function.IntTriConsumer;
 import net.hellheim.spongetools.math.mutable.vector.MutableVector3i;
@@ -30,13 +32,12 @@ import net.hellheim.spongetools.object.Streamable;
 
 public final class GeomUtil {
 	
-	// Relies on implementation where these are enum values meaning they should always be available.
-	public static final Rotation ROT_0 = Rotations.NONE.get();
-	public static final Rotation ROT_90 = Rotations.CLOCKWISE_90.get();
-	public static final Rotation ROT_180 = Rotations.CLOCKWISE_180.get();
-	public static final Rotation ROT_270 = Rotations.COUNTERCLOCKWISE_90.get();
-	private static final List<Rotation> ROTATION_VALUES =
-			List.of(ROT_0, ROT_90, ROT_180, ROT_270);
+	public static final Supplier<Rotation> ROT_0 = Suppliers.memoize(Rotations.NONE::get);
+	public static final Supplier<Rotation> ROT_90 = Suppliers.memoize(Rotations.CLOCKWISE_90::get);
+	public static final Supplier<Rotation> ROT_180 = Suppliers.memoize(Rotations.CLOCKWISE_180::get);
+	public static final Supplier<Rotation> ROT_270 = Suppliers.memoize(Rotations.COUNTERCLOCKWISE_90::get);
+	private static final Supplier<List<Rotation>> ROTATION_VALUES = Suppliers.memoize(() ->
+			List.of(ROT_0.get(), ROT_90.get(), ROT_180.get(), ROT_270.get()));
 	
 	private static final List<Direction> DIR_CARDINAL = Arrays.stream(Direction.values())
 			.filter(Direction::isCardinal)
@@ -105,7 +106,7 @@ public final class GeomUtil {
 	}
 	
 	public static List<Rotation> rotations() {
-		return ROTATION_VALUES;
+		return ROTATION_VALUES.get();
 	}
 	
 	public static List<Direction> cardinalDirections() {
@@ -130,13 +131,13 @@ public final class GeomUtil {
 		}
 		
 		if (GeomUtil.is(from, to)) {
-			return Optional.of(GeomUtil.ROT_0);
+			return Optional.of(GeomUtil.ROT_0.get());
 		} else if (from.isOpposite(to)) {
-			return Optional.of(GeomUtil.ROT_180);
+			return Optional.of(GeomUtil.ROT_180.get());
 		} else if (DIR_CLOCKWISE_90.get(from) == to) {
-			return Optional.of(GeomUtil.ROT_90);
+			return Optional.of(GeomUtil.ROT_90.get());
 		} else if (DIR_COUNTERCLOCKWISE_90.get(from) == to) {
-			return Optional.of(GeomUtil.ROT_270);
+			return Optional.of(GeomUtil.ROT_270.get());
 		}
 		
 		return Optional.empty();
@@ -355,9 +356,6 @@ public final class GeomUtil {
 		for (int x = -radius; x <= radius; ++x) {
 			final int x2 = x * x;
 			final int y2max = rad2 - x2;
-			if (y2max < 0) {
-				break;
-			}
 			
 			action.accept(x0, y0);
 			for (int y = 1; y*y <= y2max; ++y) {
@@ -373,7 +371,7 @@ public final class GeomUtil {
 	
 	public static Streamable<MutableVector3i> cardinalNeighbours(final int x, final int y, final int z) {
 		final MutableVector3i cursor = MutableVector3i.zero();
-		return Streamable.stream(() -> GeomUtil.cardinalDirections().stream()
+		return Streamable.of(() -> GeomUtil.cardinalDirections().stream()
 				.map(dir -> cursor.set(x, y, z).add(dir.asBlockOffset())));
 	}
 	

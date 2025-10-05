@@ -1,6 +1,7 @@
 package net.hellheim.spongetools.util;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -15,6 +16,7 @@ import org.spongepowered.api.block.transaction.Operation;
 import org.spongepowered.api.block.transaction.Operations;
 import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.data.type.StringRepresentable;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventContext;
@@ -63,8 +65,9 @@ public final class EventUtil {
 				if (bt.custom().isPresent()) {
 					tr.add(DASH + "Default:   " + toString(bt.defaultReplacement()));
 					tr.add(DASH + "Custom:    " + toString(bt.custom().get()));
+				} else {
+					tr.add(DASH + "Final:     " + toString(bt.finalReplacement()));
 				}
-				tr.add(DASH + "Final:     " + toString(bt.finalReplacement()));
 				
 				tr.shift(SHIFT);
 				tr.add(0, DASH + "Transaction №" + counter.getAndIncrement() + ":");
@@ -120,10 +123,8 @@ public final class EventUtil {
 		cause.forEach(o -> {
 			if (o instanceof Event) {
 				result.addAll(list((Event) o));
-			} else if (o instanceof LocatableBlock) {
-				result.add(DASH + "LocatableBlock: " + toString((LocatableBlock) o));
 			} else {
-				result.add(DASH + o.getClass().getSimpleName());
+				result.add(DASH + objectToString(o, () -> o.getClass().getSimpleName()));
 			}
 		});
 		
@@ -135,7 +136,7 @@ public final class EventUtil {
 	private static StringList list(final EventContext context, final String name) {
 		final StringList result = new StringList();
 		context.asMap().forEach((key, o) -> {
-			result.add(DASH + key.key().asString() + " - " + o.toString());
+			result.add(DASH + key.key().asString() + DASH + objectToString(o, o::toString));
 		});
 		
 		result.add(0, "Context of " + name);
@@ -143,19 +144,43 @@ public final class EventUtil {
 		return result;
 	}
 	
-	private static String toString(final BlockSnapshot bs) {
-		return toString(bs.world(), bs.position(), bs.state());
-	}
-	private static String toString(final LocatableBlock lb) {
-		return toString(lb.serverLocation().worldKey(), lb.blockPosition(), lb.blockState());
-	}
-	private static String toString(final ResourceKey world, final Vector3i pos, final BlockState state) {
-		return "World=" + world.asString() + "; " +
-				"Loc=" + pos.toString() + "; " +
-				"State=" + state.asString() + ";";
+	private static String objectToString(final Object object, final Supplier<String> defaultString) {
+		return switch (object) {
+			case BlockSnapshot bs -> toString(bs);
+			case LocatableBlock lb -> toString(lb);
+			case StringRepresentable sr -> toString(sr);
+			case Enum<?> en -> toString(en);
+			default -> defaultString.get();
+		};
 	}
 	
-	private static final HashMap<Operation, String> OPERATIONS = new HashMap<>();
+	private static String toString(final StringRepresentable sr) {
+		return sr.getClass().getSimpleName() + " " + sr.serializationString().toUpperCase();
+	}
+	
+	private static String toString(final Enum<?> en) {
+		return en.getClass().getSimpleName() + " " + en.name();
+	}
+	
+	private static String toString(final BlockSnapshot bs) {
+		return "BlockSnapshot{"
+				+ toString(bs.world(), bs.position(), bs.state())
+				+ "}";
+	}
+	
+	private static String toString(final LocatableBlock lb) {
+		return "LocatableBlock{"
+				+ toString(lb.serverLocation().worldKey(), lb.blockPosition(), lb.blockState())
+				+ "}";
+	}
+	
+	private static String toString(final ResourceKey world, final Vector3i pos, final BlockState state) {
+		return "world=" + world.asString() + "; " +
+				"pos=" + pos.toString() + "; " +
+				"state=" + state.asString();
+	}
+	
+	private static final Map<Operation, String> OPERATIONS = new HashMap<>();
 	static {
 		OPERATIONS.put(Operations.BREAK.get(), "BREAK");
 		OPERATIONS.put(Operations.PLACE.get(), "PLACE");

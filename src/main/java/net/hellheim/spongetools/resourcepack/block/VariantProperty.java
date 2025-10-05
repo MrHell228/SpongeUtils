@@ -5,11 +5,13 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.spongepowered.api.data.type.StringRepresentable;
+import org.spongepowered.api.util.annotation.CatalogedBy;
 
 import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.codec.LateBoundIdMapper;
 
+@CatalogedBy(VariantProperties.class)
 public record VariantProperty<T>(String name, Codec<T> valueCodec, Optional<T> defaultValue)
 		implements StringRepresentable {
 	

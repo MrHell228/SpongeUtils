@@ -10,12 +10,12 @@ import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 
 public class BasicCustomBlockType implements DefaultedCustomBlockType {
 	
-	private final CustomBlockTypeProperties propeties;
+	private final CustomBlockTypeProperties properties;
 	private @MonotonicNonNull BlockState state;
 	private @MonotonicNonNull BlockStateExtension stateExtension;
 	
-	public BasicCustomBlockType(final CustomBlockTypeProperties propeties) {
-		this.propeties = Objects.requireNonNull(propeties, "propeties");
+	public BasicCustomBlockType(final CustomBlockTypeProperties properties) {
+		this.properties = Objects.requireNonNull(properties, "properties");
 	}
 	
 	public BasicCustomBlockType(final CustomBlockTypeBuilder<?> builder) {
@@ -24,13 +24,13 @@ public class BasicCustomBlockType implements DefaultedCustomBlockType {
 	
 	@Override
 	public CustomBlockTypeProperties properties() {
-		return this.propeties;
+		return this.properties;
 	}
 	
 	@Override
 	public BlockState state() {
 		if (this.state == null) {
-			throw new IllegalStateException("State is not yet bound");
+			throw new IllegalStateException("State is not yet bound for " + this.toString());
 		}
 		
 		return this.state;
@@ -39,7 +39,7 @@ public class BasicCustomBlockType implements DefaultedCustomBlockType {
 	@Override
 	public void bind(final BlockState state) {
 		if (this.state != null) {
-			throw new IllegalStateException("State is already bound");
+			throw new IllegalStateException("State is already bound for " + this.toString());
 		}
 		
 		this.state = Objects.requireNonNull(state, "state");

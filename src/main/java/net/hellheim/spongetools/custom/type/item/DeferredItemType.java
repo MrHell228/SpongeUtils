@@ -23,7 +23,7 @@ import net.kyori.adventure.text.ComponentLike;
  */
 public final class DeferredItemType implements
 		Supplier<EitherItemType>,
-		ResourceKeyed, ComponentLike, ValueContainerProxy, IconProxy, IItemProxy {
+		ResourceKeyed, ComponentLike, ValueContainerProxy, IItemProxy {
 	
 	private final Supplier<EitherItemType> type;
 	
@@ -77,11 +77,6 @@ public final class DeferredItemType implements
 	@Override
 	public ValueContainer getAsData() {
 		return this.get().getAsData();
-	}
-	
-	@Override
-	public ItemStackSnapshot getAsIcon() {
-		return this.get().getAsIcon();
 	}
 	
 	@Override

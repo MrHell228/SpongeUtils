@@ -14,9 +14,9 @@ public final class VariantProperties {
 	
 	public static final VariantProperty<ResourceKey> MODEL = property("model", SpongeCodecs.RESOURCE_KEY, Optional.empty());
 	
-	public static final VariantProperty<Rotation> X_ROT = property("x", SpongeCodecs.ROTATION_BY_ANGLE, Optional.of(GeomUtil.ROT_0));
+	public static final VariantProperty<Rotation> X_ROT = property("x", SpongeCodecs.ROTATION_BY_ANGLE, Optional.of(GeomUtil.ROT_0.get()));
 	
-	public static final VariantProperty<Rotation> Y_ROT = property("y", SpongeCodecs.ROTATION_BY_ANGLE, Optional.of(GeomUtil.ROT_0));
+	public static final VariantProperty<Rotation> Y_ROT = property("y", SpongeCodecs.ROTATION_BY_ANGLE, Optional.of(GeomUtil.ROT_0.get()));
 	
 	public static final VariantProperty<Boolean> UV_LOCK = property("uvlock", Codec.BOOL, Optional.of(false));
 	

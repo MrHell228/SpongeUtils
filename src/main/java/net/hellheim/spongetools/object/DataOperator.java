@@ -1,11 +1,18 @@
 package net.hellheim.spongetools.object;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.spongepowered.api.data.Key;
+import org.spongepowered.api.data.value.CollectionValue;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.data.value.ValueContainer;
 
+import com.google.common.collect.Streams;
+
+@SuppressWarnings("unchecked")
 public interface DataOperator<B extends DataOperator<B>> {
 	
 	/**
@@ -44,7 +51,6 @@ public interface DataOperator<B extends DataOperator<B>> {
 	 * @param values The values to add
 	 * @return This builder, for chaining
 	 */
-	@SuppressWarnings("unchecked")
 	default B addAll(final Iterable<? extends Value<?>> values) {
 		values.forEach(this::add);
 		return (B) this;
@@ -66,9 +72,8 @@ public interface DataOperator<B extends DataOperator<B>> {
 	 * @param value The value to add
 	 * @return This builder, for chaining
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	default B add(final Value<?> value) {
-		return (B) this.add((Key) value.key(), value.get());
+	default <V> B add(final Value<V> value) {
+		return (B) this.add(value.key(), value.get());
 	}
 	
 	/**
@@ -116,6 +121,70 @@ public interface DataOperator<B extends DataOperator<B>> {
 	 * @return This builder, for chaining
 	 */
 	<V> B add(Key<? extends Value<V>> key, V value);
+	
+	default <V, C extends Collection<V>> B supplyAll(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final Supplier<? extends V>... elements) {
+		return this.addAll(key, Arrays.stream(elements).map(Supplier::get));
+	}
+	
+	default <V, C extends Collection<V>> B supplyAll(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final Supplier<? extends Iterable<? extends V>> elements) {
+		return this.addAll(key, elements.get());
+	}
+	
+	default <V, C extends Collection<V>> B supplyAll(final Key<? extends CollectionValue<V, C>> key, final Supplier<? extends V>... elements) {
+		return this.addAll(key, Arrays.stream(elements).map(Supplier::get));
+	}
+	
+	default <V, C extends Collection<V>> B supplyAll(final Key<? extends CollectionValue<V, C>> key, final Supplier<? extends Iterable<? extends V>> elements) {
+		return this.addAll(key, elements.get());
+	}
+	
+	default <V, C extends Collection<V>> B addAll(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final V... elements) {
+		return this.addAll(key.get(), elements);
+	}
+	
+	default <V, C extends Collection<V>> B addAll(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final Iterable<? extends V> elements) {
+		return this.addAll(key.get(), elements);
+	}
+	
+	default <V, C extends Collection<V>> B addAll(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final Stream<? extends V> elements) {
+		return this.addAll(key.get(), elements);
+	}
+	
+	default <V, C extends Collection<V>> B addAll(final Key<? extends CollectionValue<V, C>> key, final V... elements) {
+		return this.addAll(key, Arrays.stream(elements));
+	}
+	
+	default <V, C extends Collection<V>> B addAll(final Key<? extends CollectionValue<V, C>> key, final Iterable<? extends V> elements) {
+		return this.addAll(key, Streams.stream(elements));
+	}
+	
+	default <V, C extends Collection<V>> B addAll(final Key<? extends CollectionValue<V, C>> key, final Stream<? extends V> elements) {
+		elements.forEach(element -> this.addSingle(key, element));
+		return (B) this;
+	}
+	
+	default <V, C extends Collection<V>> B supplySingle(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final Supplier<? extends V> element) {
+		return this.addSingle(key.get(), element.get());
+	}
+	
+	default <V, C extends Collection<V>> B supplySingle(final Key<? extends CollectionValue<V, C>> key, final Supplier<? extends V> element) {
+		return this.addSingle(key, element.get());
+	}
+	
+	default <V, C extends Collection<V>> B addSingle(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final V element) {
+		return this.addSingle(key.get(), element);
+	}
+	
+	/**
+	 * Adds the given element to currently present for the given {@link Key}.
+	 * TODO doc
+	 * 
+	 * @param key     The key to assign the element with
+	 * @param element The element to assign with the key
+	 * @param <V>     The type of the element
+	 * @return The builder, for chaining
+	 */
+	<V, C extends Collection<V>> B addSingle(Key<? extends CollectionValue<V, C>> key, V element);
 	
 	B reset();
 }

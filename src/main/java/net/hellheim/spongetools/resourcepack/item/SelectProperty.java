@@ -123,7 +123,7 @@ public interface SelectProperty<T> extends MapCodecProxy<SelectSwitch<?, ?>> {
 		}
 	}
 	
-	record Entity() implements SelectProperty<RegistryKey<EntityType<? extends org.spongepowered.api.entity.Entity>>> {
+	record Entity() implements SelectProperty<RegistryKey<EntityType<?>>> {
 		public static final Entity INSTANCE = new Entity();
 		public static final MapCodec<Entity> CODEC = MapCodec.unit(INSTANCE);
 		public static final MapCodec<? extends SelectSwitch<?, ?>> SWITCH = SelectProperty.create(CODEC, SpongeCodecs.registryKey(RegistryTypes.ENTITY_TYPE));

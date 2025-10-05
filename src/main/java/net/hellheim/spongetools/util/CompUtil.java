@@ -21,6 +21,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
  */
 public final class CompUtil {
 	
+	
 	public static String toPlain(final Component comp) {
 		return toString(Types.plain(), comp);
 	}

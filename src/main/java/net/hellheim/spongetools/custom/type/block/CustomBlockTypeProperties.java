@@ -40,6 +40,6 @@ public class CustomBlockTypeProperties implements
 	}
 	
 	public CustomBlockTypeBuilder<?> toBuilder() {
-		return new CustomBlockTypeBuilder<>();
+		return new CustomBlockTypeBuilder<>().from(this);
 	}
 }

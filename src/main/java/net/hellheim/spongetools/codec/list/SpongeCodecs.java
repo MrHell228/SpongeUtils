@@ -44,13 +44,13 @@ public final class SpongeCodecs {
 	public static final Codec<Rotation> ROTATION_BY_ANGLE = Codec.INT.flatXmap(
 			angle -> {
 				if (angle == 0) {
-					return DataResult.success(GeomUtil.ROT_0);
+					return DataResult.success(GeomUtil.ROT_0.get());
 				} else if (angle == 90) {
-					return DataResult.success(GeomUtil.ROT_90);
+					return DataResult.success(GeomUtil.ROT_90.get());
 				} else if (angle == 180) {
-					return DataResult.success(GeomUtil.ROT_180);
+					return DataResult.success(GeomUtil.ROT_180.get());
 				} else if (angle == 270) {
-					return DataResult.success(GeomUtil.ROT_270);
+					return DataResult.success(GeomUtil.ROT_270.get());
 				} else {
 					return DataResult.error(() -> "Rotation angle must be 0, 90, 180 or 270: " + angle);
 				}

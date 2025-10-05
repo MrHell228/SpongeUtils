@@ -34,7 +34,7 @@ import net.kyori.adventure.text.ComponentLike;
  * Wrapper for either {@link ItemType} or {@link CustomItemType}.
  */
 public sealed abstract class EitherItemType
-		implements EitherType<ItemType, CustomItemType, EitherItemType>, ResourceKeyed, ComponentLike, ValueContainerProxy, IconProxy, IItemProxy
+		implements EitherType<ItemType, CustomItemType, EitherItemType>, ResourceKeyed, ComponentLike, ValueContainerProxy, IItemProxy
 		permits EitherItemType.Common, EitherItemType.Custom {
 	
 	private static final Map<ItemType, EitherItemType> COMMON_MAP = new IdentityHashMap<>();
@@ -125,22 +125,15 @@ public sealed abstract class EitherItemType
 			ItemTypeProxy {
 		
 		private final ItemType type;
-		private final IconProxy icon;
 		
 		protected Common(final ItemType type) {
 			this.type = Objects.requireNonNull(type, "type");
-			this.icon = IconProxy.wrapTypeCached(() -> this.type);
 		}
 		
 		@Override
 		public ItemType get() {
 			return this.type;
 		};
-		
-		@Override
-		public ItemStackSnapshot getAsIcon() {
-			return this.icon.getAsIcon();
-		}
 		
 		@Override
 		public ItemType getAsItemType() {
@@ -207,12 +200,7 @@ public sealed abstract class EitherItemType
 		
 		@Override
 		public CustomItemType get() {
-			return this.get();
-		}
-		
-		@Override
-		public ItemStackSnapshot getAsIcon() {
-			return this.type.getAsIcon();
+			return this.type;
 		}
 		
 		@Override
