@@ -151,6 +151,10 @@ public class CustomItemTypeProperties implements
 		return this.snapshot.getAsItemStackSnapshot();
 	}
 	
+	protected LoreApplicator loreApplicator() {
+		return LoreApplicator.empty();
+	}
+	
 	protected ItemBuilder iconBuilder() {
 		final ItemBuilder item = ItemBuilder.of(this.base);
 		this.getValue(Keys.ITEM_NAME).ifPresent(item::offer);
@@ -163,7 +167,9 @@ public class CustomItemTypeProperties implements
 	}
 	
 	protected ItemBuilder snapshotBuilder() {
-		return ItemBuilder.of(this.icon).copyFrom(this.data);
+		return this.iconBuilder()
+				.copyFrom(this.data)
+				.lore(this.loreApplicator());
 	}
 	
 	public static class Builder implements

@@ -2,6 +2,7 @@ package net.hellheim.spongetools.custom.type.item;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.spongepowered.api.data.Key;
@@ -73,8 +74,8 @@ public interface LoreProvider extends CodecDataSerializable<LoreProvider>, MapCo
 	 * 
 	 * @return The list of keys
 	 */
-	default List<Key<Value<Boolean>>> loreHidingKeys() {
-		return List.of();
+	default Set<Key<Value<Boolean>>> loreHidingKeys() {
+		return Set.of();
 	}
 	
 	@Override

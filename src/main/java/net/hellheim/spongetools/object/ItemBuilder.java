@@ -14,6 +14,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
+import net.hellheim.spongetools.custom.type.item.LoreApplicator;
 import net.hellheim.spongetools.proxy.solid.EnchantmentProxy;
 import net.hellheim.spongetools.proxy.solid.EnchantmentTypeProxy;
 import net.hellheim.spongetools.proxy.solid.data.TransitiveMutableDataHolderProxy;
@@ -114,7 +115,7 @@ public class ItemBuilder implements IItemProxy, TransitiveMutableDataHolderProxy
 		this.stack.offer(Keys.HIDE_ATTRIBUTES, true);
 		this.stack.offer(Keys.HIDE_CAN_DESTROY, true);
 		this.stack.offer(Keys.HIDE_CAN_PLACE, true);
-		//this.stack.offer(Keys.HIDE_ENCHANTMENTS, true);
+		this.stack.offer(Keys.HIDE_ENCHANTMENTS, true);
 		this.stack.offer(Keys.HIDE_UNBREAKABLE, true);
 		this.stack.offer(Keys.HIDE_MISCELLANEOUS, true);
 		return this;
@@ -151,6 +152,16 @@ public class ItemBuilder implements IItemProxy, TransitiveMutableDataHolderProxy
 	}
 	
 	
+	
+	public ItemBuilder lore(final LoreApplicator applicator, final TypedKeyMap context) {
+		applicator.apply(this.stack, context);
+		return this;
+	}
+	
+	public ItemBuilder lore(final LoreApplicator applicator) {
+		applicator.apply(this.stack);
+		return this;
+	}
 	
 	public ItemBuilder loreMini(String... lore) {
 		return this.lore(CompUtil.fromMinis(lore));

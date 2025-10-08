@@ -16,6 +16,7 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.registry.RegistryTypes;
 
+import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
@@ -125,9 +126,11 @@ public sealed abstract class EitherItemType
 			ItemTypeProxy {
 		
 		private final ItemType type;
+		private final Supplier<ResourceKey> key;
 		
 		protected Common(final ItemType type) {
 			this.type = Objects.requireNonNull(type, "type");
+			this.key = Suppliers.memoize(() -> this.type.key(RegistryTypes.ITEM_TYPE));
 		}
 		
 		@Override
@@ -152,7 +155,7 @@ public sealed abstract class EitherItemType
 		
 		@Override
 		public ResourceKey key() {
-			return this.type.key(RegistryTypes.ITEM_TYPE);
+			return this.key.get();
 		}
 		
 		@Override

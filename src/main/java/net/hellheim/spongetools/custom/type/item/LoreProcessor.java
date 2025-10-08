@@ -10,7 +10,6 @@ import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.data.persistence.DataBuilder;
 import org.spongepowered.api.data.value.ListValue;
 import org.spongepowered.api.data.value.Value;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.util.CopyableBuilder;
@@ -20,13 +19,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.codec.list.AdventureCodecs;
 import net.hellheim.spongetools.codec.list.DataCodecs;
 import net.hellheim.spongetools.codec.list.RegistryCodecs;
 import net.hellheim.spongetools.object.CodecDataSerializable;
 import net.hellheim.spongetools.object.TypedKeyMap;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
-import net.hellheim.spongetools.proxy.solid.item.IItemProxy;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 
 public interface LoreProcessor extends CodecDataSerializable<LoreProcessor>, MapCodecProxy<LoreProcessor> {
 	
@@ -49,22 +49,16 @@ public interface LoreProcessor extends CodecDataSerializable<LoreProcessor>, Map
 		return DataCodecs.dataBuilder(CODEC);
 	}
 	
-	static LoreProcessor.Plain plain() {
+	static Plain plain() {
 		return Plain.INSTANCE;
 	}
 	
-	static LoreProcessor.Separated.Builder separated() {
-		return new LoreProcessor.Separated.Builder();
+	static ApplyFallbackStyle applyFallbackStyle(final LoreProcessor processor, final Style style) {
+		return new ApplyFallbackStyle(processor, style);
 	}
 	
-	static ItemStackLike apply(final ItemStackLike stack, final TypedKeyMap context) {
-		return stack.get(LoreProcessor.dataKey())
-				.<ItemStackLike>map(processor -> processor.apply(stack, context))
-				.orElse(stack);
-	}
-	
-	static ItemStackLike apply(final IItemProxy stack, final TypedKeyMap context) {
-		return LoreProcessor.applyProcessor(stack.getAsItemStackLike(), context);
+	static Separated.Builder separated() {
+		return new Separated.Builder();
 	}
 	
 	/**
@@ -83,77 +77,10 @@ public interface LoreProcessor extends CodecDataSerializable<LoreProcessor>, Map
 		return ListValue.immutableOf(Keys.LORE, this.process(stack, context, providers));
 	}
 	
-	/**
-	 * Processes and applies given lore providers to the given item. <br>
-	 * If the item is mutable, it is modified and returned. <br>
-	 * If the item is immutable, its mutable copy is modified and returned.
-	 * 
-	 * @param stack The stack to apply lore to
-	 * @param context The context to use providers with
-	 * @param providers The list of lore providers
-	 * @return The stack with applied lore
-	 *
-	default ItemStack apply(final ItemStackLike stack, final TypedKeyMap context, final List<LoreProvider> providers) {
-		final ItemStack mutable = stack.asMutable();
-		mutable.offer(Keys.LORE, this.process(stack, context, providers));
-		providers.forEach(provider ->
-				provider.loreHidingKeys().forEach(key ->
-						mutable.offer(key, true)));
-		return mutable;
+	default LoreProcessor withFallbackStyle(final Style style) {
+		return LoreProcessor.applyFallbackStyle(this, style);
 	}
 	
-	/**
-	 * Processes and applies lore to the given item. <br>
-	 * If item does not have any lore providers, then empty list is used. <br>
-	 * If item is mutable, it is modified and returned. <br>
-	 * If item is immutable, its mutable copy is modified and returned.
-	 * 
-	 * @param stack The stack to apply lore to
-	 * @param context The context to use providers with
-	 * @return The stack with applied lore
-	 *
-	default ItemStack apply(final ItemStackLike stack, final TypedKeyMap context) {
-		return this.apply(stack, context, stack.getOrElse(LoreProvider.dataKey(), List.of()));
-	}
-	
-	/**
-	 * Uses {@link #apply(ItemStackLike, TypedKeyMap)} with {@link IItemProxy#getAsItemStackLike()}.
-	 * 
-	 * @param stack The stack to apply lore to
-	 * @param context The context to use providers with
-	 * @return The stack with applied lore
-	 *
-	default ItemStack apply(final IItemProxy stack, final TypedKeyMap context) {
-		return this.apply(stack.getAsItemStackLike(), context);
-	}
-	
-	/**
-	 * Processes and applies lore to the given item. <br>
-	 * If item does not have any lore providers, then the original stack is returned. <br>
-	 * If item is mutable, it is modified and returned. <br>
-	 * If item is immutable, its mutable copy is modified and returned.
-	 * 
-	 * @param stack The stack to apply lore to
-	 * @param context The context to use providers with
-	 * @return The stack with applied lore, or original stack
-	 *
-	default ItemStackLike applyIfPresent(final ItemStackLike stack, final TypedKeyMap context) {
-		return stack.get(LoreProvider.dataKey())
-				.<ItemStackLike>map(providers -> this.apply(stack, context, providers))
-				.orElse(stack);
-	}
-	
-	/**
-	 * Uses {@link #applyIfPresent(ItemStackLike, TypedKeyMap)} with {@link IItemProxy#getAsItemStackLike()}.
-	 * 
-	 * @param stack The stack to apply lore to
-	 * @param context The context to use providers with
-	 * @return The stack with applied lore, or original stack
-	 *
-	default ItemStackLike applyIfPresent(final IItemProxy stack, final TypedKeyMap context) {
-		return this.applyIfPresent(stack.getAsItemStackLike(), context);
-	}
-	*/
 	@Override
 	default Codec<LoreProcessor> codec() {
 		return CODEC;
@@ -170,10 +97,41 @@ public interface LoreProcessor extends CodecDataSerializable<LoreProcessor>, Map
 		}
 		
 		@Override
-		public List<Component> process(final ItemStackLike stack, final TypedKeyMap context, final List<LoreProvider> providers) {
+		public List<Component> process(
+			final ItemStackLike stack, final TypedKeyMap context, final List<LoreProvider> providers
+		) {
 			final List<Component> lore = new ArrayList<>();
 			providers.forEach(provider -> lore.addAll(provider.provide(stack, context)));
 			return lore;
+		}
+	}
+	
+	record ApplyFallbackStyle(LoreProcessor processor, Style style) implements LoreProcessor {
+		
+		public static final MapCodec<ApplyFallbackStyle> CODEC = RecordCodecBuilder.mapCodec(
+				instance -> instance.group(
+						LoreProcessor.CODEC.fieldOf("processor").forGetter(ApplyFallbackStyle::processor),
+						AdventureCodecs.STYLE.fieldOf("style").forGetter(ApplyFallbackStyle::style)
+						).apply(instance, ApplyFallbackStyle::new));
+		
+		public ApplyFallbackStyle(final LoreProcessor processor, final Style style) {
+			this.processor = Objects.requireNonNull(processor, "processor");
+			this.style = Objects.requireNonNull(style, "style");
+		}
+		
+		@Override
+		public List<Component> process(
+			final ItemStackLike stack, final TypedKeyMap context, final List<LoreProvider> providers
+		) {
+			return this.processor.process(stack, context, providers)
+					.stream()
+					.map(c -> c.applyFallbackStyle(this.style))
+					.toList();
+		}
+		
+		@Override
+		public MapCodec<? extends LoreProcessor> mapCodec() {
+			return CODEC;
 		}
 	}
 	
@@ -201,7 +159,9 @@ public interface LoreProcessor extends CodecDataSerializable<LoreProcessor>, Map
 		}
 		
 		@Override
-		public List<Component> process(final ItemStackLike stack, final TypedKeyMap context, final List<LoreProvider> providers) {
+		public List<Component> process(
+			final ItemStackLike stack, final TypedKeyMap context, final List<LoreProvider> providers
+		) {
 			final List<Component> lore = new ArrayList<>();
 			if (!providers.isEmpty()) {
 				final List<Component> separator = this.separator.provide(stack, context);

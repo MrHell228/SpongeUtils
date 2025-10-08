@@ -2,6 +2,7 @@ package net.hellheim.spongetools.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -16,11 +17,16 @@ import org.spongepowered.api.block.transaction.Operation;
 import org.spongepowered.api.block.transaction.Operations;
 import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.type.StringRepresentable;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventContext;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.item.inventory.AffectItemStackEvent;
+import org.spongepowered.api.event.item.inventory.AffectSlotEvent;
+import org.spongepowered.api.item.inventory.ItemStackLike;
+import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.menu.ClickType;
 import org.spongepowered.api.world.LocatableBlock;
 import org.spongepowered.math.vector.Vector3i;
@@ -55,28 +61,56 @@ public final class EventUtil {
 		final StringList result = new StringList();
 		final String clazz = e.getClass().getSimpleName();
 		
-		if (e instanceof ChangeBlockEvent.All) {
-			final StringList transactions = new StringList();
-			final MutableInt counter = new MutableInt(1);
-			((ChangeBlockEvent.All) e).transactions().forEach(bt -> {
-				final StringList tr = new StringList();
-				tr.add(DASH + "Operation: " + toString(bt.operation()));
-				tr.add(DASH + "Original:  " + toString(bt.original()));
-				if (bt.custom().isPresent()) {
-					tr.add(DASH + "Default:   " + toString(bt.defaultReplacement()));
-					tr.add(DASH + "Custom:    " + toString(bt.custom().get()));
-				} else {
-					tr.add(DASH + "Final:     " + toString(bt.finalReplacement()));
-				}
-				
-				tr.shift(SHIFT);
-				tr.add(0, DASH + "Transaction №" + counter.getAndIncrement() + ":");
-				transactions.addAll(tr);
-			});
-			
-			transactions.add(0, "BlockTransactions of " + clazz);
-			transactions.shift(SHIFT);
-			result.addAll(transactions);
+		if (e instanceof final ChangeBlockEvent.All eventWithTransactions) {
+			result.addAll(listTransactions(
+					"Block Transactions of " + clazz,
+					eventWithTransactions.transactions(),
+					bt -> {
+						final StringList tr = new StringList();
+						tr.add(DASH + "Operation: " + toString(bt.operation()));
+						tr.add(DASH + "Original:  " + toString(bt.original()));
+						if (bt.custom().isPresent()) {
+							tr.add(DASH + "Default:   " + toString(bt.defaultReplacement()));
+							tr.add(DASH + "Custom:    " + toString(bt.custom().get()));
+						} else {
+							tr.add(DASH + "Final:     " + toString(bt.finalReplacement()));
+						}
+						tr.add(DASH + "Valid:     " + bt.isValid());
+						return tr;
+					}));
+		} else if (e instanceof final AffectSlotEvent eventWithTransactions) {
+			result.addAll(listTransactions(
+					"Slot Transactions of " + clazz,
+					eventWithTransactions.transactions(),
+					st -> {
+						final StringList tr = new StringList();
+						tr.add(DASH + "Slot:     " + toString(st.slot()));
+						tr.add(DASH + "Original: " + toString(st.original()));
+						if (st.custom().isPresent()) {
+							tr.add(DASH + "Default:  " + toString(st.defaultReplacement()));
+							tr.add(DASH + "Custom:   " + toString(st.custom().get()));
+						} else {
+							tr.add(DASH + "Final:    " + toString(st.finalReplacement()));
+						}
+						tr.add(DASH + "Valid:    " + st.isValid());
+						return tr;
+					}));
+		} else if (e instanceof final AffectItemStackEvent eventWithTransactions) {
+			result.addAll(listTransactions(
+					"ItemStack Transactions of " + clazz,
+					eventWithTransactions.transactions(),
+					st -> {
+						final StringList tr = new StringList();
+						tr.add(DASH + "Original: " + toString(st.original()));
+						if (st.custom().isPresent()) {
+							tr.add(DASH + "Default:  " + toString(st.defaultReplacement()));
+							tr.add(DASH + "Custom:   " + toString(st.custom().get()));
+						} else {
+							tr.add(DASH + "Final:    " + toString(st.finalReplacement()));
+						}
+						tr.add(DASH + "Valid:    " + st.isValid());
+						return tr;
+					}));
 		}
 		
 		result.addAll(list(e.context(), clazz));
@@ -144,6 +178,25 @@ public final class EventUtil {
 		return result;
 	}
 	
+	private static <T extends Transaction<?>> StringList listTransactions(
+		final String header, final Iterable<T> transactions, final Function<T, StringList> transactionMapper
+	) {
+		final StringList transactionList = new StringList();
+		final MutableInt counter = new MutableInt(1);
+		
+		transactions.forEach(transaction -> {
+			final StringList tr = new StringList();
+			tr.addAll(transactionMapper.apply(transaction));
+			tr.shift(SHIFT);
+			tr.add(0, DASH + "Transaction №" + counter.getAndIncrement() + ":");
+			transactionList.addAll(tr);
+		});
+		
+		transactionList.add(0, header);
+		transactionList.shift(SHIFT);
+		return transactionList;
+	}
+	
 	private static String objectToString(final Object object, final Supplier<String> defaultString) {
 		return switch (object) {
 			case BlockSnapshot bs -> toString(bs);
@@ -160,6 +213,20 @@ public final class EventUtil {
 	
 	private static String toString(final Enum<?> en) {
 		return en.getClass().getSimpleName() + " " + en.name();
+	}
+	
+	private static String toString(final Slot slot) {
+		return toString(slot.peek());
+	}
+	
+	private static String toString(final ItemStackLike stack) {
+		if (stack.isEmpty()) {
+			return "Empty ItemStack";
+		}
+		return "ItemStack{"
+				+ "type=" + stack.type().toString() + "; "
+				+ "quantity=" + stack.quantity()
+				+ "}";
 	}
 	
 	private static String toString(final BlockSnapshot bs) {

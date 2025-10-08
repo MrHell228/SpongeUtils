@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
 	// SpongeAPI
-	api 'org.spongepowered:spongeapi:14.0.0-SNAPSHOT'
+	api 'org.spongepowered:spongeapi:14.1.0-SNAPSHOT'
 	
 	// DataFixerUpper
 	api 'com.mojang:datafixerupper:8.0.16'

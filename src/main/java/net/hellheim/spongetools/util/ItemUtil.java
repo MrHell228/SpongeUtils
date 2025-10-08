@@ -12,7 +12,6 @@ import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackComparators;
 import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
@@ -198,13 +197,6 @@ public final class ItemUtil {
 	 */
 	public static boolean is(final ItemType i1, final ItemType i2) {
 		return i1 == i2;
-	}
-	
-	
-	
-	public static boolean similar(final ItemStackLike i1, final ItemStackLike i2) {
-		// TODO change in API to use ItemStackLike
-		return ItemStackComparators.IGNORE_SIZE.get().compare(i1.asMutable(), i2.asMutable()) == 0;
 	}
 	
 	
