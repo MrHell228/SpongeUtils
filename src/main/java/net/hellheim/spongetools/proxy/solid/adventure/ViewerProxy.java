@@ -4,6 +4,7 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.sound.music.MusicDisc;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.world.WorldType;
 import org.spongepowered.math.vector.Vector3d;
 import org.spongepowered.math.vector.Vector3i;
@@ -18,6 +19,11 @@ public interface ViewerProxy extends AudienceProxy, Viewer {
 	@Override
 	default void sendWorldType(final WorldType worldType) {
 		this.getAsAudience().sendWorldType(worldType);
+	}
+	
+	@Override
+	default void playTotemOfUndyingEffect(final ItemStackLike stack) {
+		this.getAsAudience().playTotemOfUndyingEffect(stack);
 	}
 	
 	@Override
