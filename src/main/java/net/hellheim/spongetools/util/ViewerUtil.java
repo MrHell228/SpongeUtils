@@ -9,6 +9,7 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.effect.Viewer;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.sound.music.MusicDisc;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.world.WorldType;
 import org.spongepowered.math.vector.Vector3d;
 import org.spongepowered.math.vector.Vector3i;
@@ -113,6 +114,10 @@ public final class ViewerUtil {
 		
 		@Override
 		public void sendWorldType(final WorldType worldType) {
+		}
+		
+		@Override
+		public void playTotemOfUndyingEffect(final ItemStackLike stack) {
 		}
 		
 		@Override
