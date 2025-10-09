@@ -1,0 +1,29 @@
+plugins {
+	id 'com.gradleup.shadow' version '8.3.5'
+	id 'org.spongepowered.gradle.plugin' version '2.3.0'
+	id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+}
+
+
+sponge {
+	apiVersion(project(":").spongeapi_version)
+	license("MIT")
+	loader {
+		name("java_plain")
+		version("1.0")
+	}
+	plugin("spongetools") {
+		displayName(project(":").plugin_name)
+		version(project(":").plugin_version)
+		entrypoint("net.hellheim.spongetools.impl.SpongeToolsPlugin")
+		description("SpongeTools plugin")
+		dependency("spongeapi") {
+			//loadOrder(PluginDependency.LoadOrder.AFTER)
+			optional(false)
+		}
+	}
+}
+
+minecraft {
+	version(project.game_version)
+}
