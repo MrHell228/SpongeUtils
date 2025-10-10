@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -17,6 +18,7 @@ import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.api.util.CopyableBuilder;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 
 import net.hellheim.spongetools.function.QuadFunction;
 import net.hellheim.spongetools.function.QuinFunction;
@@ -26,7 +28,8 @@ public class StateDispatch {
 	
 	public static final Codec<StateDispatch> CODEC = Codec
 			.unboundedMap(StateSelector.CODEC, Variant.LIST_CODEC)
-			.xmap(StateDispatch::new, StateDispatch::values);
+			.xmap(StateDispatch::new, StateDispatch::values)
+			.validate(StateDispatch::validate);
 	
 	private final Set<StateProperty<?>> properties;
 	private final Map<StateSelector, List<Variant>> values;
@@ -112,6 +115,42 @@ public class StateDispatch {
 		final StateProperty<T5> p5
 	) {
 		return new P5.Builder<>(p1, p2, p3, p4, p5);
+	}
+	
+	private static DataResult<StateDispatch> validate(final StateDispatch dispatch) {
+		return StateDispatch.validate(dispatch.values, dispatch.properties)
+				.<DataResult<StateDispatch>>map(msg -> DataResult.error(() -> msg))
+				.orElse(DataResult.success(dispatch));
+	}
+	
+	private static Optional<String> validate(
+		final Map<StateSelector, List<Variant>> values,
+		final Set<StateProperty<?>> properties
+	) {
+		if (values.isEmpty()) {
+			return Optional.of("Dispatch must contain at least one selector");
+		}
+		
+		final List<StateSelector> missingSelectors = StateSelector.populate(properties)
+				.filter(fullSelector -> {
+					for (final StateSelector selector : values.keySet()) {
+						if (selector.test(fullSelector)) {
+							return false;
+						}
+					}
+					return true;
+				})
+				.toList();
+		
+		if (!missingSelectors.isEmpty()) {
+			String message = "Missing selectors for property sets:";
+			for (final StateSelector selector : missingSelectors) {
+				message += "\n\t\t" + selector.serializationString();
+			}
+			return Optional.of(message);
+		}
+		
+		return Optional.empty();
 	}
 	
 	public Set<StateProperty<?>> properties() {
@@ -686,28 +725,9 @@ public class StateDispatch {
 		}
 		
 		protected void validate() {
-			if (this.values.isEmpty()) {
-				throw new IllegalStateException("Dispatch must contain at least one selector");
-			}
-			
-			final List<StateSelector> missingSelectors = StateSelector.populate(this.properties)
-					.filter(fullSelector -> {
-						for (final StateSelector selector : this.values.keySet()) {
-							if (selector.test(fullSelector)) {
-								return false;
-							}
-						}
-						return true;
-					})
-					.toList();
-			
-			if (!missingSelectors.isEmpty()) {
-				String message = "Missing selectors for property sets:";
-				for (final StateSelector selector : missingSelectors) {
-					message += "\n\t\t" + selector.serializationString();
-				}
-				throw new IllegalStateException(message);
-			}
+			StateDispatch.validate(this.values, this.properties).ifPresent(msg -> {
+				throw new IllegalStateException(msg);
+			});
 		}
 	}
 }

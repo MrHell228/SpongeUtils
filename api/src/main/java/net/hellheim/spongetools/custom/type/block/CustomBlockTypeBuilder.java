@@ -1,13 +1,19 @@
 package net.hellheim.spongetools.custom.type.block;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.util.CopyableBuilder;
+import org.spongepowered.api.util.ResettableBuilder;
 
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
@@ -15,15 +21,22 @@ import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderProxy;
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 import net.hellheim.spongetools.custom.behaviour.type.BlockTypeExtension;
+import net.hellheim.spongetools.resourcepack.Model;
+import net.hellheim.spongetools.resourcepack.ModelTemplateProvider;
+import net.hellheim.spongetools.resourcepack.ModelTemplates;
 import net.hellheim.spongetools.resourcepack.block.Variant;
+import net.hellheim.spongetools.util.ModelUtil;
 
 @SuppressWarnings("unchecked")
 public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> implements
-		BehaviourCallbackHolderProxy.Mutable<BlockStateExtension, B> {
+		BehaviourCallbackHolderProxy.Mutable<BlockStateExtension, B>,
+		ResettableBuilder<CustomBlockTypeLike, B>,
+		CopyableBuilder<CustomBlockTypeLike, B> {
 	
 	protected BehaviourCallbackHolderLogic.Mutable<BlockStateExtension> callbacks;
 	protected @Nullable BlockStateProvider stateProvider;
 	protected final List<Variant> model = new ArrayList<>();
+	protected final Map<UnaryOperator<ResourceKey>, Model> companions = new HashMap<>();
 	
 	public CustomBlockTypeBuilder() {
 		this.reset();
@@ -116,6 +129,7 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 		return this.defaultState(Objects.requireNonNull(blockSupplier, "blockSupplier").get());
 	}
 	
+	// Model
 	
 	public B model(final Variant... variants) {
 		for (final Variant variant : Objects.requireNonNull(variants, "variants")) {
@@ -133,27 +147,53 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 		return this.cast();
 	}
 	
+	// Companion models
 	
-	public B from(final CustomBlockType type) {
+	public B companion(final String keySuffix, final Model model) {
+		return this.companion(key -> ModelUtil.withSuffix(key, keySuffix), model);
+	}
+	
+	public B companion(final UnaryOperator<ResourceKey> key, final Model model) {
+		this.companions.put(Objects.requireNonNull(key, "key"), Objects.requireNonNull(model, "model"));
+		return this.cast();
+	}
+	
+	public B companions(final Map<UnaryOperator<ResourceKey>, Model> companions) {
+		for (final var entry : Objects.requireNonNull(companions, "companions").entrySet()) {
+			this.companion(entry.getKey(), entry.getValue());
+		}
+		return this.cast();
+	}
+	
+	// Both model and companions
+	
+	public B simpleModel(final ResourceKey key) {
+		return this.simpleModel(key, ModelTemplates.CUBE_ALL);
+	}
+	
+	public B simpleModel(final ResourceKey key, final ModelTemplateProvider.T1 template) {
+		final ResourceKey prefixed = ModelUtil.withBlockPrefix(key);
+		return this.model(Variant.model(prefixed))
+				.companion($ -> prefixed, Model.of(template.textured(prefixed)));
+	}
+	
+	
+	@Override
+	public B from(final CustomBlockTypeLike type) {
 		Objects.requireNonNull(type, "type");
 		return this.reset()
 				.offerFrom(type)
 				.state(type.stateProvider())
-				.model(type.model());
+				.model(type.model())
+				.companions(type.companions());
 	}
 	
-	public B from(final CustomBlockTypeProperties properties) {
-		Objects.requireNonNull(properties, "properties");
-		return this.reset()
-				.offerFrom(properties)
-				.state(properties.stateProvider())
-				.model(properties.model());
-	}
-	
+	@Override
 	public B reset() {
 		this.callbacks = BehaviourCallbackHolderLogic.mutable();
 		this.stateProvider = null;
 		this.model.clear();
+		this.companions.clear();
 		return this.cast();
 	}
 	

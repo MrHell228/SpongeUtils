@@ -57,7 +57,7 @@ interface StateCodec<A> extends Codec<A> {
 	};
 	
 	// TODO TEST THIS TEST THIS TEST THIS
-	Codec<StateCondition> STATE_CONDITION = new StateCodec<StateCondition>() {
+	Codec<StateCondition> STATE_CONDITION = new StateCodec<>() {
 
 		@Override
 		public <T> DataResult<T> encode(
@@ -189,13 +189,13 @@ interface StateCodec<A> extends Codec<A> {
 			final @Nullable T variant = ops.get(input, StateCodec.KEY_VARIANT).result().orElse(null);
 			if (variant != null) {
 				return (DataResult<Pair<BlockDefinition, T>>) (Object)
-						BlockDefinition.MultiVariant.CODEC.decode(ops, variant);
+						BlockDefinition.MultiVariant.CODEC.decode(ops, input);
 			}
 			
 			final @Nullable T part = ops.get(input, StateCodec.KEY_PART).result().orElse(null);
 			if (part != null) {
 				return (DataResult<Pair<BlockDefinition, T>>) (Object)
-						BlockDefinition.MultiPart.CODEC.decode(ops, variant);
+						BlockDefinition.MultiPart.CODEC.decode(ops, input);
 			}
 			
 			return DataResult.error(() -> "Unknown BlockDefinition");
@@ -219,6 +219,10 @@ interface StateCodec<A> extends Codec<A> {
 	}
 	
 	static DataResult<StateSelector> decodeSelector(final StateContainer<?> container, final String selector) {
+		if (selector.isEmpty()) {
+			return DataResult.success(StateSelector.empty());
+		}
+		
 		final StateSelector.Builder builder = StateSelector.builder();
 		for (final String property : COMMA_SPLITTER.split(selector)) {
 			final var value = StateCodec.decodePropertyValue(container, property);

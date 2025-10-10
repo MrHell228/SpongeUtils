@@ -14,6 +14,8 @@ import org.spongepowered.api.util.CopyableBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 
+import net.hellheim.spongetools.util.ModelUtil;
+
 public final class Variant {
 	
 	public static final Codec<Variant> CODEC = VariantPropertyValue.LIST_CODEC.xmap(
@@ -42,6 +44,10 @@ public final class Variant {
 	
 	public static Variant model(final ResourceKey model) {
 		return Variant.builder().add(VariantProperties.MODEL, model).build();
+	}
+	
+	public static Variant prefixedModel(final ResourceKey model) {
+		return Variant.model(ModelUtil.withBlockPrefix(model));
 	}
 	
 	protected static <C extends Collection<Variant>> C validate(final C variants) {

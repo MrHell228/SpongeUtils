@@ -226,7 +226,7 @@ public final class StateSelector implements StringRepresentable, StatePredicate 
 		
 		@Override
 		public StateSelector build() {
-			return new StateSelector(this.values);
+			return this.values.isEmpty() ? StateSelector.empty() : new StateSelector(this.values);
 		}
 	}
 }

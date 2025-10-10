@@ -60,9 +60,7 @@ project(":$sub_common") {
 		from project(":$sub_api").sourceSets.main.output
 		
 		manifest {
-			attributes(
-				"MixinConfigs": "mixins.spongetools.json"
-			)
+			attributes "MixinConfigs": "mixins.spongetools.json"
 		}
 	}
 	
@@ -77,6 +75,10 @@ project(":$sub_vanilla") {
 	jar {
 		from project(":$sub_api").sourceSets.main.output
 		from project(":$sub_common").sourceSets.main.output
+		
+		manifest {
+			attributes "MixinConfigs": "mixins.spongetools.json"
+		}
 	}
 	
 	base.archivesName = project.plugin_name + "-vanilla"
@@ -90,6 +92,10 @@ project(":$sub_forge") {
 	jar {
 		from project(":$sub_api").sourceSets.main.output
 		from project(":$sub_common").sourceSets.main.output
+		
+		manifest {
+			attributes "MixinConfigs": "mixins.spongetools.json"
+		}
 	}
 	
 	base.archivesName = project.plugin_name + "-forge"
@@ -103,6 +109,10 @@ project(":$sub_neoforge") {
 	jar {
 		from project(":$sub_api").sourceSets.main.output
 		from project(":$sub_common").sourceSets.main.output
+		
+		manifest {
+			attributes "MixinConfigs": "mixins.spongetools.json"
+		}
 	}
 	
 	base.archivesName = project.plugin_name + "-neoforge"

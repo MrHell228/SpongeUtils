@@ -53,6 +53,7 @@ import com.google.inject.Inject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 
 import net.hellheim.spongetools.SpongeTools;
@@ -93,6 +94,7 @@ import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.proxy.solid.PluginProxy;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
+import net.hellheim.spongetools.resourcepack.block.StateOps;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.resourcepack.meta.Metadata;
@@ -209,7 +211,18 @@ public final class SpongeToolsPlugin implements PluginProxy {
 		
 		// Model registries
 		
-		event.register(Model.registry().location(), true);
+		event.register(Model.registry().location(), true, $ -> {
+			final Map<ResourceKey, Model> map = new HashMap<>();
+			
+			// TODO add items too
+			
+			customBlocks.get().streamEntries().forEach(e -> {
+				e.value().companions().forEach((keyTransformer, model) -> {
+					map.put(keyTransformer.apply(e.key()), model);
+				});
+			});
+			return map;
+		}, customItems, customBlocks);
 		
 		event.register(ItemDefinition.registry().location(), true, $ -> {
 			this.logger.info(customItems.defaultHolder().get());
@@ -236,6 +249,7 @@ public final class SpongeToolsPlugin implements PluginProxy {
 					.forEach((blockType, customBlockTypes) -> {
 						final ResourceKey blockKey = blockType.key(RegistryTypes.BLOCK_TYPE);
 						BlockDefinition model = this.decode(
+								ops -> StateOps.of(ops, blockType),
 								BlockDefinition.CODEC,
 								BlockDefinition.registry(),
 								blockKey
@@ -408,7 +422,14 @@ public final class SpongeToolsPlugin implements PluginProxy {
 		});
 	}
 	
-	public <T> DataResult<T> decode(
+	private <T> DataResult<T> decode(
+		final Codec<T> codec, final RegistryType<T> registry, final ResourceKey key
+	) {
+		return this.decode(UnaryOperator.identity(), codec, registry, key);
+	}
+	
+	private <T> DataResult<T> decode(
+		final UnaryOperator<DynamicOps<JsonElement>> opsModifier,
 		final Codec<T> codec, final RegistryType<T> registry, final ResourceKey key
 	) {
 		File file = this.file(registry, key, ".json");
@@ -416,7 +437,7 @@ public final class SpongeToolsPlugin implements PluginProxy {
 			try {
 				final JsonReader reader = new JsonReader(new FileReader(file));
 				final JsonObject json = GSON.fromJson(reader, JsonObject.class);
-				return codec.decode(JsonOps.INSTANCE, json).map(Pair::getFirst);
+				return codec.decode(opsModifier.apply(JsonOps.INSTANCE), json).map(Pair::getFirst);
 			} catch (final Exception e) {
 				return DataResult.error(e::getMessage);
 			}
