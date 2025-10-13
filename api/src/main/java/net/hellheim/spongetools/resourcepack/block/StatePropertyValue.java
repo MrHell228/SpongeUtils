@@ -13,7 +13,7 @@ import com.mojang.serialization.Codec;
 
 public interface StatePropertyValue<T extends Comparable<T>> extends StringRepresentable {
 	
-	public static final Codec<StatePropertyValue<?>> CODEC = StateCodec.STATE_PROPERTY_VALUE;
+	Codec<StatePropertyValue<?>> CODEC = StateCodec.STATE_PROPERTY_VALUE;
 	
 	static <T extends Comparable<T>> StatePropertyValue<T> of(
 		final StateProperty<T> property, final T value

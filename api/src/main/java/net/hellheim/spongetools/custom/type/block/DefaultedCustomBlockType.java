@@ -1,7 +1,7 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import org.spongepowered.api.ResourceKey;
@@ -29,7 +29,7 @@ public interface DefaultedCustomBlockType extends
 	}
 	
 	@Override
-	default List<Variant> model() {
+	default Optional<Variant> model() {
 		return this.properties().model();
 	}
 	

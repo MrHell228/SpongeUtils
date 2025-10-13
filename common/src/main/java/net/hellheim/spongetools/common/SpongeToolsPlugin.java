@@ -17,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
@@ -96,6 +97,7 @@ import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
+import net.hellheim.spongetools.resourcepack.block.Variant;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.resourcepack.meta.Metadata;
 import net.hellheim.spongetools.resourcepack.meta.MetadataSection;
@@ -256,7 +258,10 @@ public final class SpongeToolsPlugin implements PluginProxy {
 								).getOrThrow(RuntimeException::new);
 						
 						for (final CustomBlockType customBlockType : customBlockTypes) {
-							model = model.expandWith(customBlockType.state(), customBlockType.model());
+							final @Nullable Variant modelToAdd = customBlockType.model().orElse(null);
+							if (modelToAdd != null) {
+								model = model.expandWith(customBlockType.state(), modelToAdd);
+							}
 						}
 						
 						map.put(blockKey, model);
@@ -288,7 +293,6 @@ public final class SpongeToolsPlugin implements PluginProxy {
 		final RegistryHolder holder = event.holder();
 		this.logger.info(RegistryTypes.ENCHANTMENT_TYPE.defaultHolder().get());
 		this.logger.info(holder);
-		this.logger.info(holder == RegistryTypes.ENCHANTMENT_TYPE.defaultHolder().get());
 		final Map<ResourceKey, ItemDefinition> items = holder.registry(ItemDefinition.registry())
 				.streamEntries()
 				.collect(Collectors.toMap(RegistryEntry::key, RegistryEntry::value));

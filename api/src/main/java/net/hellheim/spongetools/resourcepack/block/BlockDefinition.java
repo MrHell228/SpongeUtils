@@ -58,7 +58,7 @@ public interface BlockDefinition {
 	
 	Builder<?, ?> toBuilder();
 	
-	BlockDefinition expandWith(BlockState state, List<Variant> variants);
+	BlockDefinition expandWith(BlockState state, Variant variant);
 	
 	final class MultiVariant implements BlockDefinition {
 		
@@ -87,8 +87,8 @@ public interface BlockDefinition {
 		}
 		
 		@Override
-		public MultiVariant expandWith(final BlockState state, final List<Variant> variants) {
-			return this.withDispatchBuilder(b -> b.add(state, variants));
+		public MultiVariant expandWith(final BlockState state, final Variant variant) {
+			return this.withDispatchBuilder(b -> b.expand(state, variant));
 		}
 		
 		public MultiVariant withDispatchBuilder(final UnaryOperator<StateDispatch.Builder<?>> dispatchBuilderOperator) {
@@ -104,7 +104,7 @@ public interface BlockDefinition {
 		public static final class Builder implements BlockDefinition.Builder<MultiVariant, Builder> {
 			
 			private final BlockType block;
-			private final List<Variant> baseVariants = new ArrayList<>();
+			private Variant baseVariant;
 			private final List<StateDispatch> dispatches = new ArrayList<>();
 			private final Set<StateProperty<?>> seenProperties = new HashSet<>();
 			
@@ -113,17 +113,8 @@ public interface BlockDefinition {
 				this.reset();
 			}
 			
-			public Builder base(final Variant... variants) {
-				for (final Variant variant : Objects.requireNonNull(variants, "variants")) {
-					this.baseVariants.add(Objects.requireNonNull(variant, "variant"));
-				}
-				return this;
-			}
-			
-			public Builder base(final Iterable<? extends Variant> variants) {
-				for (final Variant variant : Objects.requireNonNull(variants, "variants")) {
-					this.baseVariants.add(Objects.requireNonNull(variant, "variant"));
-				}
+			public Builder base(final Variant variant) {
+				this.baseVariant = Objects.requireNonNull(variant, "variant");
 				return this;
 			}
 			
@@ -168,7 +159,7 @@ public interface BlockDefinition {
 			
 			@Override
 			public Builder reset() {
-				this.baseVariants.clear();
+				this.baseVariant = Variant.empty();
 				this.dispatches.clear();
 				this.seenProperties.clear();
 				return this;
@@ -176,14 +167,14 @@ public interface BlockDefinition {
 			
 			@Override
 			public MultiVariant build() {
-				Stream<Pair<StateSelector, List<Variant>>> stream = Stream.of(Pair.of(StateSelector.empty(), this.baseVariants));
+				Stream<Pair<StateSelector, Variant>> stream = Stream.of(Pair.of(StateSelector.empty(), this.baseVariant));
 				for (final StateDispatch dispatch : this.dispatches) {
-					final Map<StateSelector, List<Variant>> values = dispatch.values();
+					final Map<StateSelector, Variant> values = dispatch.values();
 					stream = stream.flatMap(pair -> {
 						return values.entrySet().stream().map(entry -> {
 							final StateSelector selector = pair.getFirst().with(entry.getKey());
-							final List<Variant> variants = mergeVariants(pair.getSecond(), entry.getValue());
-							return Pair.of(selector, variants);
+							final Variant variant = pair.getSecond().with(entry.getValue());
+							return Pair.of(selector, variant);
 						});
 					});
 				}
@@ -191,16 +182,6 @@ public interface BlockDefinition {
 				final var builder = StateDispatch.raw();
 				stream.forEach(pair -> builder.add(pair.getFirst(), pair.getSecond()));
 				return new MultiVariant(this.block, builder.build());
-			}
-			
-			private static List<Variant> mergeVariants(
-				final List<Variant> firstVariants, final List<Variant> secondVariants
-			) {
-				final List<Variant> variants = new ArrayList<>();
-				firstVariants.forEach(first ->
-						secondVariants.forEach(second ->
-								variants.add(first.with(second))));
-				return variants;
 			}
 		}
 	}
@@ -230,10 +211,10 @@ public interface BlockDefinition {
 		}
 		
 		@Override
-		public BlockDefinition expandWith(final BlockState state, final List<Variant> variants) {
+		public BlockDefinition expandWith(final BlockState state, final Variant variant) {
 			final Builder builder = BlockDefinition.part(this.block);
 			final StateCondition isState = StateCondition.is(state);
-			builder.add(StatePart.of(isState, variants));
+			builder.add(StatePart.of(isState, variant));
 			
 			final StateCondition notState = isState.negate();
 			this.parts.forEach(part -> {
@@ -241,7 +222,7 @@ public interface BlockDefinition {
 				final StateCondition newCondition = oldCondition.isEmpty()
 						? notState
 						: StateCondition.and(oldCondition.get(), notState);
-				builder.add(StatePart.of(newCondition, part.variants()));
+				builder.add(StatePart.of(newCondition, part.variant()));
 			});
 			
 			return builder.build();

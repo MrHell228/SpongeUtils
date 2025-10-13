@@ -1,10 +1,9 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -35,7 +34,7 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 	
 	protected BehaviourCallbackHolderLogic.Mutable<BlockStateExtension> callbacks;
 	protected @Nullable BlockStateProvider stateProvider;
-	protected final List<Variant> model = new ArrayList<>();
+	protected Optional<Variant> model;
 	protected final Map<UnaryOperator<ResourceKey>, Model> companions = new HashMap<>();
 	
 	public CustomBlockTypeBuilder() {
@@ -131,19 +130,12 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 	
 	// Model
 	
-	public B model(final Variant... variants) {
-		for (final Variant variant : Objects.requireNonNull(variants, "variants")) {
-			this.model.add(Objects.requireNonNull(variant, "variant"));
-		}
-		
-		return this.cast();
+	public B model(final Variant variant) {
+		return this.model(Optional.of(Objects.requireNonNull(variant, "variant")));
 	}
 	
-	public B model(final Iterable<? extends Variant> variants) {
-		for (final Variant variant : Objects.requireNonNull(variants, "variants")) {
-			this.model.add(Objects.requireNonNull(variant, "variant"));
-		}
-		
+	public B model(final Optional<Variant> variant) {
+		this.model = Objects.requireNonNull(variant, "variant");
 		return this.cast();
 	}
 	
@@ -192,7 +184,7 @@ public class CustomBlockTypeBuilder<B extends CustomBlockTypeBuilder<B>> impleme
 	public B reset() {
 		this.callbacks = BehaviourCallbackHolderLogic.mutable();
 		this.stateProvider = null;
-		this.model.clear();
+		this.model = Optional.empty();
 		this.companions.clear();
 		return this.cast();
 	}

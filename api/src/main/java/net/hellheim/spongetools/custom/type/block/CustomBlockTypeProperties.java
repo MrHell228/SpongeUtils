@@ -1,8 +1,8 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import org.spongepowered.api.ResourceKey;
@@ -20,14 +20,14 @@ public class CustomBlockTypeProperties implements
 	
 	private final BehaviourCallbackHolderLogic<BlockStateExtension> callbacks;
 	private final BlockStateProvider stateProvider;
-	private final List<Variant> model;
+	private final Optional<Variant> model;
 	private final Map<UnaryOperator<ResourceKey>, Model> companions;
 	
 	public CustomBlockTypeProperties(final CustomBlockTypeBuilder<?> builder) {
 		Objects.requireNonNull(builder, "builder").validate();
 		this.callbacks = builder.callbacks.asImmutable();
 		this.stateProvider = builder.stateProvider;
-		this.model = List.copyOf(builder.model);
+		this.model = builder.model;
 		this.companions = Map.copyOf(builder.companions);
 	}
 	
@@ -42,7 +42,7 @@ public class CustomBlockTypeProperties implements
 	}
 	
 	@Override
-	public List<Variant> model() {
+	public Optional<Variant> model() {
 		return this.model;
 	}
 	

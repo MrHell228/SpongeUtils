@@ -98,22 +98,13 @@ public final class StateSelector implements StringRepresentable, StatePredicate 
 	@Override
 	public boolean test(final Function<StateProperty<?>, Optional<? extends Comparable<?>>> propertyLookup) {
 		for (final StatePropertyValue<?> value : this.values()) {
-			if (propertyLookup.apply(value.property()).map(value.value()::equals).orElse(false)) {
+			if (propertyLookup.apply(value.property()).map(v -> !value.value().equals(v)).orElse(false)) {
 				return false;
 			}
 		}
 		
 		return true;
 	}
-	
-	/*private boolean test(final Function<StateProperty<?>, @Nullable Comparable<?>> propertyLookup) {
-		for (final StatePropertyValue<?> value : this.values()) {
-			if (!Objects.equals(value.value(), propertyLookup.apply(value.property()))) {
-				return false;
-			}
-		}
-		return true;
-	}*/
 	
 	public Builder toBuilder() {
 		return StateSelector.builder().from(this);

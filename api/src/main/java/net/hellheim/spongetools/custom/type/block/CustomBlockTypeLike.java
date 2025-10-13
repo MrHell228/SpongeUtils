@@ -1,7 +1,7 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import org.spongepowered.api.ResourceKey;
@@ -16,7 +16,7 @@ public interface CustomBlockTypeLike extends
 	
 	BlockStateProvider stateProvider();
 	
-	List<Variant> model();
+	Optional<Variant> model();
 	
 	Map<UnaryOperator<ResourceKey>, Model> companions();
 }

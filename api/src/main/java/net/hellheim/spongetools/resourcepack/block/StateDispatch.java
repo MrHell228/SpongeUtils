@@ -1,6 +1,5 @@
 package net.hellheim.spongetools.resourcepack.block;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,30 +26,26 @@ import net.hellheim.spongetools.function.TriFunction;
 public class StateDispatch {
 	
 	public static final Codec<StateDispatch> CODEC = Codec
-			.unboundedMap(StateSelector.CODEC, Variant.LIST_CODEC)
+			.unboundedMap(StateSelector.CODEC, Variant.CODEC)
 			.xmap(StateDispatch::new, StateDispatch::values)
 			.validate(StateDispatch::validate);
 	
 	private final Set<StateProperty<?>> properties;
-	private final Map<StateSelector, List<Variant>> values;
+	private final Map<StateSelector, Variant> values;
 	
-	protected StateDispatch(final Map<StateSelector, List<Variant>> values) {
+	protected StateDispatch(final Map<StateSelector, Variant> values) {
 		this(values, values.keySet().stream()
 				.flatMap(selector -> selector.properties().stream())
 				.collect(Collectors.toSet()));
 	}
 	
-	protected StateDispatch(final Map<StateSelector, List<Variant>> values, final Set<StateProperty<?>> properties) {
+	protected StateDispatch(final Map<StateSelector, Variant> values, final Set<StateProperty<?>> properties) {
 		this.values = Map.copyOf(values);
 		this.properties = Set.copyOf(properties);
 	}
 	
-	public static StateDispatch of(final Variant... variants) {
-		return StateDispatch.raw().add(StateSelector.empty(), variants).build();
-	}
-	
-	public static StateDispatch of(final Collection<Variant> variants) {
-		return StateDispatch.raw().add(StateSelector.empty(), variants).build();
+	public static StateDispatch of(final Variant variant) {
+		return StateDispatch.raw().add(StateSelector.empty(), variant).build();
 	}
 	
 	public static Builder<?> raw() {
@@ -124,7 +119,7 @@ public class StateDispatch {
 	}
 	
 	private static Optional<String> validate(
-		final Map<StateSelector, List<Variant>> values,
+		final Map<StateSelector, Variant> values,
 		final Set<StateProperty<?>> properties
 	) {
 		if (values.isEmpty()) {
@@ -161,7 +156,7 @@ public class StateDispatch {
 		return this.values.keySet();
 	}
 	
-	public Map<StateSelector, List<Variant>> values() {
+	public Map<StateSelector, Variant> values() {
 		return this.values;
 	}
 	
@@ -176,7 +171,7 @@ public class StateDispatch {
 		private final StateProperty<T1> p1;
 		
 		private P1(
-			final Map<StateSelector, List<Variant>> values,
+			final Map<StateSelector, Variant> values,
 			final Set<StateProperty<?>> properties,
 			final StateProperty<T1> p1
 		) {
@@ -201,12 +196,8 @@ public class StateDispatch {
 				this.p1 = Objects.requireNonNull(p1, "property");
 			}
 			
-			public Builder<T1> add(final T1 v1, final Variant... variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1), variants);
-			}
-			
-			public Builder<T1> add(final T1 v1, final Collection<Variant> variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1), variants);
+			public Builder<T1> add(final T1 v1, final Variant variant) {
+				return this.add(StateSelector.builder().add(this.p1, v1), variant);
 			}
 			
 			public Builder<T1> generate(final Function<? super T1, Variant> generator) {
@@ -216,7 +207,7 @@ public class StateDispatch {
 				return this;
 			}
 			
-			public Builder<T1> generateList(final Function<? super T1, ? extends Collection<Variant>> generator) {
+			public Builder<T1> generateList(final Function<? super T1, Variant> generator) {
 				Objects.requireNonNull(generator, "generator");
 				this.p1.possibleValues().forEach(v1 ->
 						this.add(v1, generator.apply(v1)));
@@ -240,7 +231,7 @@ public class StateDispatch {
 		private final StateProperty<T2> p2;
 		
 		private P2(
-			final Map<StateSelector, List<Variant>> values,
+			final Map<StateSelector, Variant> values,
 			final Set<StateProperty<?>> properties,
 			final StateProperty<T1> p1,
 			final StateProperty<T2> p2
@@ -271,12 +262,8 @@ public class StateDispatch {
 				this.p2 = Objects.requireNonNull(p2, "property2");
 			}
 			
-			public Builder<T1, T2> add(final T1 v1, final T2 v2, final Variant... variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2), variants);
-			}
-			
-			public Builder<T1, T2> add(final T1 v1, final T2 v2, final Collection<Variant> variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2), variants);
+			public Builder<T1, T2> add(final T1 v1, final T2 v2, final Variant variant) {
+				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2), variant);
 			}
 			
 			public Builder<T1, T2> generate(final BiFunction<? super T1, ? super T2, Variant> generator) {
@@ -287,7 +274,7 @@ public class StateDispatch {
 				return this;
 			}
 			
-			public Builder<T1, T2> generateList(final BiFunction<? super T1, ? super T2, ? extends Collection<Variant>> generator) {
+			public Builder<T1, T2> generateList(final BiFunction<? super T1, ? super T2, Variant> generator) {
 				Objects.requireNonNull(generator, "generator");
 				this.p1.possibleValues().forEach(v1 ->
 						this.p2.possibleValues().forEach(v2 ->
@@ -314,7 +301,7 @@ public class StateDispatch {
 		private final StateProperty<T3> p3;
 		
 		private P3(
-			final Map<StateSelector, List<Variant>> values,
+			final Map<StateSelector, Variant> values,
 			final Set<StateProperty<?>> properties,
 			final StateProperty<T1> p1,
 			final StateProperty<T2> p2,
@@ -351,12 +338,8 @@ public class StateDispatch {
 				this.p3 = Objects.requireNonNull(p3, "property3");
 			}
 			
-			public Builder<T1, T2, T3> add(final T1 v1, final T2 v2, final T3 v3, final Variant... variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3), variants);
-			}
-			
-			public Builder<T1, T2, T3> add(final T1 v1, final T2 v2, final T3 v3, final Collection<Variant> variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3), variants);
+			public Builder<T1, T2, T3> add(final T1 v1, final T2 v2, final T3 v3, final Variant variant) {
+				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3), variant);
 			}
 			
 			public Builder<T1, T2, T3> generate(final TriFunction<? super T1, ? super T2, ? super T3, Variant> generator) {
@@ -368,7 +351,7 @@ public class StateDispatch {
 				return this;
 			}
 			
-			public Builder<T1, T2, T3> generateList(final TriFunction<? super T1, ? super T2, ? super T3, ? extends Collection<Variant>> generator) {
+			public Builder<T1, T2, T3> generateList(final TriFunction<? super T1, ? super T2, ? super T3, Variant> generator) {
 				Objects.requireNonNull(generator, "generator");
 				this.p1.possibleValues().forEach(v1 ->
 						this.p2.possibleValues().forEach(v2 ->
@@ -398,7 +381,7 @@ public class StateDispatch {
 		private final StateProperty<T4> p4;
 		
 		private P4(
-			final Map<StateSelector, List<Variant>> values,
+			final Map<StateSelector, Variant> values,
 			final Set<StateProperty<?>> properties,
 			final StateProperty<T1> p1,
 			final StateProperty<T2> p2,
@@ -441,12 +424,8 @@ public class StateDispatch {
 				this.p4 = Objects.requireNonNull(p4, "property4");
 			}
 			
-			public Builder<T1, T2, T3, T4> add(final T1 v1, final T2 v2, final T3 v3, final T4 v4, final Variant... variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3).add(this.p4, v4), variants);
-			}
-			
-			public Builder<T1, T2, T3, T4> add(final T1 v1, final T2 v2, final T3 v3, final T4 v4, final Collection<Variant> variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3).add(this.p4, v4), variants);
+			public Builder<T1, T2, T3, T4> add(final T1 v1, final T2 v2, final T3 v3, final T4 v4, final Variant variant) {
+				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3).add(this.p4, v4), variant);
 			}
 			
 			public Builder<T1, T2, T3, T4> generate(final QuadFunction<? super T1, ? super T2, ? super T3, ? super T4, Variant> generator) {
@@ -459,7 +438,7 @@ public class StateDispatch {
 				return this;
 			}
 			
-			public Builder<T1, T2, T3, T4> generateList(final QuadFunction<? super T1, ? super T2, ? super T3, ? super T4, ? extends Collection<Variant>> generator) {
+			public Builder<T1, T2, T3, T4> generateList(final QuadFunction<? super T1, ? super T2, ? super T3, ? super T4, Variant> generator) {
 				Objects.requireNonNull(generator, "generator");
 				this.p1.possibleValues().forEach(v1 ->
 						this.p2.possibleValues().forEach(v2 ->
@@ -492,7 +471,7 @@ public class StateDispatch {
 		private final StateProperty<T5> p5;
 		
 		private P5(
-			final Map<StateSelector, List<Variant>> values,
+			final Map<StateSelector, Variant> values,
 			final Set<StateProperty<?>> properties,
 			final StateProperty<T1> p1,
 			final StateProperty<T2> p2,
@@ -541,12 +520,8 @@ public class StateDispatch {
 				this.p5 = Objects.requireNonNull(p5, "property5");
 			}
 			
-			public Builder<T1, T2, T3, T4, T5> add(final T1 v1, final T2 v2, final T3 v3, final T4 v4, final T5 v5, final Variant... variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3).add(this.p4, v4).add(this.p5, v5), variants);
-			}
-			
-			public Builder<T1, T2, T3, T4, T5> add(final T1 v1, final T2 v2, final T3 v3, final T4 v4, final T5 v5, final Collection<Variant> variants) {
-				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3).add(this.p4, v4), variants);
+			public Builder<T1, T2, T3, T4, T5> add(final T1 v1, final T2 v2, final T3 v3, final T4 v4, final T5 v5, final Variant variant) {
+				return this.add(StateSelector.builder().add(this.p1, v1).add(this.p2, v2).add(this.p3, v3).add(this.p4, v4).add(this.p5, v5), variant);
 			}
 			
 			public Builder<T1, T2, T3, T4, T5> generate(final QuinFunction<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, Variant> generator) {
@@ -560,7 +535,7 @@ public class StateDispatch {
 				return this;
 			}
 			
-			public Builder<T1, T2, T3, T4, T5> generateList(final QuinFunction<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, ? extends Collection<Variant>> generator) {
+			public Builder<T1, T2, T3, T4, T5> generateList(final QuinFunction<? super T1, ? super T2, ? super T3, ? super T4, ? super T5, Variant> generator) {
 				Objects.requireNonNull(generator, "generator");
 				this.p1.possibleValues().forEach(v1 ->
 						this.p2.possibleValues().forEach(v2 ->
@@ -583,7 +558,7 @@ public class StateDispatch {
 			org.spongepowered.api.util.Builder<StateDispatch, B>,
 			CopyableBuilder<StateDispatch, B> {
 		
-		protected final Map<StateSelector, List<Variant>> values = new HashMap<>();
+		protected final Map<StateSelector, Variant> values = new HashMap<>();
 		protected final Set<StateProperty<?>> properties = new HashSet<>();
 		private final Set<String> propertyNames = new HashSet<>();
 		
@@ -596,35 +571,23 @@ public class StateDispatch {
 			return (B) this;
 		}
 		
-		public B addAll(final Map<StateSelector, ? extends Collection<Variant>> values) {
+		public B addAll(final Map<StateSelector, Variant> values) {
 			Objects.requireNonNull(values, "values").forEach(this::add);
 			return this.cast();
 		}
 		
-		public B add(final State<?> state, final Variant... variants) {
-			return this.add(StateSelector.of(state), variants);
+		public B add(final State<?> state, final Variant variant) {
+			return this.add(StateSelector.of(state), variant);
 		}
 		
-		public B add(final State<?> state, final Collection<Variant> variants) {
-			return this.add(StateSelector.of(state), variants);
+		public B add(final StateSelector.Builder selector, final Variant variant) {
+			return this.add(selector.build(), variant);
 		}
 		
-		public B add(final StateSelector.Builder selector, final Variant... variants) {
-			return this.add(selector.build(), variants);
-		}
-		
-		public B add(final StateSelector.Builder selector, final Collection<Variant> variants) {
-			return this.add(selector.build(), variants);
-		}
-		
-		public B add(final StateSelector selector, final Variant... variants) {
-			return this.add(selector, List.of(Objects.requireNonNull(variants, "variants")));
-		}
-		
-		public B add(final StateSelector selector, final Collection<Variant> variants) {
-			this.validateInput(selector, variants);
+		public B add(final StateSelector selector, final Variant variant) {
+			this.validateInput(selector, variant);
 			if (this.values.containsKey(selector)) {
-				this.values.put(selector, List.copyOf(variants));
+				this.values.put(selector, variant);
 				return this.cast();
 			}
 			
@@ -645,27 +608,31 @@ public class StateDispatch {
 				}
 			}
 			
-			this.putEntry(selector, List.copyOf(variants));
+			this.putEntry(selector, variant);
 			return this.cast();
 		}
 		
-		public B expand(final StateSelector selector, final Variant... variants) {
-			return this.expand(selector, List.of(variants));
+		public B expand(final State<?> state, final Variant variant) {
+			return this.expand(StateSelector.of(state), variant);
 		}
 		
-		public B expand(final StateSelector selector, final Collection<Variant> variants) {
-			this.validateInput(selector, variants);
+		public B expand(final StateSelector.Builder selector, final Variant variant) {
+			return this.expand(selector.build(), variant);
+		}
+		
+		public B expand(final StateSelector selector, final Variant variant) {
+			this.validateInput(selector, variant);
 			if (this.values.containsKey(selector)) {
-				this.values.put(selector, List.copyOf(variants));
+				this.values.put(selector, variant);
 				return this.cast();
 			}
 			
 			final var values = this.values.entrySet().iterator();
-			final Map<StateSelector, List<Variant>> valuesToAdd = new HashMap<>();
+			final Map<StateSelector, Variant> valuesToAdd = new HashMap<>();
 			while (values.hasNext()) {
 				final var entry = values.next();
 				final StateSelector oldSelector = entry.getKey();
-				final List<Variant> oldVariants = entry.getValue();
+				final Variant oldVariant = entry.getValue();
 				
 				if (oldSelector.test(selector)) {
 					values.remove();
@@ -674,9 +641,9 @@ public class StateDispatch {
 					
 					StateSelector.populate(newProperties::iterator)
 							.map(oldSelector::with)
-							.forEach(newSelector -> valuesToAdd.put(newSelector, oldVariants));
+							.forEach(newSelector -> valuesToAdd.put(newSelector, oldVariant));
 					
-					valuesToAdd.put(selector, List.copyOf(variants));
+					valuesToAdd.put(selector, variant);
 					
 				} else if (oldSelector.overlaps(selector)) {
 					throw this.overlap(selector, oldSelector);
@@ -706,20 +673,19 @@ public class StateDispatch {
 			return new StateDispatch(this.values, this.properties);
 		}
 		
-		private void validateInput(final StateSelector selector, final Collection<Variant> variants) {
+		private void validateInput(final StateSelector selector, final Variant variant) {
 			Objects.requireNonNull(selector, "selector");
-			Variant.validate(variants);
 		}
 		
 		private RuntimeException overlap(final StateSelector given, final StateSelector current) {
 			return new IllegalArgumentException(String.format(
 					"Given selector (%s) overlaps with the selector in this dispatch (%s)",
-					given, current
+					given.serializationString(), current.serializationString()
 					));
 		}
 		
-		private void putEntry(final StateSelector selector, final List<Variant> variants) {
-			this.values.put(selector, List.copyOf(variants));
+		private void putEntry(final StateSelector selector, final Variant variant) {
+			this.values.put(selector, variant);
 			this.properties.addAll(selector.properties());
 			selector.properties().forEach(property -> this.propertyNames.add(property.name()));
 		}

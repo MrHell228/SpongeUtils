@@ -14,15 +14,13 @@ public record VariantPropertyValue<T>(VariantProperty<T> property, T value) {
 	
 	public static final Codec<List<VariantPropertyValue<?>>> LIST_CODEC = VariantPropertyValue.MAP_CODEC.xmap(
 			map -> map.entrySet().stream()
-					.<VariantPropertyValue<?>>map(e -> {
+					.map(e -> {
 						@SuppressWarnings("unchecked")
 						final var property = (VariantProperty<Object>) e.getKey();
 						return VariantPropertyValue.of(property, e.getValue());
 					})
-					.filter(v -> !v.isDefault())
 					.collect(Collectors.toUnmodifiableList()),
 			list -> list.stream()
-					.filter(v -> !v.isDefault())
 					.collect(Collectors.toUnmodifiableMap(VariantPropertyValue::property, VariantPropertyValue::value))
 			);
 	
