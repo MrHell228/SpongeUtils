@@ -16,11 +16,11 @@ public interface TypedKeyMap {
 		return TypedKeyMap.Impl.EMPTY;
 	}
 	
-	static TypedKeyMap.Mutable create() {
+	static TypedKeyMap.Impl.Mutable create() {
 		return new TypedKeyMap.Impl.Mutable();
 	}
 	
-	Set<TypedKey<?>> keySet();
+	Set<TypedKey<?>> typedKeySet();
 	
 	/**
 	 * Returns whether this {@link TypedKeyMap} contains value for provided {@link TypedKey}.
@@ -102,7 +102,7 @@ public interface TypedKeyMap {
 		 * 
 		 * @param <T> The type of key and value
 		 * @param key The key
-		 * @param optionalValue The optional value
+		 * @param optValue The optional value
 		 */
 		default <T> void trySet(final TypedKey<T> key, final Optional<? extends T> optValue) {
 			optValue.ifPresent(value -> this.set(key, value));
@@ -112,12 +112,143 @@ public interface TypedKeyMap {
 		 * If provided {@link Optional} is present, sets its value for the specified {@link TypedKey}. <br>
 		 * If the {@link Optional} is empty, removes provided {@link TypedKey} for this {@link TypedKeyMap}.
 		 * 
-		 * @param <T>
-		 * @param key
-		 * @param optValue
+		 * @param <T> The type of key and value
+		 * @param key The key
+		 * @param optValue The optionalValue
 		 */
 		default <T> void apply(final TypedKey<T> key, final Optional<? extends T> optValue) {
 			optValue.ifPresentOrElse(value -> this.set(key, value), () -> this.remove(key));
+		}
+		
+		interface Proxy extends TypedKeyMap.Mutable, TypedKeyMap.Proxy {
+			
+			@Override
+			TypedKeyMap.Mutable context();
+			
+			@Override
+			default <T> Optional<T> set(final TypedKey<T> key, final T value) {
+				return this.context().set(key, value);
+			}
+			
+			@Override
+			default <T> Optional<T> remove(final TypedKey<? extends T> key) {
+				return this.context().remove(key);
+			}
+			
+			@Override
+			default <T> void trySet(final TypedKey<T> key, final Optional<? extends T> optValue) {
+				this.context().trySet(key, optValue);
+			}
+			
+			@Override
+			default <T> void apply(final TypedKey<T> key, final Optional<? extends T> optValue) {
+				this.context().apply(key, optValue);
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	interface Operator<B extends Operator<B>> extends TypedKeyMap {
+		
+		/**
+		 * Sets value for the provided {@link TypedKey} for this {@link TypedKeyMap}.
+		 * 
+		 * @param <T> The type of key and value
+		 * @param key The key
+		 * @param value The value
+		 * @return This operator, for chaining
+		 */
+		<T> B set(TypedKey<T> key, T value);
+		
+		/**
+		 * Removes provided {@link TypedKey} for this {@link TypedKeyMap}. <br>
+		 * 
+		 * @param <T> The type of key
+		 * @param key The key
+		 * @return This operator, for chaining
+		 */
+		B remove(TypedKey<?> key);
+		
+		/**
+		 * Sets value for the specified {@link TypedKey} for this {@link TypedKeyMap}
+		 * only if provided {@link Optional} is present.
+		 * 
+		 * @param <T> The type of key and value
+		 * @param key The key
+		 * @param optValue The optional value
+		 * @return This operator, for chaining
+		 */
+		<T> B trySet(TypedKey<T> key, Optional<? extends T> optValue);
+		
+		/**
+		 * If provided {@link Optional} is present, sets its value for the specified {@link TypedKey}. <br>
+		 * If the {@link Optional} is empty, removes provided {@link TypedKey} for this {@link TypedKeyMap}.
+		 * 
+		 * @param <T> The type of key and value
+		 * @param key The key
+		 * @param optValue The optionalValue
+		 * @return This operator, for chaining
+		 */
+		<T> B apply(TypedKey<T> key, Optional<? extends T> optValue);
+		
+		interface MutableProxy<B extends Operator<B>> extends TypedKeyMap.Operator<B>, TypedKeyMap.Proxy {
+			
+			@Override
+			TypedKeyMap.Mutable context();
+			
+			@Override
+			default <T> B set(final TypedKey<T> key, final T value) {
+				this.context().set(key, value);
+				return (B) this;
+			}
+			
+			@Override
+			default B remove(final TypedKey<?> key) {
+				this.context().remove(key);
+				return (B) this;
+			}
+			
+			@Override
+			default <T> B trySet(final TypedKey<T> key, final Optional<? extends T> optValue) {
+				this.context().trySet(key, optValue);
+				return (B) this;
+			}
+			
+			@Override
+			default <T> B apply(final TypedKey<T> key, final Optional<? extends T> optValue) {
+				this.context().apply(key, optValue);
+				return (B) this;
+			}
+		}
+		
+		interface OperatorProxy<B extends Operator<B>> extends TypedKeyMap.Operator<B>, TypedKeyMap.Proxy {
+			
+			@Override
+			TypedKeyMap.Operator<?> context();
+			
+			@Override
+			default <T> B set(final TypedKey<T> key, final T value) {
+				this.context().set(key, value);
+				return (B) this;
+			}
+			
+			@Override
+			default B remove(final TypedKey<?> key) {
+				this.context().remove(key);
+				return (B) this;
+			}
+			
+			@Override
+			default <T> B trySet(final TypedKey<T> key, final Optional<? extends T> optValue) {
+				this.context().trySet(key, optValue);
+				return (B) this;
+			}
+			
+			@Override
+			default <T> B apply(final TypedKey<T> key, final Optional<? extends T> optValue) {
+				this.context().apply(key, optValue);
+				return (B) this;
+			}
 		}
 	}
 	
@@ -128,62 +259,36 @@ public interface TypedKeyMap {
 		 * 
 		 * @return The underlying {@link TypedKeyMap}.
 		 */
-		TypedKeyMap data();
+		TypedKeyMap context();
 		
 		@Override
-		default Set<TypedKey<?>> keySet() {
-			return this.data().keySet();
+		default Set<TypedKey<?>> typedKeySet() {
+			return this.context().typedKeySet();
 		}
 		
 		@Override
 		default boolean has(final TypedKey<?> key) {
-			return this.data().has(key);
+			return this.context().has(key);
 		}
 		
 		@Override
 		default <T> Optional<T> get(final TypedKey<? extends T> key) {
-			return this.data().get(key);
+			return this.context().get(key);
 		}
 		
 		@Override
 		default <T> T require(final TypedKey<? extends T> key) {
-			return this.data().require(key);
+			return this.context().require(key);
 		}
 		
 		@Override
 		default <T> T getOrElse(final TypedKey<? extends T> key, final T defaultValue) {
-			return this.data().getOrElse(key, defaultValue);
+			return this.context().getOrElse(key, defaultValue);
 		}
 		
 		@Override
 		default <T> T getOrNull(final TypedKey<? extends T> key) {
-			return this.data().getOrNull(key);
-		}
-		
-		interface Mutable extends Proxy, TypedKeyMap.Mutable {
-			
-			@Override
-			TypedKeyMap.Mutable data();
-			
-			@Override
-			default <T> Optional<T> set(final TypedKey<T> key, final T value) {
-				return this.data().set(key, value);
-			}
-			
-			@Override
-			default <T> Optional<T> remove(final TypedKey<? extends T> key) {
-				return this.data().remove(key);
-			}
-			
-			@Override
-			default <T> void trySet(final TypedKey<T> key, final Optional<? extends T> optValue) {
-				this.data().trySet(key, optValue);
-			}
-			
-			@Override
-			default <T> void apply(final TypedKey<T> key, final Optional<? extends T> optValue) {
-				this.data().apply(key, optValue);
-			}
+			return this.context().getOrNull(key);
 		}
 	}
 	
@@ -193,12 +298,24 @@ public interface TypedKeyMap {
 		
 		protected final Map<TypedKey<?>, Object> values;
 		
-		protected Impl(final Map<TypedKey<?>, Object> emptyMap) {
-			this.values = emptyMap;
+		protected Impl(final Map<TypedKey<?>, Object> values) {
+			this.values = values;
+		}
+		
+		public Impl.Mutable asMutable() {
+			return new Impl.Mutable(this.values);
+		}
+		
+		public Impl.Mutable asMutableCopy() {
+			return new Impl.Mutable(this.values);
+		}
+		
+		public Impl asImmutable() {
+			return this;
 		}
 		
 		@Override
-		public Set<TypedKey<?>> keySet() {
+		public Set<TypedKey<?>> typedKeySet() {
 			return this.values.keySet();
 		}
 		
@@ -241,11 +358,11 @@ public interface TypedKeyMap {
 			if (this == obj) {
 				return true;
 			} else if (obj instanceof final TypedKeyMap that) {
-				if (this.keySet().size() != that.keySet().size()) {
+				if (this.typedKeySet().size() != that.typedKeySet().size()) {
 					return false;
 				}
 				
-				for (final TypedKey<?> key : that.keySet()) {
+				for (final TypedKey<?> key : that.typedKeySet()) {
 					if (!this.has(key) || !Objects.equals(this.require(key), that.require(key))) {
 						return false;
 					}
@@ -272,6 +389,20 @@ public interface TypedKeyMap {
 				super(new HashMap<>());
 			}
 			
+			protected Mutable(final Map<TypedKey<?>, Object> values) {
+				super(new HashMap<>(values));
+			}
+			
+			@Override
+			public Impl.Mutable asMutable() {
+				return this;
+			}
+			
+			@Override
+			public Impl asImmutable() {
+				return new Impl(Map.copyOf(this.values));
+			}
+			
 			@Override
 			public <T> Optional<T> set(final TypedKey<T> key, final T value) {
 				return Optional.ofNullable(key.cast(this.values.put(key, Objects.requireNonNull(value, "value"))));
@@ -280,6 +411,10 @@ public interface TypedKeyMap {
 			@Override
 			public <T> Optional<T> remove(final TypedKey<? extends T> key) {
 				return Optional.ofNullable(key.cast(this.values.remove(key)));
+			}
+			
+			public void clear() {
+				this.values.clear();
 			}
 		}
 	}

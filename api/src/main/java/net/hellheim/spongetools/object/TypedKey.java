@@ -16,16 +16,17 @@ public record TypedKey<T>(ResourceKey key, Type type) implements ResourceKeyed, 
 		this.type = Objects.requireNonNull(type, "type");
 	}
 	
-	public static <T> TypedKey<T> of(final ResourceKey key, final Type type) {
-		return new TypedKey<>(key, type);
+	public static <T> TypedKey<T> of(final ResourceKey key, final Class<T> clazz) {
+		return new TypedKey<>(key, clazz);
 	}
 	
 	public static <T> TypedKey<T> of(final ResourceKey key, final TypeToken<T> token) {
-		return TypedKey.of(key, token.getType());
+		return new TypedKey<>(key, token.getType());
 	}
 	
+	@Deprecated(forRemoval = true)
 	public static <T> TypedKey<T> of(final ResourceKey key) {
-		return TypedKey.of(key, new TypeToken<T>(){}.getType());
+		return new TypedKey<>(key, new TypeToken<T>(){}.getType());
 	}
 	
 	public boolean isInstance(final Object value) {

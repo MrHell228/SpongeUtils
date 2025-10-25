@@ -152,6 +152,10 @@ public class MineHttpd extends Thread {
 		}
 	}
 	
+	public int port() {
+		return this.port;
+	}
+	
 	public class EventListener {
 		
 		@Listener

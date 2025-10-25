@@ -1,6 +1,7 @@
 package net.hellheim.spongetools;
 
 import org.spongepowered.api.ResourceKey;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.persistence.DataQuery;
 import org.spongepowered.api.data.value.ListValue;
@@ -13,8 +14,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.hellheim.spongetools.custom.type.block.CustomBlockType;
 import net.hellheim.spongetools.custom.type.block.EitherBlockType;
-import net.hellheim.spongetools.custom.type.item.CustomItemType;
-import net.hellheim.spongetools.custom.type.item.EitherItemType;
+import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
@@ -32,11 +32,9 @@ public final class SpongeTools {
 	
 	public static final class Registries {
 		
-		public static final DefaultedRegistryType<CustomItemType> CUSTOM_ITEM_TYPE = Registries.key("custom_item");
+		public static final DefaultedRegistryType<ItemArchetype> ITEM_ARCHETYPE = Registries.key("item_archetype");
 		
 		public static final DefaultedRegistryType<CustomBlockType> CUSTOM_BLOCK_TYPE = Registries.key("custom_block");
-		
-		public static final DefaultedRegistryType<EitherItemType> EITHER_ITEM_TYPE = Registries.key("either_item");
 		
 		public static final DefaultedRegistryType<EitherBlockType> EITHER_BLOCK_TYPE = Registries.key("either_block");
 		
@@ -62,7 +60,7 @@ public final class SpongeTools {
 		public static final DefaultedRegistryType<MapCodec<? extends CustomConsumeEffect>> CONSUME_EFFECT_TYPE = Registries.key("consume_effect_type");
 		
 	    private static <V> DefaultedRegistryType<V> key(final String key) {
-	        return RegistryType.of(RegistryRoots.SPONGE, SpongeTools.key(key)).asScopedType();
+	        return RegistryType.of(RegistryRoots.SPONGE, SpongeTools.key(key)).asDefaultedType(Sponge::game);
 	    }
 		
 		private Registries() {
@@ -70,8 +68,6 @@ public final class SpongeTools {
 	}
 	
 	public static final class Keys {
-		
-		public static final Key<Value<CustomItemType>> ITEM_TYPE = Keys.key("item", CustomItemType.class);
 		
 		public static final Key<Value<LoreProcessor>> LORE_PROCESSOR = Keys.key("lore_processor", LoreProcessor.class);
 		

@@ -158,10 +158,7 @@ public interface DataOperator<B extends DataOperator<B>> {
 		return this.addAll(key, Streams.stream(elements));
 	}
 	
-	default <V, C extends Collection<V>> B addAll(final Key<? extends CollectionValue<V, C>> key, final Stream<? extends V> elements) {
-		elements.forEach(element -> this.addSingle(key, element));
-		return (B) this;
-	}
+	<V, C extends Collection<V>> B addAll(final Key<? extends CollectionValue<V, C>> key, final Stream<? extends V> elements);
 	
 	default <V, C extends Collection<V>> B supplySingle(final Supplier<? extends Key<? extends CollectionValue<V, C>>> key, final Supplier<? extends V> element) {
 		return this.addSingle(key.get(), element.get());
@@ -187,4 +184,31 @@ public interface DataOperator<B extends DataOperator<B>> {
 	<V, C extends Collection<V>> B addSingle(Key<? extends CollectionValue<V, C>> key, V element);
 	
 	B reset();
+	
+	public interface Proxy<B extends DataOperator<B>> extends DataOperator<B> {
+		
+		DataOperator<?> getAsData();
+		
+		@Override
+		default <V> B add(final Key<? extends Value<V>> key, final V value) {
+			this.getAsData().add(key, value);
+			return (B) this;
+		}
+		
+		@Override
+		default <V, C extends Collection<V>> B addAll(
+			final Key<? extends CollectionValue<V, C>> key, final Stream<? extends V> elements
+		) {
+			this.getAsData().addAll(key, elements);
+			return (B) this;
+		}
+		
+		@Override
+		default <V, C extends Collection<V>> B addSingle(
+			final Key<? extends CollectionValue<V, C>> key, final V element
+		) {
+			this.getAsData().addSingle(key, element);
+			return (B) this;
+		}
+	}
 }

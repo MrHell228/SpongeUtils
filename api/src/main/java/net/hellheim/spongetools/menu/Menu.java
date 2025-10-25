@@ -38,7 +38,7 @@ import net.kyori.adventure.text.Component;
  *
  * @param <M> The menu itself
  */
-public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiable, TypedKeyMap.Proxy.Mutable {
+public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiable, TypedKeyMap.Mutable.Proxy {
 	
 	private final PluginContainer plugin;
 	private final UUID uniqueId;
@@ -151,7 +151,7 @@ public abstract class Menu<M extends Menu<M>> implements PluginProxy, Identifiab
 	}
 	
 	@Override
-	public TypedKeyMap.Mutable data() {
+	public TypedKeyMap.Mutable context() {
 		return this.data;
 	}
 	

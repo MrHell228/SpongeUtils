@@ -15,7 +15,7 @@ sponge {
 	plugin("spongetools") {
 		displayName(project(":").plugin_name)
 		version(project(":").plugin_version)
-		entrypoint("net.hellheim.spongetools.impl.SpongeToolsPlugin")
+		entrypoint("net.hellheim.spongetools.common.SpongeToolsPlugin")
 		description("SpongeTools plugin")
 		dependency("spongeapi") {
 			//loadOrder(PluginDependency.LoadOrder.AFTER)

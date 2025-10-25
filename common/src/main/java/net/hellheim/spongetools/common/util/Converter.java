@@ -1,6 +1,7 @@
 package net.hellheim.spongetools.common.util;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.type.HandType;
@@ -11,6 +12,7 @@ import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.fluid.FluidState;
 import org.spongepowered.api.fluid.FluidType;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.util.Direction;
@@ -35,10 +37,12 @@ import net.hellheim.spongetools.custom.behaviour.util.SwingType;
 import net.hellheim.spongetools.custom.behaviour.util.UseContext;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -56,6 +60,10 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public final class Converter {
+	
+	public static ResourceKey asSponge(final ResourceLocation location) {
+		return (ResourceKey) (Object) location;
+	}
 	
 	public static PrimitiveGameVolume asSponge(final BlockGetter getter) {
 		return (PrimitiveGameVolume) getter;
@@ -190,10 +198,18 @@ public final class Converter {
 		return (ItemStack) (Object) item;
 	}
 	
+	public static ItemType asSponge(final Item item) {
+		return (ItemType) item;
+	}
+	
 	public static Sound asSponge(final SoundEvent sound) {
 		return (Sound) (Object) sound;
 	}
 	
+	
+	public static ResourceLocation asVanilla(final ResourceKey key) {
+		return (ResourceLocation) (Object) key;
+	}
 	
 	public static BlockGetter asVanilla(final PrimitiveGameVolume volume) {
 		return (BlockGetter) volume;
@@ -326,6 +342,10 @@ public final class Converter {
 	
 	public static net.minecraft.world.item.ItemStack asVanilla(final ItemStack item) {
 		return (net.minecraft.world.item.ItemStack) (Object) item;
+	}
+	
+	public static Item asVanilla(final ItemType item) {
+		return (Item) item;
 	}
 	
 	public static SoundEvent asVanilla(final Sound sound) {
