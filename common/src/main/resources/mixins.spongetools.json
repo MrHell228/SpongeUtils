@@ -4,6 +4,10 @@
   "package": "net.hellheim.spongetools.mixin",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "core.MappedRegistryMixin",
+    "core.RegistryMixin",
+    "network.chat.HoverEvent_ItemStackInfoMixin",
+    "network.codec.ByteBufCodecsMixin",
     "world.InteractionResult_SuccessMixin",
     "world.InteractionResult_SwingSourceMixin",
     "world.InteractionResultMixin",
@@ -12,7 +16,6 @@
     "world.item.BucketItemMixin",
     "world.item.Item_PropertiesMixin",
     "world.item.ItemMixin",
-    "world.item.ItemStack_OptionalStreamCodecMixin",
     "world.item.ItemStackMixin",
     "world.item.context.BlockPlaceContextMixin",
     "world.item.context.DirectionalPlaceContextMixin",

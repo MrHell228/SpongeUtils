@@ -1,5 +1,6 @@
 package net.hellheim.spongetools.mixin.world.item;
 
+import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.bridge.ItemBridge;
 import net.hellheim.spongetools.bridge.Item_PropertiesBridge;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Item.class)
-public abstract class ItemMixin implements ItemBridge {
+public abstract class ItemMixin implements ItemBridge, FakeableNetworkValueBridge {
 
     @Shadow @Final @Mutable protected String descriptionId;
 
@@ -32,5 +33,10 @@ public abstract class ItemMixin implements ItemBridge {
     @Override
     public ItemTypeUtil.@Nullable AdditionalData spongetools$bridge$getData() {
         return this.spongetools$data;
+    }
+
+    @Override
+    public @Nullable Object spongetools$bridge$asNetworkValue() {
+        return this.spongetools$data == null ? null : this.spongetools$data.networkItem();
     }
 }
