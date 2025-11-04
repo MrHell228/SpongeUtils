@@ -1,10 +1,11 @@
-package net.hellheim.spongetools.common.util;
+package net.hellheim.spongetools.common.factory;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
 import net.hellheim.spongetools.custom.behaviour.util.InteractionResult.Success;
 import net.minecraft.world.InteractionResult;

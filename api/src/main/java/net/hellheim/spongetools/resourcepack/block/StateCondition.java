@@ -113,7 +113,7 @@ public interface StateCondition extends StatePredicate {
 	static <T extends Comparable<T>> StateCondition is(
 		final StatePropertyValue<T> value
 	) {
-		return StateCondition.is(value.property(), value.value());
+		return StateCondition.is(value.property(), value.propertyValue());
 	}
 	
 	static StateCondition is(final State<?> state) {
@@ -136,7 +136,7 @@ public interface StateCondition extends StatePredicate {
 	static <T extends Comparable<T>> StateCondition not(
 		final StatePropertyValue<T> value
 	) {
-		return StateCondition.not(value.property(), value.value());
+		return StateCondition.not(value.property(), value.propertyValue());
 	}
 	
 	static StateCondition not(final State<?> state) {

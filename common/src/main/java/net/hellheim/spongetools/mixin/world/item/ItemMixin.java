@@ -2,7 +2,7 @@ package net.hellheim.spongetools.mixin.world.item;
 
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.bridge.ItemBridge;
-import net.hellheim.spongetools.bridge.Item_PropertiesBridge;
+import net.hellheim.spongetools.bridge.ItemPropertiesBridge;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
 import net.minecraft.world.item.Item;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -24,7 +24,7 @@ public abstract class ItemMixin implements ItemBridge, FakeableNetworkValueBridg
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void spongetools$applyData(final Item.Properties properties, final CallbackInfo ci) {
-        this.spongetools$data = ((Item_PropertiesBridge) properties).spongetools$bridge$getData();
+        this.spongetools$data = ((ItemPropertiesBridge) properties).spongetools$bridge$getData();
         if (this.spongetools$data != null) {
             this.descriptionId = this.spongetools$data.translationKey();
         }

@@ -1,8 +1,9 @@
-package net.hellheim.spongetools.common.util;
+package net.hellheim.spongetools.common.builder;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.util.Direction;
 
+import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult.BlockHitResult.Builder;
 import net.minecraft.core.BlockPos;

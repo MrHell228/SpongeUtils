@@ -16,7 +16,8 @@ public interface FakeableNetworkValueBridge {
                 : holderProvider.apply(networkValue);
     }
 
-    static <V> V asNetworkValue(final V value) {
+    @SuppressWarnings("unchecked")
+	static <V> V asNetworkValue(final V value) {
         if (value instanceof final FakeableNetworkValueBridge bridge) {
             final @Nullable Object fakeValue = bridge.spongetools$bridge$asNetworkValue();
             if (fakeValue != null) {

@@ -15,6 +15,7 @@ import org.spongepowered.api.fluid.FluidType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.map.color.MapColorType;
+import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.RandomProvider;
 import org.spongepowered.api.world.World;
@@ -35,6 +36,7 @@ import net.hellheim.spongetools.custom.behaviour.util.SignalBias;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
 import net.hellheim.spongetools.custom.behaviour.util.UseContext;
+import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -52,6 +54,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.redstone.Orientation;
@@ -144,6 +147,14 @@ public final class Converter {
 	
 	public static FluidState asSponge(final net.minecraft.world.level.material.FluidState state) {
 		return (FluidState) (Object) state;
+	}
+	
+	public static StateProperty<?> asSponge(final Property<?> property) {
+		return (StateProperty<?>) property;
+	}
+	
+	public static StatePropertyValue<?> asSponge(final Property.Value<?> property) {
+		return (StatePropertyValue<?>) (Object) property;
 	}
 	
 	public static SignalOrientation asSponge(final Orientation orientation) {
@@ -290,6 +301,14 @@ public final class Converter {
 	
 	public static net.minecraft.world.level.material.FluidState asVanilla(final FluidState state) {
 		return (net.minecraft.world.level.material.FluidState) (Object) state;
+	}
+	
+	public static Property<?> asVanilla(final StateProperty<?> property) {
+		return (Property<?>) property;
+	}
+	
+	public static Property.Value<?> asVanilla(final StatePropertyValue<?> property) {
+		return (Property.Value<?>) (Object) property;
 	}
 	
 	public static Orientation asVanilla(final SignalOrientation orientation) {

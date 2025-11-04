@@ -1,5 +1,6 @@
 package net.hellheim.spongetools.mixin.world.level.block.state.properties;
 
+import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.spongepowered.api.state.StateProperty;
@@ -23,9 +24,9 @@ public abstract class Property_ValueMixin<T extends Comparable<T>> implements St
         return (StateProperty<T>) this.property;
     }
 
-    @Intrinsic
-    public T value$value() {
-        return this.value;
+    @Override
+    public T propertyValue() {
+        return StatePropertyValueFactory.mapToApi(this.value);
     }
 
     @Override

@@ -14,7 +14,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.common.item.util.ItemStackUtil;
 
-import net.hellheim.spongetools.bridge.Item_PropertiesBridge;
+import net.hellheim.spongetools.bridge.ItemPropertiesBridge;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeKeys;
 import net.hellheim.spongetools.object.TypedKey;
@@ -28,14 +28,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public final class ItemTypeUtil {
-	
-	/*
-	 * МОЛИМСЯ ЧТОБЫ НИЧЕГО НЕ ВЗОРВАЛОСЬ ИЗ-ЗА СЛИШКОМ РАННЕЙ ИНИЦИАЛИЗАЦИИ
-	 * 
-	 * TODO Fire registry events for ItemArchetype (if sponge regular way won't work) and ItemType from Item bootstrapping
-	 */
-	
-	public static final DefaultedRegistryReference<ItemType> NETWORK_ITEM = ItemTypes.RABBIT_FOOT;
 	
 	public static DataComponentPatch componentPatch(final ItemType baseType, final ValueContainer data) {
 		final ItemStack stack = ItemStack.of(baseType);
@@ -51,7 +43,7 @@ public final class ItemTypeUtil {
 				.setId(ResourceKey.create(Registries.ITEM, Converter.asVanilla(networkItemKey.location())));
 		
 		final ItemType networkItem = networkItemKey.get();
-		((Item_PropertiesBridge) properties).spongetools$bridge$applyData(new AdditionalData(
+		((ItemPropertiesBridge) properties).spongetools$bridge$applyData(new AdditionalData(
 				Converter.asVanilla(networkItem),
 				context.require(ItemTypeKeys.TRANSLATION_KEY),
 				componentPatch(networkItem, data)
@@ -67,19 +59,21 @@ public final class ItemTypeUtil {
 		final Optional<ItemArchetype> parent,
 		final Class<I> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
+		final DefaultedRegistryReference<ItemType> networkItem,
 		final BiConsumer<I, TypedKeyMap.Mutable> contextExtractor,
 		final BiFunction<TypedKeyMap, Item.Properties, I> assembler
 	) {
-		return ItemArchetype.of(parent, baseClass, requiredKeys, contextExtractor,
-				(data, context, behaviour) -> assembler.apply(context, properties(NETWORK_ITEM, data, context, behaviour)));
+		return ItemArchetype.of(parent, baseClass, requiredKeys, networkItem, contextExtractor,
+				(data, context, behaviour) -> assembler.apply(context, properties(networkItem, data, context, behaviour)));
 	}
 	
 	public static <I extends Item> ItemArchetype simpleArchetype(
 		final Optional<ItemArchetype> parent,
+		final DefaultedRegistryReference<ItemType> networkItem,
 		final Class<I> baseClass,
 		final Function<Item.Properties, I> assembler
 	) {
-		return archetype(parent, baseClass, Set.of(),
+		return archetype(parent, baseClass, Set.of(), networkItem,
 				(item, context) -> {},
 				(context, properties) -> assembler.apply(properties));
 	}
@@ -89,7 +83,8 @@ public final class ItemTypeUtil {
 		public static final ItemArchetype PLAIN = archetype(
 				Optional.empty(),
 				Item.class,
-				Set.of(),
+				Set.of(ItemTypeKeys.TRANSLATION_KEY),
+				ItemTypes.RABBIT_FOOT,
 				(item, context) -> {
 					final var remainder = item.getCraftingRemainder();
 					if (!remainder.isEmpty()) {
@@ -104,11 +99,13 @@ public final class ItemTypeUtil {
 				Optional.of(PLAIN),
 				BlockItem.class,
 				Set.of(ItemTypeKeys.BLOCK),
+				//ItemTypes.STONE,
+				ItemTypes.RABBIT_FOOT,
 				(item, context) -> context.set(ItemTypeKeys.BLOCK, (BlockType) item.getBlock()),
 				(context, properties) -> new BlockItem((Block) context.require(ItemTypeKeys.BLOCK), properties)
 				);
 		
-		public static final ItemArchetype FISHING_ROD = simpleArchetype(Optional.of(PLAIN), FishingRodItem.class, FishingRodItem::new);
+		public static final ItemArchetype FISHING_ROD = simpleArchetype(Optional.of(PLAIN), ItemTypes.RABBIT_FOOT, FishingRodItem.class, FishingRodItem::new);
 		
 		private Archetypes() {
 		}

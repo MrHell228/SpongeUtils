@@ -1,9 +1,10 @@
-package net.hellheim.spongetools.common.util;
+package net.hellheim.spongetools.common.factory;
 
 import java.util.Objects;
 
 import org.spongepowered.api.entity.Entity;
 
+import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult.EntityHitResult;
 import net.minecraft.world.phys.Vec3;

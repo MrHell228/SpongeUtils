@@ -8,7 +8,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataRegistration;
@@ -38,39 +37,43 @@ import net.hellheim.spongetools.codec.list.StringRepresentableCodecs;
 import net.hellheim.spongetools.common.SpongeToolsPlugin;
 import net.hellheim.spongetools.common.behaviour.BehaviourManagerImpl;
 import net.hellheim.spongetools.common.behaviour.BlockStateDispatcherImpl;
+import net.hellheim.spongetools.common.builder.BlockHitResultBuilder;
+import net.hellheim.spongetools.common.builder.BlockTypeBuilderImpl;
+import net.hellheim.spongetools.common.builder.ItemTypeBuilderImpl;
 import net.hellheim.spongetools.common.codec.AdventureCodecsFactory;
 import net.hellheim.spongetools.common.codec.ExtraCodecsFactory;
 import net.hellheim.spongetools.common.codec.SpongeToolsCodecs;
 import net.hellheim.spongetools.common.codec.StringRepresentableCodecsFactory;
-import net.hellheim.spongetools.common.util.BlockHitResultBuilder;
-import net.hellheim.spongetools.common.util.EffectUtilFactory;
-import net.hellheim.spongetools.common.util.HitResultFactory;
-import net.hellheim.spongetools.common.util.InteractionResultFactory;
-import net.hellheim.spongetools.common.util.ItemTypeBuilderImpl;
+import net.hellheim.spongetools.common.factory.EffectUtilFactory;
+import net.hellheim.spongetools.common.factory.HitResultFactory;
+import net.hellheim.spongetools.common.factory.InteractionResultFactory;
+import net.hellheim.spongetools.common.factory.SignalOrientationFactory;
+import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
+import net.hellheim.spongetools.common.factory.SwingTypeFactory;
+import net.hellheim.spongetools.common.util.BlockTypeUtil;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
-import net.hellheim.spongetools.common.util.SignalOrientationFactory;
-import net.hellheim.spongetools.common.util.StatePropertyValueFactory;
-import net.hellheim.spongetools.common.util.SwingTypeFactory;
 import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
 import net.hellheim.spongetools.custom.behaviour.util.InteractionResult;
 import net.hellheim.spongetools.custom.behaviour.util.SignalBias;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
+import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.block.BlockArchetypes;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
-import net.hellheim.spongetools.custom.type.block.CustomBlockType;
-import net.hellheim.spongetools.custom.type.block.EitherBlockType;
+import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
+import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
+import net.hellheim.spongetools.custom.type.item.ModeledItem;
 import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
-import net.hellheim.spongetools.resourcepack.block.Variant;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.util.EffectUtil;
 
@@ -105,6 +108,7 @@ public final class RegistryEventListener {
 	public void registerBuilders(final RegisterBuilderEvent event) {
 		event.register(HitResult.BlockHitResult.Builder.class, BlockHitResultBuilder::new);
 		event.register(ItemTypeBuilder.class, ItemTypeBuilderImpl::new);
+		event.register(BlockTypeBuilder.class, BlockTypeBuilderImpl::new);
 	}
 	
 	@Listener
@@ -123,66 +127,17 @@ public final class RegistryEventListener {
 	@Listener
 	public void registerRegistries(final RegisterRegistryEvent.GameScoped event) {
 		
-		// CustomType registries
-		
-		final var customBlocks = CustomBlockType.registry();
-		event.register(customBlocks.location(), true);
-		
-		// EitherType registries
-		
-		event.register(EitherBlockType.registry().location(), false, $ -> {
-			final Map<ResourceKey, EitherBlockType> map = new HashMap<>();
-			RegistryTypes.BLOCK_TYPE.get().streamEntries().forEach(e -> map.put(e.key(), EitherBlockType.common(e.value())));
-			customBlocks.get().streamEntries().forEach(e -> map.put(e.key(), EitherBlockType.custom(e.value())));
-			return map;
-		}, customBlocks);
-		
 		// Resourcepack-based registries
 		
-		event.register(Model.registry().location(), true, $ -> {
-			final Map<ResourceKey, Model> map = new HashMap<>();
-			
-			// TODO add items too
-			
-			customBlocks.get().streamEntries().forEach(e -> {
-				e.value().companions().forEach((keyTransformer, model) -> {
-					map.put(keyTransformer.apply(e.key()), model);
-				});
-			});
-			return map;
-		}, customBlocks);
-		
-		event.register(ItemDefinition.registry().location(), true);
-		
+		event.register(ModeledBlock.registry().location(), true);
+		event.register(ModeledItem.registry().location(), true);
+		event.register(Model.registry().location(), true);
 		event.register(BlockDefinition.registry().location(), true, $ -> {
 			// TODO Can this be in some nicer place?
-			BlockStateDispatcherEventListener.fireEvent(event);
-			
-			final Map<ResourceKey, BlockDefinition> map = new HashMap<>();
-			customBlocks.get().stream()
-					.filter(block -> !block.model().isEmpty())
-					.collect(Collectors.groupingBy(block -> block.state().type()))
-					.forEach((blockType, customBlockTypes) -> {
-						final ResourceKey blockKey = blockType.key(RegistryTypes.BLOCK_TYPE);
-						BlockDefinition model = this.decode(
-								ops -> StateOps.of(ops, blockType),
-								BlockDefinition.CODEC,
-								BlockDefinition.registry(),
-								blockKey
-								).getOrThrow(RuntimeException::new);
-						
-						for (final CustomBlockType customBlockType : customBlockTypes) {
-							final @Nullable Variant modelToAdd = customBlockType.model().orElse(null);
-							if (modelToAdd != null) {
-								model = model.expandWith(customBlockType.state(), modelToAdd);
-							}
-						}
-						
-						map.put(blockKey, model);
-					});
-			
-			return map;
-		}, customBlocks);
+			//BlockStateDispatcherEventListener.fireEvent(event);
+			return Map.of();
+		});
+		event.register(ItemDefinition.registry().location(), true);
 		
 		// Other registries
 		
@@ -198,18 +153,73 @@ public final class RegistryEventListener {
 		
 		event.register(CustomConsumeEffect.registry().location(), true);
 		
+		// Archetypes
+		
+		event.register(BlockArchetype.registry().location(), true, $ -> {
+			final Map<ResourceKey, BlockArchetype> map = new HashMap<>();
+			map.put(BlockArchetypes.BLOCK.location(), BlockTypeUtil.Archetypes.BLOCK);
+			return map;
+		});
+		
 		event.register(ItemArchetype.registry().location(), true, $ -> {
 			final Map<ResourceKey, ItemArchetype> map = new HashMap<>();
 			map.put(ItemArchetypes.BLOCK.location(), ItemTypeUtil.Archetypes.BLOCK);
 			map.put(ItemArchetypes.FISHING_ROD.location(), ItemTypeUtil.Archetypes.FISHING_ROD);
-			map.put(ItemArchetypes.PLAIN.location(), ItemTypeUtil.Archetypes.PLAIN);
+			map.put(ItemArchetypes.ITEM.location(), ItemTypeUtil.Archetypes.PLAIN);
 			return map;
 		});
 	}
 	
 	@Listener
-	public void registerServerRegistryValues(final RegisterRegistryValueEvent.GameScoped event) {
+	public void registerRegistryValues(final RegisterRegistryValueEvent.GameScoped event) {
+		
 		// TODO Load & Register custom ItemTypes from configs
+		
+		final var modeledBlocks = ModeledBlock.registry();
+		final var modeledItems = ModeledItem.registry();
+		
+		event.registry(Model.registry(), ($, step) -> {
+			modeledBlocks.get().stream().forEach(block ->
+				block.models().forEach((key, model) ->
+					step.register(key, model)));
+			
+			modeledItems.get().stream().forEach(item ->
+				item.models().forEach((key, model) ->
+					step.register(key, model)));
+		}, modeledBlocks, modeledItems);
+		
+		event.registry(RegistryTypes.BLOCK_TYPE, ($, step) ->
+			modeledBlocks.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
+			modeledBlocks);
+		
+		event.registry(RegistryTypes.ITEM_TYPE, ($, step) ->
+			modeledItems.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
+			modeledItems);
+		
+		event.registry(BlockDefinition.registry(), ($, step) ->
+			modeledBlocks.get().stream()
+					.flatMap(block -> block.variants().entrySet().stream())
+					.collect(Collectors.groupingBy(e -> e.getKey().type()))
+					.forEach((blockType, entries) -> {
+						final ResourceKey blockKey = blockType.key(RegistryTypes.BLOCK_TYPE);
+						BlockDefinition model = this.decode(
+								ops -> StateOps.of(ops, blockType),
+								BlockDefinition.CODEC,
+								BlockDefinition.registry(),
+								blockKey
+								).getOrThrow(RuntimeException::new);
+						
+						for (final var entry : entries) {
+							model = model.expandWith(entry.getKey(), entry.getValue());
+						}
+						
+						step.register(blockKey, model);
+					}),
+			modeledBlocks, RegistryTypes.BLOCK_TYPE);
+		
+		event.registry(ItemDefinition.registry(), ($, step) ->
+			modeledItems.get().streamEntries().forEach(e -> step.register(e.key(), e.value().definition())),
+			modeledItems, RegistryTypes.ITEM_TYPE);
 	}
 	
 	/* Is this needed?
@@ -235,7 +245,7 @@ public final class RegistryEventListener {
 			}
 		}
 		
-		return DataResult.error(() -> "Unknown file extension");
+		return DataResult.error(() -> "Could not find asset file " + file.getPath());
 	}
 	
 	private File file(

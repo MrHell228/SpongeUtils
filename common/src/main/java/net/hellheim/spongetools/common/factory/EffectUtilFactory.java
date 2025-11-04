@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.common.util;
+package net.hellheim.spongetools.common.factory;
 
 import java.util.Map;
 

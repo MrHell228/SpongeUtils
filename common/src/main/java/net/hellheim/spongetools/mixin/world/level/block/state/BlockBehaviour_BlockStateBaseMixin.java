@@ -3,6 +3,7 @@ package net.hellheim.spongetools.mixin.world.level.block.state;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.hellheim.spongetools.bridge.BlockStateBaseBridge;
+import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.common.behaviour.BlockStateArgs;
 import net.hellheim.spongetools.common.util.BucketUtil;
 import net.hellheim.spongetools.common.util.Converter;
@@ -57,6 +58,7 @@ import java.util.function.BiConsumer;
 @Mixin(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class)
 public abstract class BlockBehaviour_BlockStateBaseMixin implements
         BlockStateBaseBridge,
+        FakeableNetworkValueBridge,
         BlockStateExtension,
         BehaviourCallbackHolderProxy<BlockStateExtension> {
 
@@ -65,6 +67,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
     @Shadow protected abstract BlockState shadow$asState();
 
     private @Unique @MonotonicNonNull BehaviourCallbackHolderLogic<BlockStateExtension> spongetools$callbacks;
+    private @Nullable BlockState spongetools$networkState;
 
     @Override
     public org.spongepowered.api.block.BlockState state() {
@@ -72,8 +75,25 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
     }
 
     @Override
+    public org.spongepowered.api.block.BlockState display() {
+        return this.spongetools$networkState == null
+                ? this.state()
+                : (org.spongepowered.api.block.BlockState) this.spongetools$networkState;
+    }
+
+    @Override
     public BehaviourCallbackHolder<BlockStateExtension> getAsBehaviourCallbackHolder() {
         return this.spongetools$callbacks == null ? SPONGETOOLS$EMPTY_HOLDER : this.spongetools$callbacks;
+    }
+
+    @Override
+    public @Nullable Object spongetools$bridge$asNetworkValue() {
+        return this.spongetools$networkState;
+    }
+
+    @Override
+    public void spongetools$bridge$setNetworkState(final BlockState state) {
+        this.spongetools$networkState = state;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.common.util;
+package net.hellheim.spongetools.common.factory;
 
 import java.util.Optional;
 
@@ -6,6 +6,7 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.RandomProvider;
 import org.spongepowered.api.world.World;
 
+import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.util.SignalBias;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;

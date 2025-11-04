@@ -4,7 +4,7 @@ import net.hellheim.spongetools.common.util.ItemTypeUtil;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface Item_PropertiesBridge {
+public interface ItemPropertiesBridge {
 
     void spongetools$bridge$applyData(ItemTypeUtil.AdditionalData data);
 

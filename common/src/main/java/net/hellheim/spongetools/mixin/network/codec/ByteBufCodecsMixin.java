@@ -2,8 +2,10 @@ package net.hellheim.spongetools.mixin.network.codec;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
+import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.bridge.RegistryBridge;
-import net.hellheim.spongetools.common.util.NetworkIdMapper;
+import net.hellheim.spongetools.common.util.NetworkUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
@@ -11,7 +13,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -27,8 +28,8 @@ public interface ByteBufCodecsMixin {
             argsOnly = true
     )
     private static <T> IdMap<T> spongetools$adjustBlockStateIdMap(final IdMap<T> map) {
-        return map == Block.BLOCK_STATE_REGISTRY
-                ? (IdMap<T>) NetworkIdMapper.BLOCK_STATE_REGISTRY
+        return NetworkUtil.isBlockStateRegistry(map)
+                ? NetworkUtil.idMap(map, FakeableNetworkValueBridge::asNetworkValue)
                 : map;
     }
 

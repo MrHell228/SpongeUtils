@@ -3,7 +3,6 @@ package net.hellheim.spongetools;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Key;
-import org.spongepowered.api.data.persistence.DataQuery;
 import org.spongepowered.api.data.value.ListValue;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.registry.DefaultedRegistryType;
@@ -12,11 +11,12 @@ import org.spongepowered.api.registry.RegistryType;
 
 import com.mojang.serialization.MapCodec;
 
-import net.hellheim.spongetools.custom.type.block.CustomBlockType;
-import net.hellheim.spongetools.custom.type.block.EitherBlockType;
+import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
+import net.hellheim.spongetools.custom.type.item.ModeledItem;
 import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
@@ -32,21 +32,23 @@ public final class SpongeTools {
 	
 	public static final class Registries {
 		
+		public static final DefaultedRegistryType<BlockArchetype> BLOCK_ARCHETYPE = Registries.key("block_archetype");
+		
 		public static final DefaultedRegistryType<ItemArchetype> ITEM_ARCHETYPE = Registries.key("item_archetype");
 		
-		public static final DefaultedRegistryType<CustomBlockType> CUSTOM_BLOCK_TYPE = Registries.key("custom_block");
+		public static final DefaultedRegistryType<ModeledBlock> MODELED_BLOCK = Registries.key("modeled_block");
 		
-		public static final DefaultedRegistryType<EitherBlockType> EITHER_BLOCK_TYPE = Registries.key("either_block");
-		
-		/**
-		 * Definitions from this registry will be included in built ResourcePack.
-		 */
-		public static final DefaultedRegistryType<ItemDefinition> ITEM_DEFINITION = Registries.key("items");
+		public static final DefaultedRegistryType<ModeledItem> MODELED_ITEM = Registries.key("modeled_item");
 		
 		/**
 		 * Definitions from this registry will be included in built ResourcePack.
 		 */
 		public static final DefaultedRegistryType<BlockDefinition> BLOCK_DEFINITION = Registries.key("blockstates");
+		
+		/**
+		 * Definitions from this registry will be included in built ResourcePack.
+		 */
+		public static final DefaultedRegistryType<ItemDefinition> ITEM_DEFINITION = Registries.key("items");
 		
 		/**
 		 * Models from this registry will be included in built ResourcePack.
@@ -89,15 +91,11 @@ public final class SpongeTools {
 	
 	public static final class Queries {
 		
-		public static final DataQuery ITEM_TYPE = DataQuery.of("item");
-		
 		private Queries() {
 		}
 	}
 	
 	public static final class Versions {
-		
-		public static final int ITEM_TYPE = 0;
 		
 		private Versions() {
 		}

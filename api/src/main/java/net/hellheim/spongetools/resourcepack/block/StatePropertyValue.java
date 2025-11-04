@@ -41,7 +41,7 @@ public interface StatePropertyValue<T extends Comparable<T>> extends StringRepre
 	
 	StateProperty<T> property();
 	
-	T value();
+	T propertyValue();
 	
 	String valueName();
 	

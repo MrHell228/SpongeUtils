@@ -2,7 +2,7 @@ package net.hellheim.spongetools.mixin.core;
 
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.bridge.RegistryBridge;
-import net.hellheim.spongetools.common.util.NetworkIdMapper;
+import net.hellheim.spongetools.common.util.NetworkUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.IdMap;
 import net.minecraft.core.MappedRegistry;
@@ -34,10 +34,9 @@ public abstract class MappedRegistryMixin<T> implements RegistryBridge<T> {
     public IdMap<T> spongetools$bridge$asNetworkValueIdMap(final Function<Registry<T>, IdMap<T>> original) {
         if (this.spongetools$initNetworkValueIdMap) {
             if (this.spongetools$impl$isBuiltinRegistry()) {
-                this.spongetools$networkValueIdMap = new NetworkIdMapper<>(
+                this.spongetools$networkValueIdMap = NetworkUtil.idMap(
                         RegistryBridge.super.spongetools$bridge$asNetworkValueIdMap(original),
-                        (map, value) ->
-                                map.getId(FakeableNetworkValueBridge.asNetworkValue(value))
+                        (value) -> FakeableNetworkValueBridge.asNetworkValue(value)
                 );
             }
             this.spongetools$initNetworkValueIdMap = false;
@@ -52,10 +51,9 @@ public abstract class MappedRegistryMixin<T> implements RegistryBridge<T> {
     public IdMap<Holder<T>> spongetools$bridge$asNetworkHolderIdMap(final Function<Registry<T>, IdMap<Holder<T>>> original) {
         if (this.spongetools$initNetworkHolderIdMap) {
             if (this.spongetools$impl$isBuiltinRegistry()) {
-                this.spongetools$networkHolderIdMap = new NetworkIdMapper<>(
+                this.spongetools$networkHolderIdMap = NetworkUtil.idMap(
                         RegistryBridge.super.spongetools$bridge$asNetworkHolderIdMap(original),
-                        (map, value) ->
-                                map.getId(FakeableNetworkValueBridge.asNetworkHolder(value, this.byValue::get))
+                        (value) -> FakeableNetworkValueBridge.asNetworkHolder(value, this.byValue::get)
                 );
             }
             this.spongetools$initNetworkHolderIdMap = false;

@@ -13,7 +13,7 @@ import net.hellheim.spongetools.codec.list.RegistryCodecs;
 /**
  * @see <a href=https://minecraft.wiki/w/Items_model_definition> Minecraft Wiki </a>
  */
-public record ItemDefinition(ItemModel model, boolean handAnimationOnSwap) {
+public record ItemDefinition(ItemModel model, boolean handAnimationOnSwap) implements ItemDefinitionLike {
 	
 	public static final boolean DEFAULT_HAND_ANIMATION_ON_SWAP = true;
 	
@@ -42,5 +42,10 @@ public record ItemDefinition(ItemModel model, boolean handAnimationOnSwap) {
 	
 	public static ItemDefinition of(final ItemModel model) {
 		return ItemDefinition.of(model, ItemDefinition.DEFAULT_HAND_ANIMATION_ON_SWAP);
+	}
+	
+	@Override
+	public ItemDefinition asDefinition() {
+		return this;
 	}
 }

@@ -26,6 +26,8 @@ public interface BlockStateExtension extends
 	
 	BlockState state();
 	
+	BlockState display();
+	
 	@Override
 	default BlockState getAsBlockState() {
 		return this.state();

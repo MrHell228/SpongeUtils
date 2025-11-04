@@ -18,7 +18,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.util.ModelUtil;
 
-public record TexturedModel(ModelTemplate parent, Textures textures) {
+public record TexturedModel(ModelTemplate parent, Textures textures) implements ModelLike {
 	
 	public static final MapCodec<TexturedModel> MAP_CODEC = RecordCodecBuilder.<TexturedModel>mapCodec(
 			instance -> instance.group(
@@ -39,6 +39,19 @@ public record TexturedModel(ModelTemplate parent, Textures textures) {
 	
 	public Optional<ResourceKey> key() {
 		return this.parent.key();
+	}
+	
+	@Override
+	public Model asModel() {
+		return Model.of(this);
+	}
+	
+	public Model asModel(final ModelPart... parts) {
+		return Model.of(this, parts);
+	}
+	
+	public Model asModel(final ItemTransform display, ModelPart... parts) {
+		return Model.of(this, display, parts);
 	}
 	
 	public static TexturedModel of(final Supplier<ModelTemplate> parent, final Textures textures) {

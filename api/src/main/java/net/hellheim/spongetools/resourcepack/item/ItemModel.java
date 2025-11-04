@@ -16,7 +16,7 @@ import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.SpongeCodecs;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface ItemModel extends MapCodecProxy<ItemModel> {
+public interface ItemModel extends ItemDefinitionLike, MapCodecProxy<ItemModel> {
 	
 	LateBoundIdMapper<ResourceKey, MapCodec<? extends ItemModel>> ID_MAPPER = new LateBoundIdMapper<>();
 	
@@ -122,6 +122,7 @@ public interface ItemModel extends MapCodecProxy<ItemModel> {
 		return ItemDefinition.of(this, handAnimationOnSwap);
 	}
 	
+	@Override
 	default ItemDefinition asDefinition() {
 		return ItemDefinition.of(this);
 	}

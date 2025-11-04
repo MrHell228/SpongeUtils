@@ -79,14 +79,14 @@ public final class StateSelector implements StringRepresentable, StatePredicate 
 	public <T extends Comparable<T>> Optional<T> get(final StateProperty<T> property) {
 		@SuppressWarnings("unchecked")
 		final @Nullable StatePropertyValue<T> value = (StatePropertyValue<T>) this.values.get(property);
-		return value == null ? Optional.empty() : Optional.of(value.value());
+		return value == null ? Optional.empty() : Optional.of(value.propertyValue());
 	}
 	
 	public boolean overlaps(final StateSelector selector) {
 		final var commonProperties = Sets.intersection(this.properties(), selector.properties());
 		for (final StateProperty<?> property : commonProperties) {
-			final var thisValue = this.values.get(property).value();
-			final var thatValue = selector.values.get(property).value();
+			final var thisValue = this.values.get(property).propertyValue();
+			final var thatValue = selector.values.get(property).propertyValue();
 			if (!Objects.equals(thisValue, thatValue)) {
 				return false;
 			}
@@ -98,7 +98,7 @@ public final class StateSelector implements StringRepresentable, StatePredicate 
 	@Override
 	public boolean test(final Function<StateProperty<?>, Optional<? extends Comparable<?>>> propertyLookup) {
 		for (final StatePropertyValue<?> value : this.values()) {
-			if (propertyLookup.apply(value.property()).map(v -> !value.value().equals(v)).orElse(false)) {
+			if (propertyLookup.apply(value.property()).map(v -> !value.propertyValue().equals(v)).orElse(false)) {
 				return false;
 			}
 		}

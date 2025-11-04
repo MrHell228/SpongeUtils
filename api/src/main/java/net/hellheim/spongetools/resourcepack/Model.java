@@ -23,7 +23,8 @@ import net.hellheim.spongetools.resourcepack.util.GuiLight;
 /**
  * @see <a href=https://minecraft.wiki/w/Model> Minecraft Wiki </a>
  */
-public record Model(TexturedModel model, ItemTransform display, List<ModelPart> parts, GuiLight guiLight, boolean ambientOcclusion) {
+public record Model(TexturedModel model, ItemTransform display, List<ModelPart> parts, GuiLight guiLight, boolean ambientOcclusion)
+		implements ModelLike {
 	
 	public static final boolean DEFAULT_AMBIENT_OCCLUSION = true;
 	
@@ -82,6 +83,11 @@ public record Model(TexturedModel model, ItemTransform display, List<ModelPart> 
 	
 	public Textures textures() {
 		return this.model().textures();
+	}
+	
+	@Override
+	public Model asModel() {
+		return this;
 	}
 	
 	public static final class Builder implements

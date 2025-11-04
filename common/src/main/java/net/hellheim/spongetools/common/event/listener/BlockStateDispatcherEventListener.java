@@ -6,7 +6,6 @@ import org.spongepowered.api.event.lifecycle.LifecycleEvent;
 
 import net.hellheim.spongetools.common.event.RegisterBlockStateHolderEventImpl;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
-import net.hellheim.spongetools.custom.type.block.CustomBlockType;
 import net.hellheim.spongetools.event.RegisterBlockStateHolderEvent;
 
 public final class BlockStateDispatcherEventListener {
@@ -20,12 +19,11 @@ public final class BlockStateDispatcherEventListener {
 	
 	@Listener
 	public void registerCustomBlockTypeStates(final RegisterBlockStateHolderEvent event) {
-		// TODO wrap CustomBlockType providers into provider
-		// that takes into account already used states in world
-		CustomBlockType.registry().get().streamEntries()
+		// TODO is this needed now?
+		/*CustomBlockType.registry().get().streamEntries()
 				.forEach(entry -> {
 					final CustomBlockType block = entry.value();
 					event.register(block, block.stateProvider());
-				});
+				});*/
 	}
 }

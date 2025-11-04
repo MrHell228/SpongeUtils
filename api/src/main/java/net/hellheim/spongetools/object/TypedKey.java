@@ -24,11 +24,6 @@ public record TypedKey<T>(ResourceKey key, Type type) implements ResourceKeyed, 
 		return new TypedKey<>(key, token.getType());
 	}
 	
-	@Deprecated(forRemoval = true)
-	public static <T> TypedKey<T> of(final ResourceKey key) {
-		return new TypedKey<>(key, new TypeToken<T>(){}.getType());
-	}
-	
 	public boolean isInstance(final Object value) {
         return value != null && GenericTypeReflector.erase(this.type).isInstance(value);
 	}

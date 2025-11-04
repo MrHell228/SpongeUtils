@@ -4,24 +4,22 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.stream.Stream;
 
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.registry.DefaultedRegistryType;
-import org.spongepowered.api.registry.DefaultedRegistryValue;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
+import net.hellheim.spongetools.custom.type.CustomArchetype;
 import net.hellheim.spongetools.function.TriFunction;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 
 /**
- * Represents the core of the {@link ItemType}. <br>
- * The archetype can declare required/supported context keys and supported behaviour.
- * 
+ * @see CustomArchetype
  * @see ItemTypeBuilder
  */
 @CatalogedBy(ItemArchetypes.class)
@@ -29,34 +27,24 @@ public record ItemArchetype(
 		Optional<ItemArchetype> parent,
 		Class<?> baseClass,
 		Set<TypedKey<?>> requiredKeys,
+		DefaultedRegistryReference<ItemType> networkItem,
 		BiConsumer<ItemType, TypedKeyMap.Mutable> contextExtractor,
 		TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, ItemType> assembler
-		) implements DefaultedRegistryValue<ItemArchetype> {
+		) implements CustomArchetype<ItemType, ItemArchetype> {
 	
 	public ItemArchetype(
 		final Optional<ItemArchetype> parent,
 		final Class<?> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
+		final DefaultedRegistryReference<ItemType> networkItem,
 		final BiConsumer<ItemType, TypedKeyMap.Mutable> contextExtractor,
 		final TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, ItemType> assembler
 	) {
-		if (!ItemType.class.isAssignableFrom(Objects.requireNonNull(baseClass, "baseClass"))) {
-			throw new IllegalArgumentException(String.format(
-					"Provided base class must be a subclass of ItemType: %s",
-					baseClass));
-		}
-		
-		Objects.requireNonNull(parent, "parent").ifPresent(archetype -> {
-			if (!archetype.baseClass.isAssignableFrom(baseClass)) {
-				throw new IllegalArgumentException(String.format(
-						"Parent's base class (%s) must be a parent class of the given base class (%s)",
-						archetype.baseClass, baseClass));
-			}
-		});
-		
+		CustomArchetype.validate(ItemType.class, baseClass, parent);
 		this.parent = parent;
 		this.baseClass = baseClass;
 		this.requiredKeys = Objects.requireNonNull(requiredKeys, "requiredKeys");
+		this.networkItem = Objects.requireNonNull(networkItem, "networkItem");
 		this.contextExtractor = Objects.requireNonNull(contextExtractor, "contextExtractor");
 		this.assembler = Objects.requireNonNull(assembler, "assembler");
 	}
@@ -66,21 +54,12 @@ public record ItemArchetype(
 	}
 	
 	/**
-	 * Returns the most appropriate known {@link ItemArchetype} for the given {@link ItemType}.
-	 * 
-	 * @param item The item type
-	 * @return The item archetype
+	 * @param item The {@link ItemType}
+	 * @return The most appropriate known {@link ItemArchetype}
+	 * @see CustomArchetype#forType(org.spongepowered.api.registry.Registry, CustomArchetype, Object)
 	 */
 	public static ItemArchetype forType(final ItemType item) {
-		ItemArchetype archetype = ItemArchetypes.PLAIN.get();
-		for (final ItemArchetype arch : ItemArchetypes.registry().stream().toList()) {
-			if (arch.baseClass().isInstance(item)
-					// Choosing the most specific item class
-					&& archetype.baseClass().isAssignableFrom(arch.baseClass())) {
-				archetype = arch;
-			}
-		}
-		return archetype;
+		return CustomArchetype.forType(ItemArchetypes.registry(), ItemArchetypes.ITEM.get(), item);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -88,27 +67,14 @@ public record ItemArchetype(
 		final Optional<ItemArchetype> parent,
 		final Class<I> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
+		final DefaultedRegistryReference<ItemType> networkItem,
 		final BiConsumer<I, TypedKeyMap.Mutable> contextExtractor,
 		final TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, I> assembler
 	) {
 		return new ItemArchetype(
-				parent, baseClass, requiredKeys,
+				parent, baseClass, requiredKeys, networkItem,
 				(item, context) -> contextExtractor.accept((I) item, context),
 				(data, context, behaviour) -> (ItemType) assembler.apply(data, context, behaviour)
 				);
-	}
-	
-	
-	
-	public Stream<TypedKey<?>> cumulativeRequiredKeys() {
-		return this.parent.isEmpty()
-				? this.requiredKeys.stream()
-				: Stream.concat(this.parent.get().cumulativeRequiredKeys(), this.requiredKeys.stream());
-	}
-	
-	public BiConsumer<ItemType, TypedKeyMap.Mutable> cumulativeContextExtractor() {
-		return this.parent.isEmpty()
-				? this.contextExtractor
-				: this.parent.get().cumulativeContextExtractor().andThen(this.contextExtractor);
 	}
 }
