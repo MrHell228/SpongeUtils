@@ -2,12 +2,19 @@ package net.hellheim.spongetools.common.util;
 
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.minecraft.core.IdMap;
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.UnaryOperator;
 
 public final class NetworkUtil {
+	
+	public static final ClientboundUpdateAttributesPacket.AttributeSnapshot MINING_SPEED_ATTRIBUTE =
+			new ClientboundUpdateAttributesPacket.AttributeSnapshot(
+					Attributes.BLOCK_BREAK_SPEED, 0, Collections.emptyList());
 	
 	public static boolean isBlockStateRegistry(final IdMap<?> map) {
 		return map == Block.BLOCK_STATE_REGISTRY;

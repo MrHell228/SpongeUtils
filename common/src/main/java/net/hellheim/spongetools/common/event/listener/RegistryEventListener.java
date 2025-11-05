@@ -38,6 +38,7 @@ import net.hellheim.spongetools.common.SpongeToolsPlugin;
 import net.hellheim.spongetools.common.behaviour.BehaviourManagerImpl;
 import net.hellheim.spongetools.common.behaviour.BlockStateDispatcherImpl;
 import net.hellheim.spongetools.common.builder.BlockHitResultBuilder;
+import net.hellheim.spongetools.common.builder.BlockSoundGroupBuilderImpl;
 import net.hellheim.spongetools.common.builder.BlockTypeBuilderImpl;
 import net.hellheim.spongetools.common.builder.ItemTypeBuilderImpl;
 import net.hellheim.spongetools.common.codec.AdventureCodecsFactory;
@@ -60,6 +61,7 @@ import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
 import net.hellheim.spongetools.custom.type.block.BlockArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockArchetypes;
+import net.hellheim.spongetools.custom.type.block.BlockSoundGroupBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
@@ -107,6 +109,7 @@ public final class RegistryEventListener {
 	@Listener
 	public void registerBuilders(final RegisterBuilderEvent event) {
 		event.register(HitResult.BlockHitResult.Builder.class, BlockHitResultBuilder::new);
+		event.register(BlockSoundGroupBuilder.class, BlockSoundGroupBuilderImpl::new);
 		event.register(ItemTypeBuilder.class, ItemTypeBuilderImpl::new);
 		event.register(BlockTypeBuilder.class, BlockTypeBuilderImpl::new);
 	}

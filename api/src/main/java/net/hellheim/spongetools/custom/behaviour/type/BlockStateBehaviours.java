@@ -7,6 +7,7 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.type.InstrumentType;
 import org.spongepowered.api.data.type.PushReaction;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -36,7 +37,6 @@ import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Signal
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Tick;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.UseWithItem;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.UseWithoutItem;
-import net.kyori.adventure.sound.Sound;
 
 public final class BlockStateBehaviours {
 	
@@ -72,7 +72,7 @@ public final class BlockStateBehaviours {
 	 * The bigger this value, the longer it will take for block to be destroyed. <br>
 	 * Special value of -1 makes block unbreakable and not movable by piston.
 	 */
-	public static final BehaviourType<Locatable<Double, PrimitiveGameVolume>> DESTRUCTION_STRENGTH = BehaviourType.create();
+	public static final BehaviourType<Locatable<Double, PrimitiveGameVolume>> DESTRUCTION_RESISTANCE = BehaviourType.create();
 	
 	/**
 	 * The increment of the destruction progress per tick. <br>
@@ -188,7 +188,7 @@ public final class BlockStateBehaviours {
 	 */
 	public static final BehaviourType<LocatableEntity<ItemStack, WorldLike<?>, Optional<Player>>> BUCKET_PICKUP_ITEM = BehaviourType.create();
 	
-	public static final BehaviourType<SimpleObject<Optional<Sound>>> BUCKET_PICKUP_SOUND = BehaviourType.create();
+	public static final BehaviourType<SimpleObject<Optional<SoundType>>> BUCKET_PICKUP_SOUND = BehaviourType.create();
 	
 	private BlockStateBehaviours() {
 	}

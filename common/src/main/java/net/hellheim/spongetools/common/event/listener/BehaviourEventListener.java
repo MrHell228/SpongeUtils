@@ -75,7 +75,7 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(volume),
 								Converter.asVanilla(position)
 								))
-				.register(BlockStateBehaviours.DESTRUCTION_STRENGTH,
+				.register(BlockStateBehaviours.DESTRUCTION_RESISTANCE,
 						(state) -> (volume, position) -> (double) state.getDestroySpeed(
 								Converter.asVanilla(volume),
 								Converter.asVanilla(position)
@@ -257,7 +257,7 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position())
 								))
-				.registerResult(BlockStateBehaviours.DESTRUCTION_STRENGTH,
+				.registerResult(BlockStateBehaviours.DESTRUCTION_RESISTANCE,
 						(block) -> (double) block.defaultDestroyTime())
 				.register(BlockStateBehaviours.DESTRUCTION_INCREMENT,
 						(block) -> (state, origin, args) -> (double) behaviour(block).invoker$getDestroyProgress(

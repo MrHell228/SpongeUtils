@@ -2,14 +2,19 @@ package net.hellheim.spongetools.custom.type.block;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSoundGroup;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.data.type.InstrumentType;
+import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.registry.RegistryType;
 import org.spongepowered.api.state.StateProperty;
 
@@ -119,5 +124,128 @@ public interface BlockTypeBuilder extends
 	 */
 	default BlockTypeBuilder displayState(final UnaryOperator<BlockState> display) {
 		return this.set(BlockTypeKeys.DISPLAY_STATE, display);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#SOUND_GROUP} context key.
+	 */
+	default BlockTypeBuilder sound(final BlockSoundGroup soundGroup) {
+		return this.set(BlockTypeKeys.SOUND_GROUP, soundGroup);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#MAP_COLOR} context key.
+	 */
+	default BlockTypeBuilder mapColor(final MapColorType mapColor) {
+		return this.set(BlockTypeKeys.MAP_COLOR, mapColor);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#MAP_COLOR} context key.
+	 */
+	default BlockTypeBuilder mapColor(final Supplier<? extends MapColorType> mapColor) {
+		return this.mapColor(Objects.requireNonNull(mapColor, "mapColor").get());
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#INSTRUMENT} context key.
+	 */
+	default BlockTypeBuilder instrument(final InstrumentType instrument) {
+		return this.set(BlockTypeKeys.INSTRUMENT, instrument);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#INSTRUMENT} context key.
+	 */
+	default BlockTypeBuilder instrument(final Supplier<? extends InstrumentType> instrument) {
+		return this.instrument(Objects.requireNonNull(instrument, "instrument").get());
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} context key.
+	 */
+	default BlockTypeBuilder destructionResistance(final double resistance) {
+		return this.set(BlockTypeKeys.DESTRUCTION_RESISTANCE, resistance);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context key.
+	 */
+	default BlockTypeBuilder explosionResistance(final double resistance) {
+		return this.set(BlockTypeKeys.EXPLOSION_RESISTANCE, resistance);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} and
+	 * {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context keys.
+	 */
+	default BlockTypeBuilder resistance(final double destruction, final double explosion) {
+		return this.destructionResistance(destruction).explosionResistance(explosion);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} and
+	 * {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context keys.
+	 */
+	default BlockTypeBuilder resistance(final double resistance) {
+		return this.resistance(resistance, resistance);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} and
+	 * {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context keys tp 0.
+	 */
+	default BlockTypeBuilder instabreak() {
+		return this.resistance(0);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#REQUIRE_TOOL} context key.
+	 */
+	default BlockTypeBuilder requireTool() {
+		return this.set(BlockTypeKeys.REQUIRE_TOOL, true);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR} context key.
+	 */
+	default BlockTypeBuilder speedFactor(final double factor) {
+		return this.set(BlockTypeKeys.SPEED_FACTOR, factor);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#JUMP_FACTOR} context key.
+	 */
+	default BlockTypeBuilder jumpFactor(final double factor) {
+		return this.set(BlockTypeKeys.JUMP_FACTOR, factor);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#FRICTION_FACTOR} context key.
+	 */
+	default BlockTypeBuilder frictionFactor(final double factor) {
+		return this.set(BlockTypeKeys.FRICTION_FACTOR, factor);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR} and {@link BlockTypeKeys#JUMP_FACTOR} context keys.
+	 */
+	default BlockTypeBuilder movement(final double speed, final double jump) {
+		return this.speedFactor(speed).jumpFactor(jump);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR}, {@link BlockTypeKeys#JUMP_FACTOR}
+	 * and {@link BlockTypeKeys#FRICTION_FACTOR} context keys.
+	 */
+	default BlockTypeBuilder movement(final double speed, final double jump, final double friction) {
+		return this.speedFactor(speed).jumpFactor(jump).frictionFactor(friction);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#BURNABLE} context key.
+	 */
+	default BlockTypeBuilder burnable() {
+		return this.set(BlockTypeKeys.BURNABLE, true);
 	}
 }

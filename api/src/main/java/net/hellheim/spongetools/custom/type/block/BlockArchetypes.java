@@ -19,8 +19,18 @@ public final class BlockArchetypes {
 	 * <br>
 	 * Supported Context: <br>
 	 * - {@link BlockTypeKeys#DEFAULT_STATE} <br>
-	 * - {@link BlockTypeKeys#LOOT_TABLE} <br>
 	 * - {@link BlockTypeKeys#STATE_PROPERTIES} <br>
+	 * - {@link BlockTypeKeys#LOOT_TABLE} <br>
+	 * - {@link BlockTypeKeys#SOUND_GROUP} <br>
+	 * - {@link BlockTypeKeys#MAP_COLOR} <br>
+	 * - {@link BlockTypeKeys#INSTRUMENT} <br>
+	 * - {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} <br>
+	 * - {@link BlockTypeKeys#EXPLOSION_RESISTANCE} <br>
+	 * - {@link BlockTypeKeys#REQUIRE_TOOL} <br>
+	 * - {@link BlockTypeKeys#SPEED_FACTOR} <br>
+	 * - {@link BlockTypeKeys#JUMP_FACTOR} <br>
+	 * - {@link BlockTypeKeys#FRICTION_FACTOR} <br>
+	 * - {@link BlockTypeKeys#BURNABLE} <br>
 	 */
 	public static final DefaultedRegistryReference<BlockArchetype> BLOCK = BlockArchetypes.key("block");
 	

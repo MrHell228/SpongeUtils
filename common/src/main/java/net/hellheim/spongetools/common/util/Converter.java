@@ -7,6 +7,7 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.data.type.InstrumentType;
 import org.spongepowered.api.data.type.PushReaction;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
@@ -37,7 +38,6 @@ import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
 import net.hellheim.spongetools.custom.behaviour.util.UseContext;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
-import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -213,8 +213,8 @@ public final class Converter {
 		return (ItemType) item;
 	}
 	
-	public static Sound asSponge(final SoundEvent sound) {
-		return (Sound) (Object) sound;
+	public static SoundType asSponge(final SoundEvent sound) {
+		return (SoundType) (Object) sound;
 	}
 	
 	
@@ -367,7 +367,7 @@ public final class Converter {
 		return (Item) item;
 	}
 	
-	public static SoundEvent asVanilla(final Sound sound) {
+	public static SoundEvent asVanilla(final SoundType sound) {
 		return (SoundEvent) (Object) sound;
 	}
 	

@@ -27,5 +27,9 @@ public interface FakeableNetworkValueBridge {
         return value;
     }
 
+    static boolean isNetworkFaked(final Object value) {
+        return FakeableNetworkValueBridge.asNetworkValue(value) != value;
+    }
+
     @Nullable Object spongetools$bridge$asNetworkValue();
 }

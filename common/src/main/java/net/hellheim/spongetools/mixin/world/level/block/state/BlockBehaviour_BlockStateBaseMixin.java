@@ -304,7 +304,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
             final BlockGetter getter, final BlockPos pos,
             final Operation<Float> original
     ) {
-        final var callback = this.spongetools$impl$callback(BlockStateBehaviours.DESTRUCTION_STRENGTH);
+        final var callback = this.spongetools$impl$callback(BlockStateBehaviours.DESTRUCTION_RESISTANCE);
         return callback == null
                 ? original.call(getter, pos)
                 : callback.call(
