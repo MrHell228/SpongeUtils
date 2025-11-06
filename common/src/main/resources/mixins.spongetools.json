@@ -11,6 +11,7 @@
     "network.protocol.game.ClientboundUpdateAttributesPacketMixin",
     "server.level.ServerLevelMixin",
     "server.level.ServerPlayerGameModeMixin",
+    "spongetools.AttributeModifierTemplateMixin",
     "world.InteractionResult_SuccessMixin",
     "world.InteractionResult_SwingSourceMixin",
     "world.InteractionResultMixin",
@@ -24,6 +25,7 @@
     "world.item.context.BlockPlaceContextMixin",
     "world.item.context.DirectionalPlaceContextMixin",
     "world.item.context.UseOnContextMixin",
+    "world.item.crafting.IngredientMixin",
     "world.level.LevelMixin",
     "world.level.block.BlockMixin",
     "world.level.block.BlocksMixin",
@@ -38,8 +40,7 @@
     "world.level.redstone.OrientationMixin",
     "world.phys.BlockHitResultMixin",
     "world.phys.EntityHitResultMixin",
-    "world.phys.HitResultMixin",
-    "world.spongetools.AttributeModifierTemplateMixin"
+    "world.phys.HitResultMixin"
   ],
   "injectors": {
     "defaultRequire": 1

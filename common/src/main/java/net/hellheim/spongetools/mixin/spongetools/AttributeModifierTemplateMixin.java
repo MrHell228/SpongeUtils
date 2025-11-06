@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.mixin.world.spongetools;
+package net.hellheim.spongetools.mixin.spongetools;
 
 import net.hellheim.spongetools.object.AttributeModifierTemplate;
 import net.minecraft.resources.ResourceLocation;
@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(AttributeModifierTemplate.class)
 public abstract class AttributeModifierTemplateMixin {
 
-    @Shadow @Final ResourceKey key;
-    @Shadow @Final AttributeOperation operation;
-    @Shadow @Final double amountPerLevel;
+    @Shadow @Final private ResourceKey key;
+    @Shadow @Final private AttributeOperation operation;
+    @Shadow @Final private double amountPerLevel;
 
     /**
      * @author MrHell228
