@@ -7,7 +7,6 @@ import java.util.function.BiConsumer;
 
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
@@ -27,7 +26,6 @@ public record ItemArchetype(
 		Optional<ItemArchetype> parent,
 		Class<?> baseClass,
 		Set<TypedKey<?>> requiredKeys,
-		DefaultedRegistryReference<ItemType> networkItem,
 		BiConsumer<ItemType, TypedKeyMap.Mutable> contextExtractor,
 		TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, ItemType> assembler
 		) implements CustomArchetype<ItemType, ItemArchetype> {
@@ -36,7 +34,6 @@ public record ItemArchetype(
 		final Optional<ItemArchetype> parent,
 		final Class<?> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
-		final DefaultedRegistryReference<ItemType> networkItem,
 		final BiConsumer<ItemType, TypedKeyMap.Mutable> contextExtractor,
 		final TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, ItemType> assembler
 	) {
@@ -44,7 +41,6 @@ public record ItemArchetype(
 		this.parent = parent;
 		this.baseClass = baseClass;
 		this.requiredKeys = Objects.requireNonNull(requiredKeys, "requiredKeys");
-		this.networkItem = Objects.requireNonNull(networkItem, "networkItem");
 		this.contextExtractor = Objects.requireNonNull(contextExtractor, "contextExtractor");
 		this.assembler = Objects.requireNonNull(assembler, "assembler");
 	}
@@ -67,12 +63,11 @@ public record ItemArchetype(
 		final Optional<ItemArchetype> parent,
 		final Class<I> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
-		final DefaultedRegistryReference<ItemType> networkItem,
 		final BiConsumer<I, TypedKeyMap.Mutable> contextExtractor,
 		final TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, I> assembler
 	) {
 		return new ItemArchetype(
-				parent, baseClass, requiredKeys, networkItem,
+				parent, baseClass, requiredKeys,
 				(item, context) -> contextExtractor.accept((I) item, context),
 				(data, context, behaviour) -> (ItemType) assembler.apply(data, context, behaviour)
 				);
