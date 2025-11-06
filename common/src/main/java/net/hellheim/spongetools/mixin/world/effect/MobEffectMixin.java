@@ -23,21 +23,26 @@ import java.util.Map;
 @Mixin(MobEffect.class)
 public abstract class MobEffectMixin implements MobEffectBridge {
 
+    @Unique private final Map<Holder<Attribute>, AttributeModifierTemplate> spongetools$rawAttributeModifiers = new HashMap<>();
     @Unique private final Map<AttributeType, AttributeModifierTemplate> spongetools$attributeModifiers = new HashMap<>();
     @Unique private final Map<AttributeType, AttributeModifierTemplate> spongetools$attributeModifiersView = Collections.unmodifiableMap(this.spongetools$attributeModifiers);
 
     @Inject(method = "addAttributeModifier", at = @At("HEAD"))
     private void spongetools$addModifierTemplate(
             final Holder<Attribute> attribute, final ResourceLocation id,
-            double amountPerLevel, AttributeModifier.Operation operation,
-            CallbackInfoReturnable<MobEffect> cir
+            final double amountPerLevel, final AttributeModifier.Operation operation,
+            final CallbackInfoReturnable<MobEffect> cir
     ) {
-        // TODO check if unpacking holder value is safe
-        //this.spongetools$attributeModifiers.put((AttributeType) attribute.value(), AttributeModifierTemplate.of((ResourceKey) (Object) id, (AttributeOperation) (Object) operation, amountPerLevel));
+        this.spongetools$rawAttributeModifiers.put(attribute, AttributeModifierTemplate.of((ResourceKey) (Object) id, (AttributeOperation) (Object) operation, amountPerLevel));
     }
 
     @Override
     public Map<AttributeType, AttributeModifierTemplate> spongetools$bridge$modifierTemplates() {
+        if (this.spongetools$rawAttributeModifiers.size() != this.spongetools$attributeModifiers.size()) {
+            this.spongetools$attributeModifiers.clear();
+            this.spongetools$rawAttributeModifiers.forEach((attribute, template) ->
+                    this.spongetools$attributeModifiers.put((AttributeType) attribute.value(), template));
+        }
         return this.spongetools$attributeModifiersView;
     }
 }

@@ -30,7 +30,7 @@ public record AttributeModifierTemplate(ResourceKey key, AttributeOperation oper
 		this.amountPerLevel = amountPerLevel;
 	}
 	
-	public AttributeModifier build(int amplifier) {
+	public AttributeModifier build(final int amplifier) {
 		return AttributeModifier.builder()
 				.key(this.key)
 				.operation(this.operation)
