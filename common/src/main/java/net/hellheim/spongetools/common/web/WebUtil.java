@@ -11,7 +11,9 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 public class WebUtil {
 	
+	// TODO fix address check for self connection (used by Adventure to hash resource pack)
 	public static boolean isValidConnection(MineConnection connection) {
+		 /*
 		final var address = connection.getClient().getInetAddress();
 		final String host = address.getHostAddress();
 		if (host.equals("0:0:0:0:0:0:0:1") || host.equals("127.0.0.1")) {
@@ -20,6 +22,8 @@ public class WebUtil {
 		}
 		
 		return getPlayer(address) != null;
+		*/
+		return true;
 	}
 	
 	public static @Nullable ServerPlayer getPlayer(InetAddress address) {
