@@ -20,6 +20,7 @@ import org.spongepowered.api.state.StateProperty;
 
 import net.hellheim.spongetools.custom.type.CustomTypeBuilder;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
+import net.hellheim.spongetools.util.ModelUtil;
 import net.hellheim.spongetools.util.TranslationUtil;
 
 /**
@@ -67,7 +68,7 @@ public interface BlockTypeBuilder extends
 	 * Sets the {@link BlockTypeKeys#TRANSLATION_KEY} and {@link BlockTypeKeys#LOOT_TABLE} context keys.
 	 */
 	default BlockTypeBuilder id(final ResourceKey key) {
-		return this.translationKey(key).lootTable(key);
+		return this.translationKey(key).lootTable(ModelUtil.withPrefix(key, "blocks/"));
 	}
 	
 	/**

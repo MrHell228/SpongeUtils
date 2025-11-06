@@ -1,12 +1,18 @@
 package net.hellheim.spongetools.bridge;
 
 import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.nullness.qual.PolyNull;
 
 import java.util.function.Function;
 
 public interface FakeableNetworkValueBridge {
+	
+	static Holder<Item> asNetworkItemHolder(final Holder<Item> holder) {
+		return FakeableNetworkValueBridge.asNetworkHolder(holder, Item::builtInRegistryHolder);
+	}
 
     static <V> @PolyNull Holder<V> asNetworkHolder(final Holder<V> holder, final Function<V, @PolyNull Holder<V>> holderProvider) {
         final V value = holder.value();

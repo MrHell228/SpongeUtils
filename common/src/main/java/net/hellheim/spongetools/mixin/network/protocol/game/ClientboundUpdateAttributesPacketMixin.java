@@ -37,9 +37,9 @@ public abstract class ClientboundUpdateAttributesPacketMixin {
             final Holder<Attribute> attribute, final double base, final Collection<AttributeModifier> modifiers,
             final Operation<ClientboundUpdateAttributesPacket.AttributeSnapshot> original
     ) {
-        if (attribute.is(NetworkUtil.MINING_SPEED_ATTRIBUTE.attribute()) && SpongeToolsPlugin.customMiningEnabled()) {
+        if (attribute.is(NetworkUtil.miningSpeedAttribute().attribute()) && SpongeToolsPlugin.customMiningEnabled()) {
             this.spongetools$fakeSpeedAdded = true;
-            return NetworkUtil.MINING_SPEED_ATTRIBUTE;
+            return NetworkUtil.miningSpeedAttribute();
         }
 
         return original.call(attribute, base, modifiers);
@@ -48,7 +48,7 @@ public abstract class ClientboundUpdateAttributesPacketMixin {
     @Inject(method = "<init>(ILjava/util/Collection;)V", at = @At("RETURN"))
     private void spongetools$addBreakSpeedAttribute(final CallbackInfo ci) {
         if (!this.spongetools$fakeSpeedAdded && SpongeToolsPlugin.customMiningEnabled()) {
-            this.attributes.add(NetworkUtil.MINING_SPEED_ATTRIBUTE);
+            this.attributes.add(NetworkUtil.miningSpeedAttribute());
         }
     }
 }

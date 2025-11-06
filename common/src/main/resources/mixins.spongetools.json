@@ -6,7 +6,7 @@
   "mixins": [
     "core.MappedRegistryMixin",
     "core.RegistryMixin",
-    "network.chat.HoverEvent_ItemStackInfoMixin",
+    "network.chat.HoverEvent_ItemStackInfoAccessor",
     "network.codec.ByteBufCodecsMixin",
     "network.protocol.game.ClientboundUpdateAttributesPacketMixin",
     "server.level.ServerLevelMixin",

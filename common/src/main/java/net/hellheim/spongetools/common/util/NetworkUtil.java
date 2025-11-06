@@ -8,13 +8,16 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+
+import com.google.common.base.Suppliers;
 
 public final class NetworkUtil {
 	
-	public static final ClientboundUpdateAttributesPacket.AttributeSnapshot MINING_SPEED_ATTRIBUTE =
-			new ClientboundUpdateAttributesPacket.AttributeSnapshot(
-					Attributes.BLOCK_BREAK_SPEED, 0, Collections.emptyList());
+	private static final Supplier<ClientboundUpdateAttributesPacket.AttributeSnapshot> MINING_SPEED_ATTRIBUTE =
+			Suppliers.memoize(() -> new ClientboundUpdateAttributesPacket.AttributeSnapshot(
+					Attributes.BLOCK_BREAK_SPEED, 0, Collections.emptyList()));
 	
 	public static boolean isBlockStateRegistry(final IdMap<?> map) {
 		return map == Block.BLOCK_STATE_REGISTRY;
@@ -51,25 +54,9 @@ public final class NetworkUtil {
 		};
 	}
 	
-	/*public static <T> IdMapper<T> idMapper(final IdMap<T> base, final Function<T, T> idProvider) {
-		final IdMapper<T> mapper = new IdMapper<>() {
-			
-			@Override
-			public int getId(T value) {
-				return super.getId(idProvider.apply(value));
-			}
-		};
-		
-		base.forEach(value -> {
-			final int id = base.getId(value);
-			if (id == -1) {
-				System.out.println("Unknown id for value " + value + " that already was in map");
-			}
-			mapper.addMapping(value, base.getId(value));
-		});
-		
-		return mapper;
-	}*/
+	public static ClientboundUpdateAttributesPacket.AttributeSnapshot miningSpeedAttribute() {
+		return NetworkUtil.MINING_SPEED_ATTRIBUTE.get();
+	}
 	
 	private NetworkUtil() {
 	}
