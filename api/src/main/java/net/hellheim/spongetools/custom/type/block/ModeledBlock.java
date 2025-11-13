@@ -21,6 +21,8 @@ import net.hellheim.spongetools.resourcepack.ModelTemplateProvider;
 import net.hellheim.spongetools.resourcepack.block.StateDispatch;
 import net.hellheim.spongetools.resourcepack.block.StateSelector;
 import net.hellheim.spongetools.resourcepack.block.Variant;
+import net.hellheim.spongetools.resourcepack.block.VariantList;
+import net.hellheim.spongetools.resourcepack.block.VariantListLike;
 import net.hellheim.spongetools.util.ModelUtil;
 
 /**
@@ -32,12 +34,13 @@ import net.hellheim.spongetools.util.ModelUtil;
 public record ModeledBlock(
 		BlockType type,
 		StateDispatch<BlockStateProvider> providers,
-		StateDispatch<Variant> variants,
+		StateDispatch<VariantListLike> variants,
 		Map<ResourceKey, Model> models
 		) implements Supplier<BlockType> {
 	
 	public ModeledBlock(
-		final BlockType type, final StateDispatch<BlockStateProvider> providers, final StateDispatch<Variant> variants, final Map<ResourceKey, Model> models
+		final BlockType type, final StateDispatch<BlockStateProvider> providers,
+		final StateDispatch<VariantListLike> variants, final Map<ResourceKey, Model> models
 	) {
 		this.type = Objects.requireNonNull(type, "type");
 		this.providers = Objects.requireNonNull(providers, "providers");
@@ -58,15 +61,15 @@ public record ModeledBlock(
 		return this.type;
 	}
 	
-	public Map<Variant, List<StateSelector>> variantToSelectorMap() {
+	public Map<VariantList, List<StateSelector>> variantToSelectorMap() {
 		return this.variants.values().entrySet().stream()
 				.collect(Collectors.groupingBy(
-						Map.Entry::getValue, Collectors.mapping(
+						e -> e.getValue().asVariantList(), Collectors.mapping(
 								Map.Entry::getKey, Collectors.toList())));
 	}
 	
-	public Map<Variant, BlockStateProvider> variantToProviderMap() {
-		final Map<Variant, BlockStateProvider> map = new HashMap<>();
+	public Map<VariantList, BlockStateProvider> variantToProviderMap() {
+		final Map<VariantList, BlockStateProvider> map = new HashMap<>();
 		this.variantToSelectorMap().forEach((variant, selectors) ->
 				map.put(variant, this.providers.getForAnySelector(selectors)));
 		return map;
@@ -78,7 +81,7 @@ public record ModeledBlock(
 		private final ResourceKey prefixedKey;
 		private Consumer<BlockTypeBuilder> block;
 		private StateDispatch<BlockStateProvider> providers;
-		private StateDispatch<Variant> variants;
+		private StateDispatch<VariantListLike> variants;
 		private final Map<ResourceKey, Model> models = new HashMap<>();
 		
 		public Builder(final ResourceKey key) {
@@ -105,17 +108,17 @@ public record ModeledBlock(
 			return this.providers(StateDispatch.of(provider));
 		}
 		
-		public Builder variants(final StateDispatch<Variant> variants) {
+		public Builder variants(final StateDispatch<VariantListLike> variants) {
 			this.variants = Objects.requireNonNull(variants, "variants");
 			return this;
 		}
 		
-		public Builder variants(final StateDispatch.Builder<Variant, ?> builder) {
+		public Builder variants(final StateDispatch.Builder<VariantListLike, ?> builder) {
 			return this.variants(Objects.requireNonNull(builder, "builder").build());
 		}
 		
-		public Builder variant(final Variant variant) {
-			return this.variants(StateDispatch.of(variant));
+		public Builder variants(final VariantListLike variants) {
+			return this.variants(StateDispatch.of(variants));
 		}
 		
 		public Builder model(final ResourceKey key, final ModelLike model) {
@@ -133,7 +136,7 @@ public record ModeledBlock(
 		
 		public Builder simpleModel(final ModelLike model) {
 			return this
-					.variant(Variant.model(this.prefixedKey))
+					.variants(Variant.model(this.prefixedKey))
 					.model(this.prefixedKey, model);
 		}
 		

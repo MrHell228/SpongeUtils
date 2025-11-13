@@ -1,7 +1,6 @@
 package net.hellheim.spongetools.common.event.listener;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
@@ -17,12 +16,12 @@ import net.hellheim.spongetools.common.event.BlockStateEventImpl;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.custom.type.block.BlockStateHolder;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
-import net.hellheim.spongetools.resourcepack.block.Variant;
+import net.hellheim.spongetools.resourcepack.block.VariantList;
 import net.hellheim.spongetools.event.BlockStateEvent;
 
 public final class BlockStateEventListener {
 	
-	public static Map<BlockState, List<Variant>> fireEvents(final Game game, final Cause cause, final Logger logger) {
+	public static Map<BlockState, VariantList> fireEvents(final Game game, final Cause cause, final Logger logger) {
 		final BlockStateDispatcher dispatcher = BlockStateDispatcher.get();
 		Sponge.eventManager().post(
 				new BlockStateEventImpl.RegisterHolderImpl(cause, game, logger, dispatcher));
@@ -30,7 +29,7 @@ public final class BlockStateEventListener {
 		
 		Sponge.eventManager().post(new BlockStateEventImpl.RegisterDisplayImpl(cause, game, logger));
 		
-		final Map<BlockState, List<Variant>> variants = new HashMap<>();
+		final Map<BlockState, VariantList> variants = new HashMap<>();
 		Sponge.eventManager().post(new BlockStateEventImpl.RegisterVariantImpl(cause, game, logger, variants));
 		return variants;
 	}
@@ -56,8 +55,8 @@ public final class BlockStateEventListener {
 	public void registerVariant(final BlockStateEvent.RegisterVariant event) {
 		ModeledBlock.registry().get().stream().forEach(block ->
 			block.type().validStates().forEach(state -> {
-				final Variant variant = block.variants().getFor(state);
-				event.register(BlockStateHolder.of(variant).state(), List.of(variant));
+				final VariantList variants = block.variants().getFor(state).asVariantList();
+				event.register(BlockStateHolder.of(variants).state(), variants);
 			}));
 	}
 }

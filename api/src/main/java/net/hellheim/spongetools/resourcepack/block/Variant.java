@@ -16,7 +16,7 @@ import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.util.ModelUtil;
 
-public final class Variant {
+public final class Variant implements VariantListLike {
 	
 	public static final Codec<Variant> CODEC = VariantPropertyValue.LIST_CODEC.xmap(
 			list -> Variant.builder().addAll(list).build(),
@@ -73,6 +73,11 @@ public final class Variant {
 	
 	public Variant with(final Variant variant) {
 		return this.toBuilder().addAll(variant).build();
+	}
+	
+	@Override
+	public VariantList asVariantList() {
+		return VariantList.of(this);
 	}
 	
 	@Override

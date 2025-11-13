@@ -29,7 +29,7 @@ import net.hellheim.spongetools.function.TriFunction;
 
 public class StateDispatch<V> {
 	
-	public static final Codec<StateDispatch<Variant>> CODEC = StateDispatch.codec(Variant.CODEC);
+	public static final Codec<StateDispatch<VariantListLike>> CODEC = StateDispatch.codec(VariantListLike.CODEC);
 	
 	private final Set<StateProperty<?>> properties;
 	private final Map<StateSelector, V> values;

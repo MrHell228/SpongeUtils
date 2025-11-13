@@ -1,6 +1,5 @@
 package net.hellheim.spongetools.event;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -12,6 +11,7 @@ import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.custom.type.block.BlockStateHolder;
 import net.hellheim.spongetools.custom.type.block.BlockStateProvider;
 import net.hellheim.spongetools.resourcepack.block.Variant;
+import net.hellheim.spongetools.resourcepack.block.VariantListLike;
 
 public interface BlockStateEvent extends LifecycleEvent {
 	
@@ -50,12 +50,12 @@ public interface BlockStateEvent extends LifecycleEvent {
 	
 	interface RegisterVariant extends BlockStateEvent {
 		
-		/**
+		/** TODO doc
 		 * Registers the {@link Variant}s to display
 		 * 
 		 * @param state
 		 * @param variants
 		 */
-		void register(BlockState state, List<Variant> variants);
+		void register(BlockState state, VariantListLike variants);
 	}
 }

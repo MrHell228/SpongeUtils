@@ -58,16 +58,16 @@ public interface BlockDefinition {
 	
 	Builder<?, ?> toBuilder();
 	
-	BlockDefinition expandWith(BlockState state, Variant variant);
+	BlockDefinition expandWith(BlockState state, VariantListLike variants);
 	
 	final class MultiVariant implements BlockDefinition {
 		
 		public static final Codec<MultiVariant> CODEC = StateCodec.MULTI_VARIANT;
 		
 		private final BlockType block;
-		private final StateDispatch<Variant> dispatch;
+		private final StateDispatch<VariantListLike> dispatch;
 		
-		private MultiVariant(final BlockType block, final StateDispatch<Variant> dispatch) {
+		private MultiVariant(final BlockType block, final StateDispatch<VariantListLike> dispatch) {
 			this.block = block;
 			this.dispatch = dispatch;
 		}
@@ -77,7 +77,7 @@ public interface BlockDefinition {
 			return this.block;
 		}
 		
-		public StateDispatch<Variant> dispatch() {
+		public StateDispatch<VariantListLike> dispatch() {
 			return this.dispatch;
 		}
 		
@@ -87,16 +87,16 @@ public interface BlockDefinition {
 		}
 		
 		@Override
-		public MultiVariant expandWith(final BlockState state, final Variant variant) {
-			return this.withDispatchBuilder(b -> b.expand(state, variant));
+		public MultiVariant expandWith(final BlockState state, final VariantListLike variants) {
+			return this.withDispatchBuilder(b -> b.expand(state, variants));
 		}
 		
-		public MultiVariant withDispatchBuilder(final UnaryOperator<StateDispatch.Builder<Variant, ?>> dispatchBuilderOperator) {
+		public MultiVariant withDispatchBuilder(final UnaryOperator<StateDispatch.Builder<VariantListLike, ?>> dispatchBuilderOperator) {
 			Objects.requireNonNull(dispatchBuilderOperator, "dispatchBuilderOperator");
 			return this.withDispatch(dispatch -> dispatchBuilderOperator.apply(dispatch.toBuilder()).build());
 		}
 		
-		public MultiVariant withDispatch(final UnaryOperator<StateDispatch<Variant>> dispatchOperator) {
+		public MultiVariant withDispatch(final UnaryOperator<StateDispatch<VariantListLike>> dispatchOperator) {
 			Objects.requireNonNull(dispatchOperator, "dispatchOperator");
 			return new MultiVariant(this.block, dispatchOperator.apply(this.dispatch));
 		}
@@ -105,7 +105,7 @@ public interface BlockDefinition {
 			
 			private final BlockType block;
 			private Variant baseVariant;
-			private final List<StateDispatch<Variant>> dispatches = new ArrayList<>();
+			private final List<StateDispatch<VariantListLike>> dispatches = new ArrayList<>();
 			private final Set<StateProperty<?>> seenProperties = new HashSet<>();
 			
 			private Builder(BlockType block) {
@@ -119,29 +119,29 @@ public interface BlockDefinition {
 			}
 			
 			@SafeVarargs
-			public final Builder dispatch(final StateDispatch.Builder<Variant, ?>... builders) {
-				for (final StateDispatch.Builder<Variant, ?> builder : Objects.requireNonNull(builders, "builders")) {
+			public final Builder dispatch(final StateDispatch.Builder<VariantListLike, ?>... builders) {
+				for (final StateDispatch.Builder<VariantListLike, ?> builder : Objects.requireNonNull(builders, "builders")) {
 					this.tryDispatch(Objects.requireNonNull(builder, "builder").build());
 				}
 				return this;
 			}
 			
 			@SafeVarargs
-			public final Builder dispatch(final StateDispatch<Variant>... dispatches) {
-				for (final StateDispatch<Variant> dispatch : Objects.requireNonNull(dispatches, "dispatches")) {
+			public final Builder dispatch(final StateDispatch<VariantListLike>... dispatches) {
+				for (final StateDispatch<VariantListLike> dispatch : Objects.requireNonNull(dispatches, "dispatches")) {
 					this.tryDispatch(dispatch);
 				}
 				return this;
 			}
 			
-			public final Builder dispatch(final Iterable<? extends StateDispatch<Variant>> dispatches) {
-				for (final StateDispatch<Variant> dispatch : Objects.requireNonNull(dispatches, "dispatches")) {
+			public final Builder dispatch(final Iterable<? extends StateDispatch<VariantListLike>> dispatches) {
+				for (final StateDispatch<VariantListLike> dispatch : Objects.requireNonNull(dispatches, "dispatches")) {
 					this.tryDispatch(dispatch);
 				}
 				return this;
 			}
 			
-			private final void tryDispatch(final StateDispatch<Variant> dispatch) {
+			private final void tryDispatch(final StateDispatch<VariantListLike> dispatch) {
 				Objects.requireNonNull(dispatch, "dispatch");
 				for (final StateProperty<?> property : dispatch.properties()) {
 					if (!this.block.stateProperties().contains(property)) {
@@ -169,19 +169,19 @@ public interface BlockDefinition {
 			
 			@Override
 			public final MultiVariant build() {
-				Stream<Pair<StateSelector, Variant>> stream = Stream.of(Pair.of(StateSelector.empty(), this.baseVariant));
-				for (final StateDispatch<Variant> dispatch : this.dispatches) {
-					final Map<StateSelector, Variant> values = dispatch.values();
+				Stream<Pair<StateSelector, VariantListLike>> stream = Stream.of(Pair.of(StateSelector.empty(), this.baseVariant));
+				for (final StateDispatch<VariantListLike> dispatch : this.dispatches) {
+					final Map<StateSelector, VariantListLike> values = dispatch.values();
 					stream = stream.flatMap(pair -> {
 						return values.entrySet().stream().map(entry -> {
 							final StateSelector selector = pair.getFirst().with(entry.getKey());
-							final Variant variant = pair.getSecond().with(entry.getValue());
+							final VariantList variant = pair.getSecond().merge(entry.getValue());
 							return Pair.of(selector, variant);
 						});
 					});
 				}
 				
-				final StateDispatch.Builder<Variant, ?> builder = StateDispatch.raw();
+				final StateDispatch.Builder<VariantListLike, ?> builder = StateDispatch.raw();
 				stream.forEach(pair -> builder.add(pair.getFirst(), pair.getSecond()));
 				return new MultiVariant(this.block, builder.build());
 			}
@@ -213,7 +213,7 @@ public interface BlockDefinition {
 		}
 		
 		@Override
-		public BlockDefinition expandWith(final BlockState state, final Variant variant) {
+		public BlockDefinition expandWith(final BlockState state, final VariantListLike variant) {
 			final Builder builder = BlockDefinition.part(this.block);
 			final StateCondition isState = StateCondition.is(state);
 			builder.add(StatePart.of(isState, variant));
@@ -224,7 +224,7 @@ public interface BlockDefinition {
 				final StateCondition newCondition = oldCondition.isEmpty()
 						? notState
 						: StateCondition.and(oldCondition.get(), notState);
-				builder.add(StatePart.of(newCondition, part.variant()));
+				builder.add(StatePart.of(newCondition, part.variants()));
 			});
 			
 			return builder.build();

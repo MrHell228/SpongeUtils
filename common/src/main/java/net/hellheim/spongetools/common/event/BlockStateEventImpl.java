@@ -1,6 +1,5 @@
 package net.hellheim.spongetools.common.event;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -19,7 +18,8 @@ import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.event.BlockStateEvent;
-import net.hellheim.spongetools.resourcepack.block.Variant;
+import net.hellheim.spongetools.resourcepack.block.VariantList;
+import net.hellheim.spongetools.resourcepack.block.VariantListLike;
 
 public abstract class BlockStateEventImpl
 		extends AbstractLifecycleEvent
@@ -83,24 +83,20 @@ public abstract class BlockStateEventImpl
 			extends BlockStateEventImpl
 			implements BlockStateEvent.RegisterVariant {
 		
-		private final Map<BlockState, List<Variant>> variants;
+		private final Map<BlockState, VariantList> variants;
 		
 		public RegisterVariantImpl(
-			final Cause cause, final Game game, final Logger logger, final Map<BlockState, List<Variant>> variants
+			final Cause cause, final Game game, final Logger logger, final Map<BlockState, VariantList> variants
 		) {
 			super(cause, game, logger);
 			this.variants = variants;
 		}
 		
 		@Override
-		public void register(final BlockState state, final List<Variant> variants) {
+		public void register(final BlockState state, final VariantListLike variants) {
 			Objects.requireNonNull(state, "state");
 			Objects.requireNonNull(variants, "variants");
-			if (variants.isEmpty()) {
-				throw new IllegalArgumentException("At least one variant must be provided");
-			}
-			
-			final @Nullable List<Variant> oldVariants = this.variants.put(state, List.copyOf(variants));
+			final @Nullable VariantList oldVariants = this.variants.put(state, variants.asVariantList());
 			if (oldVariants != null) {
 				this.logger.warn("Duplicate variants registered for state %s (old: %s, new: %s)",
 						state.asString(), oldVariants.toString(), variants.toString());

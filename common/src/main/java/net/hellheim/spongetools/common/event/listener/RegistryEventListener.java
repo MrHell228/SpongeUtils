@@ -208,8 +208,7 @@ public final class RegistryEventListener {
 								).getOrThrow(RuntimeException::new);
 						
 						for (final var entry : entries) {
-							// TODO remove #getFirst and use all variants
-							model = model.expandWith(entry.getKey(), entry.getValue().getFirst());
+							model = model.expandWith(entry.getKey(), entry.getValue());
 						}
 						
 						step.register(blockKey, model);
