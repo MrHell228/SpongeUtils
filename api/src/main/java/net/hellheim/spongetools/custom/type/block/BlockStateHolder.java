@@ -1,10 +1,25 @@
 package net.hellheim.spongetools.custom.type.block;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.spongepowered.api.block.BlockState;
 
 import net.hellheim.spongetools.proxy.solid.block.BlockStateProxy;
+import net.hellheim.spongetools.resourcepack.block.Variant;
 
 public interface BlockStateHolder extends BlockStateProxy {
+	
+	static VariantBased of(final Variant variant) {
+		return VariantBased.MAP.computeIfAbsent(Objects.requireNonNull(variant, "variant"), VariantBased::new);
+	}
+	
+	/**
+	 * @return True if state is bound to this holder
+	 */
+	boolean isBound();
 	
 	/**
 	 * @return The state bound to this holder
@@ -30,5 +45,47 @@ public interface BlockStateHolder extends BlockStateProxy {
 	@Override
 	default BlockState getAsBlockState() {
 		return this.state();
+	}
+	
+	class Simple implements BlockStateHolder {
+		
+		private @MonotonicNonNull BlockState state;
+		
+		@Override
+		public boolean isBound() {
+			return this.state != null;
+		}
+
+		@Override
+		public BlockState state() {
+			if (this.state == null) {
+				throw new IllegalStateException("State is not yet bound.");
+			}
+			return this.state;
+		}
+
+		@Override
+		public void bind(final BlockState state) {
+			if (this.state != null) {
+				throw new IllegalStateException("State is already bound.");
+			}
+			
+			this.state = Objects.requireNonNull(state, "state");
+		}
+	}
+	
+	final class VariantBased extends Simple {
+		
+		private static final Map<Variant, VariantBased> MAP = new HashMap<>();
+		
+		private final Variant variant;
+		
+		private VariantBased(final Variant variant) {
+			this.variant = variant;
+		}
+		
+		public Variant variant() {
+			return this.variant;
+		}
 	}
 }

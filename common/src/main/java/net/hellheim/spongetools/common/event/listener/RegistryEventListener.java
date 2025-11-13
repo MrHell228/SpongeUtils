@@ -81,7 +81,6 @@ import net.hellheim.spongetools.util.EffectUtil;
 
 public final class RegistryEventListener {
 	
-	@SuppressWarnings("unused")
 	private final Logger logger;
 	private final File assetsToLoad;
 	
@@ -135,11 +134,7 @@ public final class RegistryEventListener {
 		event.register(ModeledBlock.registry().location(), true);
 		event.register(ModeledItem.registry().location(), true);
 		event.register(Model.registry().location(), true);
-		event.register(BlockDefinition.registry().location(), true, $ -> {
-			// TODO Can this be in some nicer place?
-			//BlockStateDispatcherEventListener.fireEvent(event);
-			return Map.of();
-		});
+		event.register(BlockDefinition.registry().location(), true);
 		event.register(ItemDefinition.registry().location(), true);
 		
 		// Other registries
@@ -200,8 +195,8 @@ public final class RegistryEventListener {
 			modeledItems);
 		
 		event.registry(BlockDefinition.registry(), ($, step) ->
-			modeledBlocks.get().stream()
-					.flatMap(block -> block.variants().entrySet().stream())
+			BlockStateEventListener.fireEvents(event.game(), event.cause(), this.logger)
+					.entrySet().stream()
 					.collect(Collectors.groupingBy(e -> e.getKey().type()))
 					.forEach((blockType, entries) -> {
 						final ResourceKey blockKey = blockType.key(RegistryTypes.BLOCK_TYPE);
@@ -213,7 +208,8 @@ public final class RegistryEventListener {
 								).getOrThrow(RuntimeException::new);
 						
 						for (final var entry : entries) {
-							model = model.expandWith(entry.getKey(), entry.getValue());
+							// TODO remove #getFirst and use all variants
+							model = model.expandWith(entry.getKey(), entry.getValue().getFirst());
 						}
 						
 						step.register(blockKey, model);
@@ -225,7 +221,7 @@ public final class RegistryEventListener {
 			modeledItems, RegistryTypes.ITEM_TYPE);
 	}
 	
-	/* Is this needed?
+	/* TODO Is this needed?
 	private <T> DataResult<T> decode(
 		final Codec<T> codec, final RegistryType<T> registry, final ResourceKey key
 	) {

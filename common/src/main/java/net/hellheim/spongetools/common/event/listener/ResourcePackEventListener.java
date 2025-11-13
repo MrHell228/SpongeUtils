@@ -38,6 +38,8 @@ import net.hellheim.spongetools.resourcepack.meta.MetadataSection;
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.packs.PackType;
 
 public final class ResourcePackEventListener {
 	
@@ -64,7 +66,7 @@ public final class ResourcePackEventListener {
 	
 	@Listener
 	public void assembleResourcePack(final FreezeRegistryEvent.Post.GameScoped event) throws IOException {
-		// TODO replace holder(tyoe) with just type.get()
+		// TODO replace holder(type) with just type.get()
 		final RegistryHolder holder = event.holder();
 		this.logger.info(RegistryTypes.ENCHANTMENT_TYPE.defaultHolder().get());
 		this.logger.info(holder);
@@ -80,10 +82,11 @@ public final class ResourcePackEventListener {
 				.streamEntries()
 				.collect(Collectors.toMap(RegistryEntry::key, RegistryEntry::value));
 		
-		// TODO
+		// TODO figure out what this TODO means
 		try (final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(this.packResult))) {
 			final MetadataSection packmeta = MetadataSection.pack(
-					Component.text("Resource pack made with SpongeTools"), 46);
+					Component.text("Resource pack made with SpongeTools"),
+					SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
 			this.writeEntry(out, Metadata.CODEC, "pack.mcmeta", "pack.mcmeta", packmeta.asMetadata());
 			
 			final File copy = this.assetsToCopy;

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.util.CopyableBuilder;
@@ -72,6 +73,29 @@ public final class Variant {
 	
 	public Variant with(final Variant variant) {
 		return this.toBuilder().addAll(variant).build();
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.values.hashCode();
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj.getClass() != this.getClass()) {
+			return false;
+		} else {
+			return this.values.equals(((Variant) obj).values);
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return this.values.values().stream()
+				.map(VariantPropertyValue::toString)
+				.collect(Collectors.joining(",", "Variant[", "]"));
 	}
 	
 	public static class Builder implements

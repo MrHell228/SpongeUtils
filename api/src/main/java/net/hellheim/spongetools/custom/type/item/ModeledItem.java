@@ -126,7 +126,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		}
 		
 		public Builder simpleItemModel(final ModelTemplateProvider.T1 templateProvider) {
-			return this.simpleItemModel(key -> templateProvider.textured(key));
+			return this.simpleItemModel(templateProvider::textured);
 		}
 		
 		public Builder simpleBlockModel(final ModelLike model) {
@@ -139,7 +139,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		}
 		
 		public Builder simpleBlockModel(final ModelTemplateProvider.T1 templateProvider) {
-			return this.simpleBlockModel(key -> templateProvider.textured(key));
+			return this.simpleBlockModel(templateProvider::textured);
 		}
 		
 		@Override

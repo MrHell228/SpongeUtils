@@ -1,6 +1,5 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +11,15 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.ModelLike;
 import net.hellheim.spongetools.resourcepack.ModelTemplateProvider;
+import net.hellheim.spongetools.resourcepack.block.StateDispatch;
+import net.hellheim.spongetools.resourcepack.block.StateSelector;
 import net.hellheim.spongetools.resourcepack.block.Variant;
 import net.hellheim.spongetools.util.ModelUtil;
 
@@ -30,14 +29,19 @@ import net.hellheim.spongetools.util.ModelUtil;
  * 
  * @see #builder(ResourceKey)
  */
-public record ModeledBlock(BlockType type, Map<BlockState, Variant> variants, Map<ResourceKey, Model> models)
-		implements Supplier<BlockType> {
+public record ModeledBlock(
+		BlockType type,
+		StateDispatch<BlockStateProvider> providers,
+		StateDispatch<Variant> variants,
+		Map<ResourceKey, Model> models
+		) implements Supplier<BlockType> {
 	
 	public ModeledBlock(
-		final BlockType type, final Map<BlockState, Variant> variants, final Map<ResourceKey, Model> models
+		final BlockType type, final StateDispatch<BlockStateProvider> providers, final StateDispatch<Variant> variants, final Map<ResourceKey, Model> models
 	) {
 		this.type = Objects.requireNonNull(type, "type");
-		this.variants = Map.copyOf(variants);
+		this.providers = Objects.requireNonNull(providers, "providers");
+		this.variants = Objects.requireNonNull(variants, "variants");
 		this.models = Map.copyOf(models);
 	}
 	
@@ -54,12 +58,27 @@ public record ModeledBlock(BlockType type, Map<BlockState, Variant> variants, Ma
 		return this.type;
 	}
 	
+	public Map<Variant, List<StateSelector>> variantToSelectorMap() {
+		return this.variants.values().entrySet().stream()
+				.collect(Collectors.groupingBy(
+						Map.Entry::getValue, Collectors.mapping(
+								Map.Entry::getKey, Collectors.toList())));
+	}
+	
+	public Map<Variant, BlockStateProvider> variantToProviderMap() {
+		final Map<Variant, BlockStateProvider> map = new HashMap<>();
+		this.variantToSelectorMap().forEach((variant, selectors) ->
+				map.put(variant, this.providers.getForAnySelector(selectors)));
+		return map;
+	}
+	
 	public static final class Builder implements org.spongepowered.api.util.Builder<ModeledBlock, Builder> {
 		
 		private final ResourceKey key;
 		private final ResourceKey prefixedKey;
 		private Consumer<BlockTypeBuilder> block;
-		private StateFunction<Variant> variants;
+		private StateDispatch<BlockStateProvider> providers;
+		private StateDispatch<Variant> variants;
 		private final Map<ResourceKey, Model> models = new HashMap<>();
 		
 		public Builder(final ResourceKey key) {
@@ -73,9 +92,30 @@ public record ModeledBlock(BlockType type, Map<BlockState, Variant> variants, Ma
 			return this;
 		}
 		
-		public Builder variants(final StateFunction<Variant> variantProvider) {
-			this.variants = Objects.requireNonNull(variantProvider, "variantProvider");
+		public Builder providers(final StateDispatch<BlockStateProvider> providers) {
+			this.providers = Objects.requireNonNull(providers, "providers");
 			return this;
+		}
+		
+		public Builder providers(final StateDispatch.Builder<BlockStateProvider, ?> builder) {
+			return this.providers(Objects.requireNonNull(builder, "builder").build());
+		}
+		
+		public Builder provider(final BlockStateProvider provider) {
+			return this.providers(StateDispatch.of(provider));
+		}
+		
+		public Builder variants(final StateDispatch<Variant> variants) {
+			this.variants = Objects.requireNonNull(variants, "variants");
+			return this;
+		}
+		
+		public Builder variants(final StateDispatch.Builder<Variant, ?> builder) {
+			return this.variants(Objects.requireNonNull(builder, "builder").build());
+		}
+		
+		public Builder variant(final Variant variant) {
+			return this.variants(StateDispatch.of(variant));
 		}
 		
 		public Builder model(final ResourceKey key, final ModelLike model) {
@@ -91,26 +131,9 @@ public record ModeledBlock(BlockType type, Map<BlockState, Variant> variants, Ma
 			return this.model(key -> ModelUtil.withSuffix(key, keySuffix), model);
 		}
 		
-		public Builder dispatch(final List<ModelLike> models, final StateFunction<Integer> modelProvider) {
-			Objects.requireNonNull(models, "models");
-			Objects.requireNonNull(modelProvider, "modelProvider");
-			final List<ResourceKey> modelKeys = new ArrayList<>();
-			for (int i = 0; i < models.size(); ++i) {
-				final ResourceKey modelKey = ModelUtil.withSuffix(this.prefixedKey, "_" + i);
-				modelKeys.add(modelKey);
-				this.model(modelKey, models.get(i));
-			}
-			
-			return this.variants((display, states) -> {
-				final int i = modelProvider.apply(display, states);
-				final ResourceKey key = modelKeys.get(i);
-				return Variant.model(key);
-			});
-		}
-		
 		public Builder simpleModel(final ModelLike model) {
 			return this
-					.variants((display, states) -> Variant.model(this.prefixedKey))
+					.variant(Variant.model(this.prefixedKey))
 					.model(this.prefixedKey, model);
 		}
 		
@@ -119,39 +142,31 @@ public record ModeledBlock(BlockType type, Map<BlockState, Variant> variants, Ma
 		}
 		
 		public Builder simpleModel(final ModelTemplateProvider.T1 templateProvider) {
-			return this.simpleModel(key -> templateProvider.textured(key));
+			return this.simpleModel(templateProvider::textured);
 		}
 		
 		@Override
 		public Builder reset() {
 			this.block = builder -> {};
-			this.variants = null;
+			this.providers = null;
+			this.variants = StateDispatch.of(Variant.model(this.prefixedKey));
 			this.models.clear();
 			return this;
 		}
 		
 		@Override
 		public ModeledBlock build() {
-			if (this.variants == null) {
-				throw new IllegalStateException("variants must be set");
+			if (this.providers == null) {
+				throw new IllegalStateException("providers must be set");
 			}
 			
 			final BlockTypeBuilder builder = BlockTypeBuilder.create().id(this.key);
 			this.block.accept(builder);
 			final BlockType block = builder.build();
 			
-			final Map<BlockState, Variant> variants = block.validStates().stream()
-					.collect(Collectors.groupingBy(state -> BlockStateExtension.getFor(state).display()))
-					.entrySet().stream()
-					.collect(Collectors.toMap(e -> e.getKey(), e -> this.variants.apply(e.getKey(), e.getValue())));
-			
-			return new ModeledBlock(block, variants, this.models);
+			final ModeledBlock modeledBlock = new ModeledBlock(block, this.providers, this.variants, this.models);
+			modeledBlock.variantToProviderMap(); // Validation
+			return modeledBlock;
 		}
-	}
-	
-	@FunctionalInterface
-	public static interface StateFunction<R> {
-		
-		R apply(BlockState display, List<BlockState> states);
 	}
 }

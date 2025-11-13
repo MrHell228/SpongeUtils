@@ -130,7 +130,7 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 	
 	record Slab() implements BlockStateProvider {
 		
-		public static final Slab INSTANCE = new Slab();
+		private static final Slab INSTANCE = new Slab();
 		
 		@Override
 		public Stream<BlockState> allStates() {
@@ -140,6 +140,11 @@ public interface BlockStateProvider/* extends MapCodecProxy<BlockStateProvider>*
 							.stateProperty(EnumStateProperties.property_SLAB_TYPE()).orElse(null) == SlabPortions.DOUBLE.get())
 					.filter(state -> state
 							.stateProperty(BooleanStateProperties.property_WATERLOGGED()).orElse(false));
+		}
+		
+		@Override
+		public final String toString() {
+			return "Slab";
 		}
 	}
 }

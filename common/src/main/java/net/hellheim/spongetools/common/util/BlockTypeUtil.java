@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.UnaryOperator;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.spongepowered.api.block.BlockSoundGroup;
@@ -15,6 +15,8 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.type.InstrumentType;
 import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.state.StateProperty;
+
+import com.google.common.base.Suppliers;
 
 import net.hellheim.spongetools.bridge.BlockPropertiesBridge;
 import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 public final class BlockTypeUtil {
 	
 	public static final DefaultedRegistryReference<BlockType> NETWORK_BLOCK = BlockTypes.STONE;
+	public static final Supplier<BlockState> DEFAULT_STATE = Suppliers.memoize(() -> NETWORK_BLOCK.get().defaultState());
 	
 	public static BlockBehaviour.Properties properties(
 		final DefaultedRegistryReference<BlockType> networkBlockKey,
@@ -66,7 +69,6 @@ public final class BlockTypeUtil {
 		
 		((BlockPropertiesBridge) properties).spongetools$bridge$applyData(new AdditionalData(
 				networkBlockKey.get(),
-				context.require(BlockTypeKeys.DISPLAY_STATE),
 				context.getOrElse(BlockTypeKeys.STATE_PROPERTIES, Set.of()),
 				context.getOrElse(BlockTypeKeys.DEFAULT_STATE, List.of())
 				));
@@ -90,7 +92,7 @@ public final class BlockTypeUtil {
 		public static final BlockArchetype BLOCK = archetype(
 				Optional.empty(),
 				Block.class,
-				Set.of(BlockTypeKeys.TRANSLATION_KEY, BlockTypeKeys.DISPLAY_STATE),
+				Set.of(BlockTypeKeys.TRANSLATION_KEY),
 				(block, context) -> {
 					context.set(BlockTypeKeys.TRANSLATION_KEY, block.getDescriptionId());
 					context.apply(BlockTypeKeys.LOOT_TABLE, block.getLootTable()
@@ -126,8 +128,7 @@ public final class BlockTypeUtil {
 	}
 	
 	public static final record AdditionalData(
-		BlockType networkBlock, UnaryOperator<BlockState> display,
-		Set<StateProperty<?>> properties, List<StatePropertyValue<?>> defautProperties) {
+		BlockType networkBlock, Set<StateProperty<?>> properties, List<StatePropertyValue<?>> defautProperties) {
 	}
 	
 	private BlockTypeUtil() {

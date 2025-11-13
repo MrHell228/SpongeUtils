@@ -89,7 +89,7 @@ public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkV
         if (this.spongetools$data != null) {
             this.stateDefinition.getPossibleStates().forEach(state ->
                     ((BlockStateBaseBridge) state).spongetools$bridge$setNetworkState(
-                            Converter.asVanilla(this.spongetools$data.display().apply(Converter.asSponge(state)))));
+                            Converter.asVanilla(BlockTypeUtil.DEFAULT_STATE.get())));
         }
     }
 

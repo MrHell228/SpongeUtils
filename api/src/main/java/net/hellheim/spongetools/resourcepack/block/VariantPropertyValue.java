@@ -44,4 +44,9 @@ public record VariantPropertyValue<T>(VariantProperty<T> property, T value) {
 	public boolean isDefault() {
 		return this.property.defaultValue().map(this.value::equals).orElse(false);
 	}
+	
+	@Override
+	public final String toString() {
+		return this.property.name() + "=" + this.value;
+	}
 }

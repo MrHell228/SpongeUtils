@@ -2,7 +2,6 @@ package net.hellheim.spongetools.custom.type.block;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.block.BlockSoundGroup;
@@ -41,11 +40,6 @@ public final class BlockTypeKeys {
 	 * Special value of -1 makes block unbreakable and not movable by piston.
 	 */
 	public static final TypedKey<Double> DESTRUCTION_RESISTANCE = TypedKey.of(SpongeTools.key("destruction_resistance"), Double.class);
-	
-	/**
-	 * Defines how the client will see the {@link BlockState}s of the block.
-	 */
-	public static final TypedKey<UnaryOperator<BlockState>> DISPLAY_STATE = TypedKey.of(SpongeTools.key("display_state"), new TypeToken<UnaryOperator<BlockState>>() {});
 	
 	/**
 	 * The strength of the block for explosion. <br>

@@ -114,20 +114,6 @@ public interface BlockTypeBuilder extends
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DISPLAY_STATE} context key.
-	 */
-	default BlockTypeBuilder displayState(final BlockState display) {
-		return this.displayState(customState -> display);
-	}
-	
-	/**
-	 * Sets the {@link BlockTypeKeys#DISPLAY_STATE} context key.
-	 */
-	default BlockTypeBuilder displayState(final UnaryOperator<BlockState> display) {
-		return this.set(BlockTypeKeys.DISPLAY_STATE, display);
-	}
-	
-	/**
 	 * Sets the {@link BlockTypeKeys#SOUND_GROUP} context key.
 	 */
 	default BlockTypeBuilder sound(final BlockSoundGroup soundGroup) {
