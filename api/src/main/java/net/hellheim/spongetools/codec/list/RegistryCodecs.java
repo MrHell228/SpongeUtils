@@ -173,10 +173,10 @@ import com.mojang.serialization.MapCodec;
 
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
-import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
@@ -202,7 +202,7 @@ public final class RegistryCodecs {
 	
 	public static final Codec<MapCodec<? extends LoreProvider>> LORE_PROVIDER_TYPE = RegistryCodecs.of(SpongeTools.Registries.LORE_PROVIDER_TYPE);
 	
-	public static final Codec<MapCodec<? extends CustomConsumeEffect>> CUSTOM_CONSUME_EFFECT_TYPE = RegistryCodecs.of(SpongeTools.Registries.CONSUME_EFFECT_TYPE);
+	public static final Codec<MapCodec<? extends CustomItemAction.Config>> CUSTOM_CONSUME_EFFECT_TYPE = RegistryCodecs.of(SpongeTools.Registries.ITEM_ACTION_CONFIG_TYPE);
 	
 	// SpongeAPI
 	

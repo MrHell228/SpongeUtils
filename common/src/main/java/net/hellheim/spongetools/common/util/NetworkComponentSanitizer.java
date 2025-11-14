@@ -33,7 +33,10 @@ public final class NetworkComponentSanitizer {
 			DataComponents.BUNDLE_CONTENTS,
 			DataComponents.CHARGED_PROJECTILES,
 			DataComponents.CONTAINER,
-			DataComponents.USE_REMAINDER
+			DataComponents.USE_REMAINDER,
+			// Contains ConsumeEffect (CustomConsumeEffect should not be sent to client)
+			DataComponents.CONSUMABLE,
+			DataComponents.DEATH_PROTECTION
 			);
 
 	public static Component component(final Component component) {

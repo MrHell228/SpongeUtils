@@ -37,6 +37,7 @@ public interface ItemTypeBuilder extends
 	 * <li> {@link ItemArchetype#registry()}
 	 * <li> {@link LoreProvider#registry()}
 	 * <li> {@link LoreProcessor#registry()}
+	 * <li> {@link CustomItemAction#registry()}
 	 * </ul>
 	 * 
 	 * @return The registry types
@@ -46,7 +47,8 @@ public interface ItemTypeBuilder extends
 		return new RegistryType[] {
 				ItemArchetype.registry(),
 				LoreProvider.registry(),
-				LoreProcessor.registry()
+				LoreProcessor.registry(),
+				CustomItemAction.registry()
 				};
 	}
 	

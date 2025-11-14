@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.data.type.ItemActionType;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.RegisterBuilderEvent;
 import org.spongepowered.api.event.lifecycle.RegisterDataEvent;
@@ -52,6 +53,7 @@ import net.hellheim.spongetools.common.factory.SignalOrientationFactory;
 import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
 import net.hellheim.spongetools.common.factory.SwingTypeFactory;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
+import net.hellheim.spongetools.common.util.CustomConsumeEffect;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
 import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
@@ -65,13 +67,13 @@ import net.hellheim.spongetools.custom.type.block.BlockSoundGroupBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
+import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.ModeledItem;
-import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
@@ -92,6 +94,7 @@ public final class RegistryEventListener {
 	@Listener
 	public void registerFactories(final RegisterFactoryEvent event) {
 		event.register(StatePropertyValue.Factory.class, new StatePropertyValueFactory());
+		event.register(CustomItemAction.Factory.class, new CustomConsumeEffect.FactoryImpl());
 		event.register(SwingType.Factory.class, new SwingTypeFactory());
 		event.register(InteractionResult.Factory.class, new InteractionResultFactory());
 		event.register(HitResult.Factory.class, new HitResultFactory());
@@ -117,11 +120,9 @@ public final class RegistryEventListener {
 	public void registerData(final RegisterDataEvent event) {
 		event.register(DataRegistration.of(LoreProcessor.dataKey(), ItemStack.class));
 		event.register(DataRegistration.of(LoreProvider.dataKey(), ItemStack.class));
-		event.register(DataRegistration.of(CustomConsumeEffect.dataKey(), ItemStack.class));
 		
 		Sponge.dataManager().registerBuilder(LoreProcessor.class, LoreProcessor.dataBuilder());
 		Sponge.dataManager().registerBuilder(LoreProvider.class, LoreProvider.dataBuilder());
-		Sponge.dataManager().registerBuilder(CustomConsumeEffect.class, CustomConsumeEffect.dataBuilder());
 		
 		SpongeToolsCodecs.bootstrap();
 	}
@@ -149,7 +150,7 @@ public final class RegistryEventListener {
 				SpongeTools.key("plain"), LoreProvider.Plain.CODEC
 				));
 		
-		event.register(CustomConsumeEffect.registry().location(), true);
+		event.register(CustomItemAction.registry().location(), true);
 		
 		// Archetypes
 		
@@ -172,6 +173,9 @@ public final class RegistryEventListener {
 	public void registerRegistryValues(final RegisterRegistryValueEvent.GameScoped event) {
 		
 		// TODO Load & Register custom ItemTypes from configs
+		
+		event.registry(RegistryTypes.ITEM_ACTION_TYPE, ($, step) ->
+			step.register(SpongeTools.key("custom"), (ItemActionType) (Object) CustomConsumeEffect.TYPE));
 		
 		final var modeledBlocks = ModeledBlock.registry();
 		final var modeledItems = ModeledItem.registry();

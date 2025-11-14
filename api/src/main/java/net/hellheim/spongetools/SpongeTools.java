@@ -13,11 +13,11 @@ import com.mojang.serialization.MapCodec;
 
 import net.hellheim.spongetools.custom.type.block.BlockArchetype;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
+import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.ModeledItem;
-import net.hellheim.spongetools.custom.type.item.data.CustomConsumeEffect;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
@@ -59,7 +59,7 @@ public final class SpongeTools {
 		
 		public static final DefaultedRegistryType<MapCodec<? extends LoreProvider>> LORE_PROVIDER_TYPE = Registries.key("lore_provider_type");
 		
-		public static final DefaultedRegistryType<MapCodec<? extends CustomConsumeEffect>> CONSUME_EFFECT_TYPE = Registries.key("consume_effect_type");
+		public static final DefaultedRegistryType<MapCodec<? extends CustomItemAction.Config>> ITEM_ACTION_CONFIG_TYPE = Registries.key("item_action_config_type");
 		
 	    private static <V> DefaultedRegistryType<V> key(final String key) {
 	        return RegistryType.of(RegistryRoots.SPONGE, SpongeTools.key(key)).asDefaultedType(Sponge::game);
@@ -74,8 +74,6 @@ public final class SpongeTools {
 		public static final Key<Value<LoreProcessor>> LORE_PROCESSOR = Keys.key("lore_processor", LoreProcessor.class);
 		
 		public static final Key<ListValue<LoreProvider>> LORE_PROVIDERS = Keys.listKey("lore_providers", LoreProvider.class);
-		
-		public static final Key<ListValue<CustomConsumeEffect>> CONSUME_EFFECTS = Keys.listKey("consume_effects", CustomConsumeEffect.class);
 		
 		private static <E> Key<Value<E>> key(final String key, final Class<E> type) {
 			return Key.from(SpongeTools.key(key), type);
