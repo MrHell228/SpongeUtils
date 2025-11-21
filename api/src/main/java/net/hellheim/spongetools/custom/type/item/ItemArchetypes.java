@@ -14,7 +14,7 @@ public final class ItemArchetypes {
 	
 	/**
 	 * Item that can be placed into the world. <br>
-	 * Parent Archetype: {@link #ITEM}. <br>
+	 * Parent Archetype: {@link #DEFAULT}. <br>
 	 * <br>
 	 * Required Context: <br>
 	 * - {@link ItemTypeKeys#BLOCK} <br>
@@ -23,15 +23,6 @@ public final class ItemArchetypes {
 	 * - TODO
 	 */
 	public static final DefaultedRegistryReference<ItemArchetype> BLOCK = ItemArchetypes.key("block");
-	
-	/**
-	 * Item that can cast a bobber. <br>
-	 * Parent Archetype: {@link #ITEM}. <br>
-	 * <br>
-	 * Supported behaviour: <br>
-	 * - TODO
-	 */
-	public static final DefaultedRegistryReference<ItemArchetype> FISHING_ROD = ItemArchetypes.key("fishing_rod");
 	
 	/**
 	 * Regular item without any specific behaviour. <br>
@@ -45,7 +36,16 @@ public final class ItemArchetypes {
 	 * Supported behaviour: <br>
 	 * - TODO
 	 */
-	public static final DefaultedRegistryReference<ItemArchetype> ITEM = ItemArchetypes.key("item");
+	public static final DefaultedRegistryReference<ItemArchetype> DEFAULT = ItemArchetypes.key("item");
+	
+	/**
+	 * Item that can cast a bobber. <br>
+	 * Parent Archetype: {@link #DEFAULT}. <br>
+	 * <br>
+	 * Supported behaviour: <br>
+	 * - TODO
+	 */
+	public static final DefaultedRegistryReference<ItemArchetype> FISHING_ROD = ItemArchetypes.key("fishing_rod");
 	
 	private ItemArchetypes() {
 	}

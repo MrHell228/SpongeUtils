@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSoundGroup;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.type.ItemActionType;
 import org.spongepowered.api.event.Listener;
@@ -21,6 +22,7 @@ import org.spongepowered.api.event.lifecycle.RegisterRegistryValueEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.registry.RegistryType;
 import org.spongepowered.api.registry.RegistryTypes;
+import org.spongepowered.common.data.provider.DataProviderRegistratorBuilder;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -53,6 +55,7 @@ import net.hellheim.spongetools.common.factory.SignalOrientationFactory;
 import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
 import net.hellheim.spongetools.common.factory.SwingTypeFactory;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
+import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.common.util.CustomConsumeEffect;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
 import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
@@ -66,6 +69,7 @@ import net.hellheim.spongetools.custom.type.block.BlockArchetypes;
 import net.hellheim.spongetools.custom.type.block.BlockSoundGroupBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
+import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
@@ -80,6 +84,8 @@ import net.hellheim.spongetools.resourcepack.block.StateOps;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.util.EffectUtil;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class RegistryEventListener {
 	
@@ -125,6 +131,33 @@ public final class RegistryEventListener {
 		Sponge.dataManager().registerBuilder(LoreProvider.class, LoreProvider.dataBuilder());
 		
 		SpongeToolsCodecs.bootstrap();
+		
+		new DataProviderRegistratorBuilder() {
+			@Override
+			protected void registerProviders() {
+				this.registrator
+					.asImmutable(Block.class)
+						.create(BlockTypeKeys.LOOT_TABLE)
+							.get(v -> v.getLootTable()
+								.map(net.minecraft.resources.ResourceKey::location)
+								.map(Converter::asSponge)
+								.orElse(null))
+						.create(BlockTypeKeys.MAP_COLOR)
+							.get(v -> Converter.asSponge(v.defaultMapColor()))
+						.create(BlockTypeKeys.SPEED_FACTOR)
+							.get(v -> (double) v.getSpeedFactor())
+						.create(BlockTypeKeys.JUMP_FACTOR)
+							.get(v -> (double) v.getJumpFactor())
+						.create(BlockTypeKeys.FRICTION_FACTOR)
+							.get(v -> (double) v.getFriction())
+					.asImmutable(BlockState.class)
+						.create(BlockTypeKeys.REQUIRE_TOOL)
+							.get(v -> v.requiresCorrectToolForDrops())
+						.create(BlockTypeKeys.SOUND_GROUP)
+							.get(v -> (BlockSoundGroup) v.getSoundType())
+						;
+			}
+		}.register();;
 	}
 	
 	@Listener
@@ -156,7 +189,7 @@ public final class RegistryEventListener {
 		
 		event.register(BlockArchetype.registry().location(), true, $ -> {
 			final Map<ResourceKey, BlockArchetype> map = new HashMap<>();
-			map.put(BlockArchetypes.BLOCK.location(), BlockTypeUtil.Archetypes.BLOCK);
+			map.put(BlockArchetypes.DEFAULT.location(), BlockTypeUtil.Archetypes.DEFAULT);
 			return map;
 		});
 		
@@ -164,7 +197,7 @@ public final class RegistryEventListener {
 			final Map<ResourceKey, ItemArchetype> map = new HashMap<>();
 			map.put(ItemArchetypes.BLOCK.location(), ItemTypeUtil.Archetypes.BLOCK);
 			map.put(ItemArchetypes.FISHING_ROD.location(), ItemTypeUtil.Archetypes.FISHING_ROD);
-			map.put(ItemArchetypes.ITEM.location(), ItemTypeUtil.Archetypes.PLAIN);
+			map.put(ItemArchetypes.DEFAULT.location(), ItemTypeUtil.Archetypes.DEFAULT);
 			return map;
 		});
 	}

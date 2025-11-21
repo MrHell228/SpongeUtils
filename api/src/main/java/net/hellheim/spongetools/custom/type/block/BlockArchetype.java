@@ -4,15 +4,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
 import net.hellheim.spongetools.custom.type.CustomArchetype;
+import net.hellheim.spongetools.function.TriFunction;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 
@@ -26,7 +27,7 @@ public record BlockArchetype(
 		Class<?> baseClass,
 		Set<TypedKey<?>> requiredKeys,
 		BiConsumer<BlockType, TypedKeyMap.Mutable> contextExtractor,
-		BiFunction<TypedKeyMap, BehaviourCallbackHolder<BlockType>, BlockType> assembler
+		TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<BlockType>, BlockType> assembler
 		) implements CustomArchetype<BlockType, BlockArchetype> {
 	
 	public BlockArchetype(
@@ -34,7 +35,7 @@ public record BlockArchetype(
 		final Class<?> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
 		final BiConsumer<BlockType, TypedKeyMap.Mutable> contextExtractor,
-		final BiFunction<TypedKeyMap, BehaviourCallbackHolder<BlockType>, BlockType> assembler
+		final TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<BlockType>, BlockType> assembler
 	) {
 		CustomArchetype.validate(BlockType.class, baseClass, parent);
 		this.parent = parent;
@@ -54,7 +55,7 @@ public record BlockArchetype(
 	 * @see CustomArchetype#forType(org.spongepowered.api.registry.Registry, CustomArchetype, Object)
 	 */
 	public static BlockArchetype forType(final BlockType block) {
-		return CustomArchetype.forType(BlockArchetypes.registry(), BlockArchetypes.BLOCK.get(), block);
+		return CustomArchetype.forType(BlockArchetypes.registry(), BlockArchetypes.DEFAULT.get(), block);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -63,12 +64,12 @@ public record BlockArchetype(
 		final Class<I> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
 		final BiConsumer<I, TypedKeyMap.Mutable> contextExtractor,
-		final BiFunction<TypedKeyMap, BehaviourCallbackHolder<BlockType>, I> assembler
+		final TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<BlockType>, I> assembler
 	) {
 		return new BlockArchetype(
 				parent, baseClass, requiredKeys,
 				(item, context) -> contextExtractor.accept((I) item, context),
-				(context, behaviour) -> (BlockType) assembler.apply(context, behaviour)
+				(data, context, behaviour) -> (BlockType) assembler.apply(data, context, behaviour)
 				);
 	}
 }

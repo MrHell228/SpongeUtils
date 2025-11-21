@@ -8,19 +8,16 @@ import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.custom.type.CustomArchetype;
 import net.hellheim.spongetools.custom.type.CustomTypeBuilder;
+import net.hellheim.spongetools.object.DataOperator;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
+import net.hellheim.spongetools.object.ValueSetBuilder;
 
-public abstract class CustomTypeBuilderImpl<T, A extends CustomArchetype<T, A>, B extends CustomTypeBuilder<T, A, B>> implements
-		CustomTypeBuilder<T, A ,B>,
-		TypedKeyMap.Operator.MutableProxy<B> {
+public abstract class CustomTypeBuilderImpl<T, I, A extends CustomArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
+		implements CustomTypeBuilder<T, I, A ,B>, TypedKeyMap.Operator.MutableProxy<B> {
 	
 	protected A archetype = this.baseArchetype();
 	protected final TypedKeyMap.Impl.Mutable context = TypedKeyMap.create();
-	
-	public CustomTypeBuilderImpl() {
-		this.reset();
-	}
 	
 	@SuppressWarnings("unchecked")
 	private B cast() {
@@ -47,6 +44,10 @@ public abstract class CustomTypeBuilderImpl<T, A extends CustomArchetype<T, A>, 
 		
 		this.archetype.cumulativeContextExtractor().accept(value, this.context);
 		
+		this.extractData(value);
+		
+		// TODO extract behaviour
+		
 		return this.cast();
 	}
 	
@@ -54,6 +55,7 @@ public abstract class CustomTypeBuilderImpl<T, A extends CustomArchetype<T, A>, 
 	public B reset() {
 		this.archetype = this.baseArchetype();
 		this.context.clear();
+		// TODO clear behaviour
 		return this.cast();
 	}
 	
@@ -78,5 +80,25 @@ public abstract class CustomTypeBuilderImpl<T, A extends CustomArchetype<T, A>, 
 	
 	protected abstract DefaultedRegistryType<A> archetypeRegistry();
 	
+	protected abstract void extractData(T value);
+	
 	protected abstract T build0();
+	
+	public static abstract class WithData<T, I, A extends CustomArchetype<T, A>, B extends CustomTypeBuilder.WithData<T, I, A, B>>
+			extends CustomTypeBuilderImpl<T, I, A, B>
+			implements CustomTypeBuilder.WithData<T, I, A, B>, DataOperator.Proxy<B> {
+		
+		protected final ValueSetBuilder data = new ValueSetBuilder();
+		
+		@Override
+		public DataOperator<?> getAsData() {
+			return this.data;
+		}
+		
+		@Override
+		public B reset() {
+			this.data.reset();
+			return super.reset();
+		}
+	}
 }

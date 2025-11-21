@@ -2,7 +2,6 @@ package net.hellheim.spongetools.custom.type.block;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -10,8 +9,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSoundGroup;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.data.type.InstrumentType;
+import org.spongepowered.api.data.type.PushReaction;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.registry.RegistryType;
 import org.spongepowered.api.state.StateProperty;
@@ -22,10 +24,10 @@ import net.hellheim.spongetools.util.ModelUtil;
 import net.hellheim.spongetools.util.TranslationUtil;
 
 /**
- * @see CustomTypeBuilder
+ * {@link CustomTypeBuilder} for {@link BlockType}.
  */
-public interface BlockTypeBuilder extends
-		CustomTypeBuilder<BlockType, BlockArchetype, BlockTypeBuilder> {
+public interface BlockTypeBuilder
+		extends CustomTypeBuilder.WithData<BlockType, BlockState, BlockArchetype, BlockTypeBuilder> {
 	
 	/**
 	 * Creates the new {@link BlockTypeBuilder}.
@@ -63,174 +65,191 @@ public interface BlockTypeBuilder extends
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#TRANSLATION_KEY} and {@link BlockTypeKeys#LOOT_TABLE} context keys.
+	 * Sets {@link #translationKey(ResourceKey)} and {@link #lootTable(ResourceKey)}.
 	 */
 	default BlockTypeBuilder id(final ResourceKey key) {
 		return this.translationKey(key).lootTable(ModelUtil.withPrefix(key, "blocks/"));
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#TRANSLATION_KEY} context key.
+	 * Sets the {@link BlockTypeKeys#TRANSLATION_KEY}.
 	 */
 	default BlockTypeBuilder translationKey(final ResourceKey key) {
 		return this.set(BlockTypeKeys.TRANSLATION_KEY, TranslationUtil.block(key).key());
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#LOOT_TABLE} context key.
+	 * Sets the {@link BlockTypeKeys#LOOT_TABLE}.
 	 */
 	default BlockTypeBuilder lootTable(final ResourceKey key) {
-		return this.set(BlockTypeKeys.LOOT_TABLE, key);
+		return this.add(BlockTypeKeys.LOOT_TABLE, key);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#STATE_PROPERTIES} context key.
+	 * Sets the {@link BlockTypeKeys#STATE_PROPERTIES}.
 	 */
 	default BlockTypeBuilder stateProperties(final StateProperty<?>... properties) {
 		return this.set(BlockTypeKeys.STATE_PROPERTIES, Set.of(properties));
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#STATE_PROPERTIES} context key.
+	 * Sets the {@link BlockTypeKeys#STATE_PROPERTIES}.
 	 */
 	default BlockTypeBuilder stateProperties(final Collection<? extends StateProperty<?>> properties) {
 		return this.set(BlockTypeKeys.STATE_PROPERTIES, Set.copyOf(properties));
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DEFAULT_STATE} context key.
+	 * Sets the {@link BlockTypeKeys#DEFAULT_STATE}.
 	 */
 	default BlockTypeBuilder defaultState(final StatePropertyValue<?>... properties) {
 		return this.set(BlockTypeKeys.DEFAULT_STATE, List.of(properties));
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DEFAULT_STATE} context key.
+	 * Sets the {@link BlockTypeKeys#DEFAULT_STATE}.
 	 */
 	default BlockTypeBuilder defaultState(final Collection<? extends StatePropertyValue<?>> properties) {
 		return this.set(BlockTypeKeys.DEFAULT_STATE, List.copyOf(properties));
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#SOUND_GROUP} context key.
+	 * Sets the {@link BlockTypeKeys#SOUND_GROUP}.
 	 */
 	default BlockTypeBuilder sound(final BlockSoundGroup soundGroup) {
-		return this.set(BlockTypeKeys.SOUND_GROUP, soundGroup);
+		return this.add(BlockTypeKeys.SOUND_GROUP, soundGroup);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#MAP_COLOR} context key.
+	 * Sets the {@link BlockTypeKeys#MAP_COLOR}.
 	 */
 	default BlockTypeBuilder mapColor(final MapColorType mapColor) {
-		return this.set(BlockTypeKeys.MAP_COLOR, mapColor);
+		return this.add(BlockTypeKeys.MAP_COLOR, mapColor);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#MAP_COLOR} context key.
+	 * Sets the {@link BlockTypeKeys#MAP_COLOR}.
 	 */
 	default BlockTypeBuilder mapColor(final Supplier<? extends MapColorType> mapColor) {
-		return this.mapColor(Objects.requireNonNull(mapColor, "mapColor").get());
+		return this.supply(BlockTypeKeys.MAP_COLOR, mapColor);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#INSTRUMENT} context key.
+	 * Sets the {@link Keys#REPRESENTED_INSTRUMENT}.
 	 */
 	default BlockTypeBuilder instrument(final InstrumentType instrument) {
-		return this.set(BlockTypeKeys.INSTRUMENT, instrument);
+		return this.add(Keys.REPRESENTED_INSTRUMENT, instrument);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#INSTRUMENT} context key.
+	 * Sets the {@link Keys#REPRESENTED_INSTRUMENT}.
 	 */
 	default BlockTypeBuilder instrument(final Supplier<? extends InstrumentType> instrument) {
-		return this.instrument(Objects.requireNonNull(instrument, "instrument").get());
+		return this.supply(Keys.REPRESENTED_INSTRUMENT, instrument);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} context key.
+	 * Sets the {@link Keys#DESTROY_SPEED}. <br>
+	 * <br>
+	 * Defines the strength of the block for destruction. <br>
+	 * The higher this value, the longer it will take for block to be destroyed. <br>
+	 * Special value of -1 makes block unbreakable and not movable by piston.
 	 */
-	default BlockTypeBuilder destructionResistance(final double resistance) {
-		return this.set(BlockTypeKeys.DESTRUCTION_RESISTANCE, resistance);
+	default BlockTypeBuilder destroyResistance(final double resistance) {
+		return this.add(Keys.DESTROY_SPEED, resistance);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context key.
+	 * Sets the {@link Keys#BLAST_RESISTANCE}. <br>
+	 * <br>
+	 * Defines the strength of the block for explosion. <br>
+	 * The higher this value, the less likely the block will be affected by explosions.
 	 */
-	default BlockTypeBuilder explosionResistance(final double resistance) {
-		return this.set(BlockTypeKeys.EXPLOSION_RESISTANCE, resistance);
+	default BlockTypeBuilder blastResistance(final double resistance) {
+		return this.add(Keys.BLAST_RESISTANCE, resistance);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} and
-	 * {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context keys.
+	 * Sets {@link #destroyResistance(double)} and {@link #blastResistance(double)}.
 	 */
-	default BlockTypeBuilder resistance(final double destruction, final double explosion) {
-		return this.destructionResistance(destruction).explosionResistance(explosion);
+	default BlockTypeBuilder resistance(final double destroy, final double blast) {
+		return this.destroyResistance(destroy).blastResistance(blast);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} and
-	 * {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context keys.
+	 * Sets {@link #destroyResistance(double)} and {@link #blastResistance(double)}.
 	 */
 	default BlockTypeBuilder resistance(final double resistance) {
 		return this.resistance(resistance, resistance);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#DESTRUCTION_RESISTANCE} and
-	 * {@link BlockTypeKeys#EXPLOSION_RESISTANCE} context keys tp 0.
+	 * Sets {@link #destroyResistance(double)} and {@link #blastResistance(double)} to 0.
 	 */
 	default BlockTypeBuilder instabreak() {
 		return this.resistance(0);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#REQUIRE_TOOL} context key.
+	 * Sets the {@link BlockTypeKeys#REQUIRE_TOOL}.
 	 */
 	default BlockTypeBuilder requireTool() {
-		return this.set(BlockTypeKeys.REQUIRE_TOOL, true);
+		return this.add(BlockTypeKeys.REQUIRE_TOOL, true);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR} context key.
+	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR}.
 	 */
 	default BlockTypeBuilder speedFactor(final double factor) {
-		return this.set(BlockTypeKeys.SPEED_FACTOR, factor);
+		return this.add(BlockTypeKeys.SPEED_FACTOR, factor);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#JUMP_FACTOR} context key.
+	 * Sets the {@link BlockTypeKeys#JUMP_FACTOR}.
 	 */
 	default BlockTypeBuilder jumpFactor(final double factor) {
-		return this.set(BlockTypeKeys.JUMP_FACTOR, factor);
+		return this.add(BlockTypeKeys.JUMP_FACTOR, factor);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#FRICTION_FACTOR} context key.
+	 * Sets the {@link BlockTypeKeys#FRICTION_FACTOR}.
 	 */
 	default BlockTypeBuilder frictionFactor(final double factor) {
-		return this.set(BlockTypeKeys.FRICTION_FACTOR, factor);
+		return this.add(BlockTypeKeys.FRICTION_FACTOR, factor);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR} and {@link BlockTypeKeys#JUMP_FACTOR} context keys.
+	 * Sets {@link #speedFactor(double)} and {@link #jumpFactor(double)}.
 	 */
 	default BlockTypeBuilder movement(final double speed, final double jump) {
 		return this.speedFactor(speed).jumpFactor(jump);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#SPEED_FACTOR}, {@link BlockTypeKeys#JUMP_FACTOR}
-	 * and {@link BlockTypeKeys#FRICTION_FACTOR} context keys.
+	 * Sets {@link #speedFactor(double)}, {@link #jumpFactor(double)} and {@link #frictionFactor(double)}.
 	 */
 	default BlockTypeBuilder movement(final double speed, final double jump, final double friction) {
 		return this.speedFactor(speed).jumpFactor(jump).frictionFactor(friction);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#BURNABLE} context key.
+	 * Sets the {@link Keys#PUSH_REACTION}.
+	 */
+	default BlockTypeBuilder pushReaction(final PushReaction reaction) {
+		return this.add(Keys.PUSH_REACTION, reaction);
+	}
+	
+	/**
+	 * Sets the {@link Keys#PUSH_REACTION}.
+	 */
+	default BlockTypeBuilder pushReaction(final Supplier<? extends PushReaction> reaction) {
+		return this.supply(Keys.PUSH_REACTION, reaction);
+	}
+	
+	/**
+	 * Sets the {@link Keys#BURNABLE}.
 	 */
 	default BlockTypeBuilder burnable() {
-		return this.set(BlockTypeKeys.BURNABLE, true);
+		return this.add(Keys.BURNABLE, true);
 	}
 }

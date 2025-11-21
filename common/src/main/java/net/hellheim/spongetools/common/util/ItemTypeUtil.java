@@ -80,7 +80,7 @@ public final class ItemTypeUtil {
 	
 	public static final class Archetypes {
 		
-		public static final ItemArchetype PLAIN = archetype(
+		public static final ItemArchetype DEFAULT = archetype(
 				Optional.empty(),
 				Item.class,
 				Set.of(ItemTypeKeys.TRANSLATION_KEY),
@@ -95,14 +95,14 @@ public final class ItemTypeUtil {
 				(context, properties) -> new Item(properties));
 		
 		public static final ItemArchetype BLOCK = archetype(
-				Optional.of(PLAIN),
+				Optional.of(DEFAULT),
 				BlockItem.class,
 				Set.of(ItemTypeKeys.BLOCK),
 				(item, context) -> context.set(ItemTypeKeys.BLOCK, (BlockType) item.getBlock()),
 				(context, properties) -> new BlockItem((Block) context.require(ItemTypeKeys.BLOCK), properties)
 				);
 		
-		public static final ItemArchetype FISHING_ROD = simpleArchetype(Optional.of(PLAIN), FishingRodItem.class, FishingRodItem::new);
+		public static final ItemArchetype FISHING_ROD = simpleArchetype(Optional.of(DEFAULT), FishingRodItem.class, FishingRodItem::new);
 		
 		private Archetypes() {
 		}

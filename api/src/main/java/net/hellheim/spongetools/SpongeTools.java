@@ -2,9 +2,11 @@ package net.hellheim.spongetools;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSoundGroup;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.value.ListValue;
 import org.spongepowered.api.data.value.Value;
+import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.registry.RegistryRoots;
 import org.spongepowered.api.registry.RegistryType;
@@ -71,9 +73,23 @@ public final class SpongeTools {
 	
 	public static final class Keys {
 		
+		public static final Key<Value<BlockSoundGroup>> BLOCK_SOUND_GROUP = Keys.key("block_sound_group", BlockSoundGroup.class);
+		
+		public static final Key<Value<Double>> FRICTION_FACTOR = Keys.key("friction_factor", Double.class);
+		
+		public static final Key<Value<Double>> JUMP_FACTOR = Keys.key("jump_factor", Double.class);
+		
+		public static final Key<Value<ResourceKey>> LOOT_TABLE_KEY = Keys.key("loot_table_key", ResourceKey.class);
+		
 		public static final Key<Value<LoreProcessor>> LORE_PROCESSOR = Keys.key("lore_processor", LoreProcessor.class);
 		
 		public static final Key<ListValue<LoreProvider>> LORE_PROVIDERS = Keys.listKey("lore_providers", LoreProvider.class);
+		
+		public static final Key<Value<MapColorType>> MAP_COLOR_TYPE = Keys.key("map_color_type", MapColorType.class);
+		
+		public static final Key<Value<Boolean>> REQUIRE_TOOL = Keys.key("require_tool", Boolean.class);
+		
+		public static final Key<Value<Double>> SPEED_FACTOR = Keys.key("speed_factor", Double.class);
 		
 		private static <E> Key<Value<E>> key(final String key, final Class<E> type) {
 			return Key.from(SpongeTools.key(key), type);

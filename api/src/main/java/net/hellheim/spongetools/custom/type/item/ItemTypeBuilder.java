@@ -8,18 +8,17 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.registry.RegistryType;
 
 import net.hellheim.spongetools.custom.type.CustomTypeBuilder;
-import net.hellheim.spongetools.object.DataOperator;
 import net.hellheim.spongetools.util.TranslationUtil;
 
 /**
- * @see CustomTypeBuilder
+ * {@link CustomTypeBuilder} for {@link ItemType}.
  */
-public interface ItemTypeBuilder extends
-		CustomTypeBuilder<ItemType, ItemArchetype, ItemTypeBuilder>,
-		DataOperator<ItemTypeBuilder> {
+public interface ItemTypeBuilder
+		extends CustomTypeBuilder.WithData<ItemType, ItemStackLike, ItemArchetype, ItemTypeBuilder> {
 	
 	/**
 	 * Creates the new {@link ItemTypeBuilder}.

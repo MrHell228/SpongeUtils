@@ -55,7 +55,7 @@ public record ItemArchetype(
 	 * @see CustomArchetype#forType(org.spongepowered.api.registry.Registry, CustomArchetype, Object)
 	 */
 	public static ItemArchetype forType(final ItemType item) {
-		return CustomArchetype.forType(ItemArchetypes.registry(), ItemArchetypes.ITEM.get(), item);
+		return CustomArchetype.forType(ItemArchetypes.registry(), ItemArchetypes.DEFAULT.get(), item);
 	}
 	
 	@SuppressWarnings("unchecked")
