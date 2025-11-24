@@ -24,10 +24,13 @@ public final class BlockArchetypes {
 	
 	/**
 	 * Block that behaves like {@link BlockTypes#SCAFFOLDING}. <br>
+	 * It's required to provide at least 3 state properties:
+	 * boolean WATERLOGGED and BOTTOM, and integer property named "distance". <br>
+	 * <br>
 	 * Parent Archetype: {@link #DEFAULT}. <br>
 	 * <br>
 	 * Required Context: <br>
-	 * - TODO ScaffoldingData ?
+	 * - {@link BlockTypeKeys#STATE_PROPERTIES}
 	 */
 	public static final DefaultedRegistryReference<BlockArchetype> SCAFFOLDING = BlockArchetypes.key("scaffolding");
 	

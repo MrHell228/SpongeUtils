@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.function.Function;
 
+@SuppressWarnings("unchecked")
 @Mixin(ByteBufCodecs.class)
 public interface ByteBufCodecsMixin {
 

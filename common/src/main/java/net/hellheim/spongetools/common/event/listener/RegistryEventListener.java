@@ -52,6 +52,7 @@ import net.hellheim.spongetools.common.factory.EffectUtilFactory;
 import net.hellheim.spongetools.common.factory.HitResultFactory;
 import net.hellheim.spongetools.common.factory.InteractionResultFactory;
 import net.hellheim.spongetools.common.factory.SignalOrientationFactory;
+import net.hellheim.spongetools.common.factory.StatePropertiesFactory;
 import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
 import net.hellheim.spongetools.common.factory.SwingTypeFactory;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
@@ -71,6 +72,7 @@ import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
+import net.hellheim.spongetools.custom.type.block.StateProperties;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
@@ -100,6 +102,7 @@ public final class RegistryEventListener {
 	@Listener
 	public void registerFactories(final RegisterFactoryEvent event) {
 		event.register(StatePropertyValue.Factory.class, new StatePropertyValueFactory());
+		event.register(StateProperties.Factory.class, new StatePropertiesFactory());
 		event.register(CustomItemAction.Factory.class, new CustomConsumeEffect.FactoryImpl());
 		event.register(SwingType.Factory.class, new SwingTypeFactory());
 		event.register(InteractionResult.Factory.class, new InteractionResultFactory());
@@ -190,14 +193,16 @@ public final class RegistryEventListener {
 		event.register(BlockArchetype.registry().location(), true, $ -> {
 			final Map<ResourceKey, BlockArchetype> map = new HashMap<>();
 			map.put(BlockArchetypes.DEFAULT.location(), BlockTypeUtil.Archetypes.DEFAULT);
+			map.put(BlockArchetypes.SCAFFOLDING.location(), BlockTypeUtil.Archetypes.SCAFFOLDING);
 			return map;
 		});
 		
 		event.register(ItemArchetype.registry().location(), true, $ -> {
 			final Map<ResourceKey, ItemArchetype> map = new HashMap<>();
 			map.put(ItemArchetypes.BLOCK.location(), ItemTypeUtil.Archetypes.BLOCK);
-			map.put(ItemArchetypes.FISHING_ROD.location(), ItemTypeUtil.Archetypes.FISHING_ROD);
 			map.put(ItemArchetypes.DEFAULT.location(), ItemTypeUtil.Archetypes.DEFAULT);
+			map.put(ItemArchetypes.FISHING_ROD.location(), ItemTypeUtil.Archetypes.FISHING_ROD);
+			map.put(ItemArchetypes.SCAFFOLDING.location(), ItemTypeUtil.Archetypes.SCAFFOLDING);
 			return map;
 		});
 	}

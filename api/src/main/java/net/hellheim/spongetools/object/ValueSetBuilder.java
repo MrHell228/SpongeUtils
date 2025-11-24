@@ -60,6 +60,12 @@ public class ValueSetBuilder implements DataOperator<ValueSetBuilder> {
 	}
 	
 	@Override
+	public ValueSetBuilder remove(final Key<?> key) {
+		this.values.remove(key);
+		return this;
+	}
+	
+	@Override
 	public ValueSetBuilder reset() {
 		this.values.clear();
 		return this;

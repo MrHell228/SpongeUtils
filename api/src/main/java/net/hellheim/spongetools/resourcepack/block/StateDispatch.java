@@ -19,6 +19,7 @@ import org.spongepowered.api.state.State;
 import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.api.util.CopyableBuilder;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -29,7 +30,7 @@ import net.hellheim.spongetools.function.TriFunction;
 
 public class StateDispatch<V> {
 	
-	public static final Codec<StateDispatch<VariantListLike>> CODEC = StateDispatch.codec(VariantListLike.CODEC);
+	public static final Codec<StateDispatch<VariantList>> CODEC = StateDispatch.codec(VariantList.CODEC);
 	
 	private final Set<StateProperty<?>> properties;
 	private final Map<StateSelector, V> values;
@@ -175,6 +176,11 @@ public class StateDispatch<V> {
 	
 	public Builder<V, ?> toBuilder() {
 		return StateDispatch.<V>raw().from(this);
+	}
+	
+	public <M> StateDispatch<M> map(final Function<? super V, ? extends M> mapper) {
+		Objects.requireNonNull(mapper, "mapper");
+		return new StateDispatch<>(Maps.transformValues(this.values, mapper::apply), this.properties);
 	}
 	
 	public V getForAnyState(final Iterable<? extends State<?>> states) {

@@ -8,6 +8,7 @@ import org.spongepowered.api.registry.RegistryScope;
 import org.spongepowered.api.registry.RegistryScopes;
 
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.custom.type.block.BlockArchetypes;
 
 @RegistryScopes(scopes = RegistryScope.GAME)
 public final class ItemArchetypes {
@@ -46,6 +47,13 @@ public final class ItemArchetypes {
 	 * - TODO
 	 */
 	public static final DefaultedRegistryReference<ItemArchetype> FISHING_ROD = ItemArchetypes.key("fishing_rod");
+	
+	/**
+	 * Block item that properly handles {@link BlockArchetypes#SCAFFOLDING scaffolding-like} block placement. <br>
+	 * <br>
+	 * Parent Archetype: {@link #BLOCK}. <br>
+	 */
+	public static final DefaultedRegistryReference<ItemArchetype> SCAFFOLDING = ItemArchetypes.key("scaffolding");
 	
 	private ItemArchetypes() {
 	}

@@ -183,6 +183,8 @@ public interface DataOperator<B extends DataOperator<B>> {
 	 */
 	<V, C extends Collection<V>> B addSingle(Key<? extends CollectionValue<V, C>> key, V element);
 	
+	B remove(Key<?> key);
+	
 	B reset();
 	
 	public interface Proxy<B extends DataOperator<B>> extends DataOperator<B> {
@@ -208,6 +210,12 @@ public interface DataOperator<B extends DataOperator<B>> {
 			final Key<? extends CollectionValue<V, C>> key, final V element
 		) {
 			this.getAsData().addSingle(key, element);
+			return (B) this;
+		}
+		
+		@Override
+		default B remove(final Key<?> key) {
+			this.getAsData().remove(key);
 			return (B) this;
 		}
 	}

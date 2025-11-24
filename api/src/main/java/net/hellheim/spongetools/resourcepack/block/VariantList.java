@@ -1,6 +1,7 @@
 package net.hellheim.spongetools.resourcepack.block;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,5 +44,10 @@ public record VariantList(Set<Variant> variants) implements VariantListLike {
 	@Override
 	public VariantList asVariantList() {
 		return this;
+	}
+	
+	@Override
+	public Iterator<Variant> iterator() {
+		return this.variants.iterator();
 	}
 }

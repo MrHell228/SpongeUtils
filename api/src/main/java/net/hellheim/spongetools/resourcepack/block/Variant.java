@@ -2,6 +2,7 @@ package net.hellheim.spongetools.resourcepack.block;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.util.CopyableBuilder;
 
+import com.google.common.collect.Iterators;
 import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.util.ModelUtil;
@@ -78,6 +80,11 @@ public final class Variant implements VariantListLike {
 	@Override
 	public VariantList asVariantList() {
 		return VariantList.of(this);
+	}
+	
+	@Override
+	public Iterator<Variant> iterator() {
+		return Iterators.singletonIterator(this);
 	}
 	
 	@Override

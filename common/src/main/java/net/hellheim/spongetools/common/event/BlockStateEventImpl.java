@@ -96,6 +96,12 @@ public abstract class BlockStateEventImpl
 		public void register(final BlockState state, final VariantListLike variants) {
 			Objects.requireNonNull(state, "state");
 			Objects.requireNonNull(variants, "variants");
+			if (!state.type().key(RegistryTypes.BLOCK_TYPE).namespace().equals(ResourceKey.MINECRAFT_NAMESPACE)) {
+				throw new IllegalArgumentException(String.format(
+						"Tried to register variants display for non-vanilla state %s",
+						state.asString()));
+			}
+			
 			final @Nullable VariantList oldVariants = this.variants.put(state, variants.asVariantList());
 			if (oldVariants != null) {
 				this.logger.warn("Duplicate variants registered for state %s (old: %s, new: %s)",

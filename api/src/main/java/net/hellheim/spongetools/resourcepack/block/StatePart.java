@@ -34,8 +34,8 @@ public record StatePart(Optional<StateCondition> condition, VariantList variants
 		return StatePart.of(Optional.of(condition), variants);
 	}
 	
-	public static StatePart of(final Variant variant) {
-		return StatePart.of(Optional.empty(), variant);
+	public static StatePart of(final VariantListLike variants) {
+		return StatePart.of(Optional.empty(), variants);
 	}
 	
 	public Set<StateProperty<?>> properties() {

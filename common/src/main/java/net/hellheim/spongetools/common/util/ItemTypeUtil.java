@@ -25,7 +25,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ScaffoldingBlockItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ScaffoldingBlock;
 
 public final class ItemTypeUtil {
 	
@@ -103,6 +105,20 @@ public final class ItemTypeUtil {
 				);
 		
 		public static final ItemArchetype FISHING_ROD = simpleArchetype(Optional.of(DEFAULT), FishingRodItem.class, FishingRodItem::new);
+		
+		public static final ItemArchetype SCAFFOLDING = archetype(
+				Optional.of(BLOCK),
+				ScaffoldingBlockItem.class,
+				Set.of(),
+				(item, context) -> {},
+				(context, properties) -> {
+					final Block scaffolding = (Block) context.require(ItemTypeKeys.BLOCK);
+					if (!(scaffolding instanceof ScaffoldingBlock)) {
+						throw new IllegalStateException(
+								"Scaffolding-like block must be provided for scaffolding-like item, but found " + scaffolding);
+					}
+					return new ScaffoldingBlockItem(scaffolding, properties);
+				});
 		
 		private Archetypes() {
 		}

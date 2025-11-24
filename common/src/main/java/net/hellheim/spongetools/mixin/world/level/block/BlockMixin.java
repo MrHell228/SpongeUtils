@@ -85,7 +85,7 @@ public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkV
                     unsafe = true
             )
     )
-    private void spongetools$setNetworkStates(final BlockBehaviour.Properties properties, final CallbackInfo ci) {
+    private void spongetools$setBaseNetworkStates(final BlockBehaviour.Properties properties, final CallbackInfo ci) {
         if (this.spongetools$data != null) {
             this.stateDefinition.getPossibleStates().forEach(state ->
                     ((BlockStateBaseBridge) state).spongetools$bridge$setNetworkState(
@@ -105,7 +105,7 @@ public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkV
             final Block instance, final BlockState value,
             final Operation<Void> original
     ) {
-        if (this.spongetools$data == null) {
+        if (this.spongetools$data == null || this.spongetools$data.defautProperties().isEmpty()) {
             original.call(instance, value);
         } else {
             BlockState result = this.stateDefinition.any();

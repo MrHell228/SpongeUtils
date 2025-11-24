@@ -1,11 +1,9 @@
 package net.hellheim.spongetools.custom.type.item;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
@@ -13,6 +11,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.custom.type.ModeledCustomType;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.ModelLike;
 import net.hellheim.spongetools.resourcepack.ModelTemplateProvider;
@@ -22,13 +21,13 @@ import net.hellheim.spongetools.resourcepack.item.ItemModel;
 import net.hellheim.spongetools.util.ModelUtil;
 
 /**
- * Wrapper over regular {@link ItemType} with additional ResourcePack data. <br>
- * Registering to {@link #registry()} will register the wrapped type as well as model data.
+ * {@link ModeledCustomType} for {@link ItemType}.
  * 
+ * @see #registry()
  * @see #builder(ResourceKey)
  */
 public record ModeledItem(ItemType type, ItemDefinition definition, Map<ResourceKey, Model> models)
-		implements Supplier<ItemType> {
+		implements ModeledCustomType<ItemType> {
 	
 	public ModeledItem(final ItemType type, final ItemDefinition definition, final Map<ResourceKey, Model> models) {
 		this.type = Objects.requireNonNull(type, "type");
@@ -44,42 +43,29 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		return new Builder(key);
 	}
 	
-	@Override
-	public ItemType get() {
-		return this.type;
-	}
-	
-	public static final class Builder implements org.spongepowered.api.util.Builder<ModeledItem, Builder> {
+	public static final class Builder extends ModeledCustomType.Builder<ItemType, ItemTypeBuilder, ModeledItem, Builder> {
 		
-		private final ResourceKey key;
-		private Consumer<ItemTypeBuilder> item;
 		private @Nullable ItemDefinition definition;
-		private final Map<ResourceKey, Model> models = new HashMap<>();
 		
 		private Builder(final ResourceKey key) {
-			this.key = Objects.requireNonNull(key, "key");
+			super(key);
 			this.reset();
 		}
 		
-		public Builder item(final Consumer<ItemTypeBuilder> configurator) {
-			this.item = this.item.andThen(Objects.requireNonNull(configurator, "configurator"));
-			return this;
-		}
-		
-		public Builder definition(ItemDefinitionLike definition) {
+		public Builder definition(final ItemDefinitionLike definition) {
 			this.definition = Objects.requireNonNull(definition, "definition").asDefinition();
 			return this;
 		}
 		
-		public Builder definition(Function<ResourceKey, ItemDefinitionLike> definition) {
+		public Builder definition(final Function<ResourceKey, ItemDefinitionLike> definition) {
 			return this.definition(definition.apply(this.key));
 		}
 		
-		public Builder itemDefinition(Function<ResourceKey, ItemDefinitionLike> definition) {
+		public Builder itemDefinition(final Function<ResourceKey, ItemDefinitionLike> definition) {
 			return this.definition(definition.compose(ModelUtil::withItemPrefix));
 		}
 		
-		public Builder blockDefinition(Function<ResourceKey, ItemDefinitionLike> definition) {
+		public Builder blockDefinition(final Function<ResourceKey, ItemDefinitionLike> definition) {
 			return this.definition(definition.compose(ModelUtil::withBlockPrefix));
 		}
 		
@@ -91,25 +77,20 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 			return this.blockDefinition(key -> ItemModel.simple(key));
 		}
 		
-		public Builder model(final ResourceKey key, final ModelLike model) {
-			this.models.put(Objects.requireNonNull(key, "key"), Objects.requireNonNull(model, "model").asModel());
-			return this;
-		}
-		
-		public Builder model(final Function<ResourceKey, ResourceKey> key, final ModelLike model) {
+		public Builder model(final UnaryOperator<ResourceKey> key, final ModelLike model) {
 			return this.model(key.apply(this.key), model);
 		}
 		
-		public Builder itemModel(final Function<ResourceKey, ResourceKey> key, final ModelLike model) {
-			return this.model(key.compose(ModelUtil::withItemPrefix), model);
+		public Builder itemModel(final UnaryOperator<ResourceKey> key, final ModelLike model) {
+			return this.model(k -> ModelUtil.withItemPrefix(key.apply(k)), model);
 		}
 		
 		public Builder itemModel(final String keySuffix, final ModelLike model) {
 			return this.itemModel(key -> ModelUtil.withSuffix(key, keySuffix), model);
 		}
 		
-		public Builder blockModel(final Function<ResourceKey, ResourceKey> key, final ModelLike model) {
-			return this.model(key.compose(ModelUtil::withBlockPrefix), model);
+		public Builder blockModel(final UnaryOperator<ResourceKey> key, final ModelLike model) {
+			return this.model(k -> ModelUtil.withBlockPrefix(key.apply(k)), model);
 		}
 		
 		public Builder blockModel(final String keySuffix, final ModelLike model) {
@@ -118,7 +99,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		
 		public Builder simpleItemModel(final ModelLike model) {
 			return this.simpleItemDefinition()
-					.itemModel(Function.identity(), model);
+					.itemModel(UnaryOperator.identity(), model);
 		}
 		
 		public Builder simpleItemModel(final Function<ResourceKey, ModelLike> model) {
@@ -131,7 +112,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		
 		public Builder simpleBlockModel(final ModelLike model) {
 			return this.simpleBlockDefinition()
-					.blockModel(Function.identity(), model);
+					.blockModel(UnaryOperator.identity(), model);
 		}
 		
 		public Builder simpleBlockModel(final Function<ResourceKey, ModelLike> model) {
@@ -144,10 +125,8 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		
 		@Override
 		public Builder reset() {
-			this.item = builder -> {};
 			this.definition = null;
-			this.models.clear();
-			return this;
+			return super.reset();
 		}
 		
 		@Override
@@ -156,10 +135,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 				throw new IllegalStateException("definition must be set");
 			}
 			
-			final ItemTypeBuilder builder = ItemTypeBuilder.create().id(this.key);
-			this.item.accept(builder);
-			final ItemType item = builder.build();
-			
+			final ItemType item = this.buildType(ItemTypeBuilder.create().id(this.key));
 			return new ModeledItem(item, this.definition, this.models);
 		}
 	}

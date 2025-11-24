@@ -1,22 +1,19 @@
 package net.hellheim.spongetools.resourcepack.block;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
-import com.mojang.serialization.Codec;
-
+/**
+ * Something that can be represented as a {@link VariantList}.
+ */
 public interface VariantListLike extends Iterable<Variant> {
 	
-	Codec<VariantListLike> CODEC = VariantList.CODEC.xmap(Function.identity(), VariantListLike::asVariantList);
-	
+	/**
+	 * Gets the {@link VariantList} representation.
+	 * 
+	 * @return The variant list
+	 */
 	VariantList asVariantList();
-	
-	@Override
-	default Iterator<Variant> iterator() {
-		return this.asVariantList().variants().iterator();
-	}
 	
 	default VariantList merge(final VariantListLike variants) {
 		final List<Variant> result = new ArrayList<>();

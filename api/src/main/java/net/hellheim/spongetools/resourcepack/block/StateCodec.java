@@ -67,15 +67,12 @@ interface StateCodec<A> extends Codec<A> {
 				case final StateCondition.OrCondition condition ->
 						StateCondition.LIST_CODEC.encode(condition.conditions(), ops, prefix)
 								.map(conditions -> ops.set(ops.emptyMap(), "OR", conditions));
-				case final StateCondition.AndCondition condition -> {
-					
-					yield StateCondition.LIST_CODEC.encode(condition.conditions(), ops, prefix);
-				}
-				case final StateCondition.PropertyCondition<?> condition -> {
-					yield ops.mergeToMap(prefix,
+				case final StateCondition.AndCondition condition ->
+						StateCondition.LIST_CODEC.encode(condition.conditions(), ops, prefix);
+				case final StateCondition.PropertyCondition<?> condition ->
+						ops.mergeToMap(prefix,
 							ops.createString(condition.property().name()),
 							ops.createString(condition.valuesString()));
-				}
 				default -> DataResult.error(() -> "Unknown StateCondition: " + input);
 			};
 		}

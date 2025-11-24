@@ -147,6 +147,9 @@ public interface StateCondition extends StatePredicate {
 	
 	StateCondition negate();
 	
+	@Override
+	String toString();
+	
 	abstract class CompositeCondition implements StateCondition {
 		
 		private static final AndCondition ALWAYS_TRUE = new AndCondition(List.of(), Set.of());
@@ -163,6 +166,8 @@ public interface StateCondition extends StatePredicate {
 		}
 		
 		protected abstract StateCondition negate0();
+		
+		protected abstract String toString0();
 		
 		public List<StateCondition> conditions() {
 			return this.conditions;
@@ -182,6 +187,13 @@ public interface StateCondition extends StatePredicate {
 			} else {
 				return this.negate0();
 			}
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("%sCondition[%s]",
+					this.toString0(),
+					this.conditions.stream().map(StateCondition::toString).collect(Collectors.joining(",")));
 		}
 		
 		public static abstract class Builder<B extends Builder<B>>
@@ -323,6 +335,11 @@ public interface StateCondition extends StatePredicate {
 					this.properties());
 		}
 		
+		@Override
+		protected String toString0() {
+			return "And";
+		}
+		
 		public static final class Builder extends CompositeCondition.Builder<Builder> {
 			
 			private Builder() {
@@ -391,6 +408,11 @@ public interface StateCondition extends StatePredicate {
 			return new AndCondition(
 					this.conditions().stream().map(StateCondition::negate).toList(),
 					this.properties());
+		}
+		
+		@Override
+		protected String toString0() {
+			return "Or";
 		}
 		
 		public static final class Builder extends CompositeCondition.Builder<Builder> {
@@ -486,6 +508,13 @@ public interface StateCondition extends StatePredicate {
 			return this.values;
 		}
 		
+		public String valuesString() {
+			final String values = this.values.stream()
+					.map(value -> StatePropertyValue.of(this.property, value).valueName())
+					.collect(Collectors.joining("|"));
+			return this.inverse ? "!" + values : values;
+		}
+		
 		@Override
 		public boolean test(
 			final Function<StateProperty<?>, Optional<? extends Comparable<?>>> propertyLookup
@@ -505,11 +534,10 @@ public interface StateCondition extends StatePredicate {
 			return new PropertyCondition<>(this.property, !this.inverse, this.values);
 		}
 		
-		public String valuesString() {
-			final String values = this.values.stream()
-					.map(value -> StatePropertyValue.of(this.property, value).valueName())
-					.collect(Collectors.joining("|"));
-			return this.inverse ? "!" + values : values;
+		@Override
+		public String toString() {
+			return String.format("PropertyCondition[property=%s;inverse=%s;values=%s]",
+					this.property.name(), this.inverse, this.valuesString());
 		}
 	}
 }

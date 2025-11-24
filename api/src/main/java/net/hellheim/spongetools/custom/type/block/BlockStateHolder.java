@@ -1,21 +1,16 @@
 package net.hellheim.spongetools.custom.type.block;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.spongepowered.api.block.BlockState;
 
 import net.hellheim.spongetools.proxy.solid.block.BlockStateProxy;
-import net.hellheim.spongetools.resourcepack.block.VariantList;
-import net.hellheim.spongetools.resourcepack.block.VariantListLike;
 
 public interface BlockStateHolder extends BlockStateProxy {
 	
-	static VariantBased of(final VariantListLike variants) {
-		return VariantBased.MAP.computeIfAbsent(
-				Objects.requireNonNull(variants, "variants").asVariantList(), VariantBased::new);
+	static Simple create() {
+		return new Simple();
 	}
 	
 	/**
@@ -73,21 +68,6 @@ public interface BlockStateHolder extends BlockStateProxy {
 			}
 			
 			this.state = Objects.requireNonNull(state, "state");
-		}
-	}
-	
-	final class VariantBased extends Simple {
-		
-		private static final Map<VariantList, VariantBased> MAP = new HashMap<>();
-		
-		private final VariantList variants;
-		
-		private VariantBased(final VariantList variants) {
-			this.variants = variants;
-		}
-		
-		public VariantList variants() {
-			return this.variants;
 		}
 	}
 }
