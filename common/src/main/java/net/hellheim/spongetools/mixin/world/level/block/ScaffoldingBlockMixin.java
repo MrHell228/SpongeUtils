@@ -29,13 +29,13 @@ import java.util.function.IntSupplier;
 public abstract class ScaffoldingBlockMixin implements ScaffoldingBlockBridge {
 
     @Unique private @Nullable IntegerProperty spongetools$distanceProperty;
-    @Unique private int spongetools$maxDistance;
+    @Unique private int spongetools$maxDistance = -1;
 
     @Inject(
             method = "<init>",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/ScaffoldingBlock;registerDefaultState(Lnet/minecraft/world/level/block/state/BlockState;)V",
+                    target = "Lnet/minecraft/world/level/block/state/StateDefinition;any()Lnet/minecraft/world/level/block/state/StateHolder;",
                     unsafe = true
             )
     )

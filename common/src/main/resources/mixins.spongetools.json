@@ -4,9 +4,9 @@
   "package": "net.hellheim.spongetools.mixin",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "core.MappedRegistryAccessor",
     "core.MappedRegistryMixin",
     "core.RegistryMixin",
-    "network.chat.HoverEvent_ItemStackInfoAccessor",
     "network.codec.ByteBufCodecsMixin",
     "network.protocol.game.ClientboundUpdateAttributesPacketMixin",
     "server.level.ServerLevelMixin",

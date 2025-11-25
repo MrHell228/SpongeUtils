@@ -8,7 +8,11 @@ import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
 import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.type.BlockTypeExtension;
+import net.hellheim.spongetools.mixin.core.MappedRegistryAccessor;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,14 +28,18 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
 public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkValueBridge {
 
     @Shadow @Final protected StateDefinition<Block, BlockState> stateDefinition;
+    @Shadow @Nullable private Item item;
 
-    private @Unique BlockTypeUtil.@Nullable AdditionalData spongetools$data;
+    @Unique private BlockTypeUtil.@Nullable AdditionalData spongetools$data;
+    @Unique private boolean spongetools$blockItemVerified = false;
 
     @Override
     public BlockType type() {
@@ -41,6 +49,15 @@ public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkV
     @Override
     public @Nullable Object spongetools$bridge$asNetworkValue() {
         return this.spongetools$data == null ? null : this.spongetools$data.networkBlock();
+    }
+
+    @ModifyVariable(
+            method = "getId",
+            at = @At("HEAD"),
+            argsOnly = true
+    )
+    private static BlockState spongetools$useNetworkBlockState(final BlockState value) {
+        return FakeableNetworkValueBridge.asNetworkValue(value);
     }
 
     @Inject(
@@ -110,9 +127,25 @@ public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkV
         } else {
             BlockState result = this.stateDefinition.any();
             for (final StatePropertyValue<?> property : this.spongetools$data.defautProperties()) {
-                result = spongetools$impl$setProperty(result, Converter.asVanilla(property));
+                result = BlockMixin.spongetools$impl$setProperty(result, Converter.asVanilla(property));
             }
             original.call(instance, result);
+        }
+    }
+
+    @Inject(method = "asItem", at = @At("RETURN"))
+    private void spongetools$doubleCheckBlockItem(final CallbackInfoReturnable<Item> cir) {
+        if (this.spongetools$blockItemVerified) {
+            return;
+        }
+
+        if (this.item == Items.AIR) {
+            if (((MappedRegistryAccessor) BuiltInRegistries.ITEM).accessor$frozen()) {
+                this.item = Item.byBlock((Block) (Object) this);
+                this.spongetools$blockItemVerified = true;
+            }
+        } else {
+            this.spongetools$blockItemVerified = true;
         }
     }
 

@@ -77,6 +77,12 @@ public final class SpongeTools {
 		
 		public static final Key<Value<Double>> FRICTION_FACTOR = Keys.key("friction_factor", Double.class);
 		
+		public static final Key<Value<Boolean>> HAS_COLLISION = Keys.key("collision", Boolean.class);
+		
+		public static final Key<Value<Boolean>> HAS_DYNAMIC_SHAPE = Keys.key("dynamic_shape", Boolean.class);
+		
+		public static final Key<Value<Boolean>> HAS_OCCLUSION = Keys.key("occlusion", Boolean.class);
+		
 		public static final Key<Value<Double>> JUMP_FACTOR = Keys.key("jump_factor", Double.class);
 		
 		public static final Key<Value<ResourceKey>> LOOT_TABLE_KEY = Keys.key("loot_table_key", ResourceKey.class);

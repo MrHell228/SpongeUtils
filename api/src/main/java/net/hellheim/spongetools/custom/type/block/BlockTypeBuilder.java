@@ -252,4 +252,25 @@ public interface BlockTypeBuilder
 	default BlockTypeBuilder burnable() {
 		return this.add(Keys.BURNABLE, true);
 	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#HAS_DYNAMIC_SHAPE}.
+	 */
+	default BlockTypeBuilder dynamicShape() {
+		return this.add(BlockTypeKeys.HAS_DYNAMIC_SHAPE, true);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#HAS_COLLISION}.
+	 */
+	default BlockTypeBuilder noCollision() {
+		return this.add(BlockTypeKeys.HAS_COLLISION, false);
+	}
+	
+	/**
+	 * Sets the {@link BlockTypeKeys#HAS_OCCLUSION}.
+	 */
+	default BlockTypeBuilder noOcclusion() {
+		return this.add(BlockTypeKeys.HAS_OCCLUSION, false);
+	}
 }

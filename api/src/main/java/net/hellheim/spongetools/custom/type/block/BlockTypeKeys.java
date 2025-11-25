@@ -47,6 +47,21 @@ public final class BlockTypeKeys {
 	public static final Key<Value<Double>> FRICTION_FACTOR = SpongeTools.Keys.FRICTION_FACTOR;
 	
 	/**
+	 * TODO doc
+	 */
+	public static final Key<Value<Boolean>> HAS_COLLISION = SpongeTools.Keys.HAS_COLLISION;
+	
+	/**
+	 * TODO doc
+	 */
+	public static final Key<Value<Boolean>> HAS_DYNAMIC_SHAPE = SpongeTools.Keys.HAS_DYNAMIC_SHAPE;
+	
+	/**
+	 * TODO doc
+	 */
+	public static final Key<Value<Boolean>> HAS_OCCLUSION = SpongeTools.Keys.HAS_OCCLUSION;
+	
+	/**
 	 * Affects the jump strength on the block. <br>
 	 * The closer value to 0, the lower the jump is. <bt>
 	 * Defaults to 1.

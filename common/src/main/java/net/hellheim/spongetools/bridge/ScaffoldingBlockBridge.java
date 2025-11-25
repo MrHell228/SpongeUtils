@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 
 import java.util.function.IntSupplier;
-import java.util.function.ToIntBiFunction;
 
 public interface ScaffoldingBlockBridge {
 

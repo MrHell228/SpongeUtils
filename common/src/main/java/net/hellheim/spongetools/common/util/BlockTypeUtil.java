@@ -27,6 +27,7 @@ import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
 import net.hellheim.spongetools.custom.type.block.BlockArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.mixin.world.level.block.ScaffoldingBlockAccessor;
+import net.hellheim.spongetools.mixin.world.level.block.state.BlockBehaviour_PropertiesAccessor;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
@@ -60,6 +61,8 @@ public final class BlockTypeUtil {
 						.map(Optional::of)
 						.orElse(Optional.empty()));
 		
+		final BlockBehaviour_PropertiesAccessor accessor = (BlockBehaviour_PropertiesAccessor) properties;
+		
 		properties.sound(data.get(BlockTypeKeys.SOUND_GROUP)
 				.map(SoundType.class::cast)
 				.orElse(SoundType.EMPTY));
@@ -76,6 +79,10 @@ public final class BlockTypeUtil {
 		
 		data.get(Keys.BURNABLE).filter(Boolean::booleanValue).ifPresent($true -> properties.ignitedByLava());
 		data.get(Keys.PUSH_REACTION).map(PushReaction.class::cast).ifPresent(properties::pushReaction);
+		
+		data.get(BlockTypeKeys.HAS_COLLISION).ifPresent(accessor::accessor$hasCollision);
+		data.get(BlockTypeKeys.HAS_DYNAMIC_SHAPE).ifPresent(accessor::accessor$dynamicShape);
+		data.get(BlockTypeKeys.HAS_OCCLUSION).ifPresent(accessor::accessor$canOcclude);
 		
 		((BlockPropertiesBridge) properties).spongetools$bridge$applyData(new AdditionalData(
 				networkBlockKey.get(),
@@ -123,14 +130,14 @@ public final class BlockTypeUtil {
 				(block, context) -> {},
 				(context, properties) -> {
 					final var stateProperties = new HashSet<>(context.require(BlockTypeKeys.STATE_PROPERTIES));
-					if (stateProperties.size() > 3
+					if (stateProperties.size() >= 3
 							&& stateProperties.remove(BooleanStateProperties.property_WATERLOGGED())
 							&& stateProperties.remove(BooleanStateProperties.property_BOTTOM())
 							&& stateProperties.stream().anyMatch(BlockTypeUtil.SCAFFOLDING_DISTANCE_PROPERTY_FILTER)) {
 						return ScaffoldingBlockAccessor.invoker$init(properties);
 					} else {
 						throw new IllegalStateException(
-								"State properties for scaffolding-like block must contain exactly 3 elements: "
+								"State properties for scaffolding-like block must contain at least 3 elements: "
 								+ "BooleanStateProperties.WATERLOGGED, "
 								+ "BooleanStateProperties.BOTTOM "
 								+ "and IntegerStateProperty named \"distance\". "

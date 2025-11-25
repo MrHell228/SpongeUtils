@@ -29,4 +29,10 @@ public interface BlockBehaviour_PropertiesAccessor {
     @Accessor("isRedstoneConductor") BlockBehaviour.StatePredicate accessor$isRedstoneConductor();
 
     @Accessor("isSuffocating") BlockBehaviour.StatePredicate accessor$isSuffocating();
+
+    @Accessor("dynamicShape") void accessor$dynamicShape(boolean value);
+
+    @Accessor("canOcclude") void accessor$canOcclude(boolean value);
+
+    @Accessor("hasCollision") void accessor$hasCollision(boolean value);
 }

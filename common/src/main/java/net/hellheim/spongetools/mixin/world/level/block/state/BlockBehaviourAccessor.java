@@ -24,12 +24,15 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.function.BiConsumer;
 
 @Mixin(BlockBehaviour.class)
 public interface BlockBehaviourAccessor {
+
+    @Accessor("hasCollision") boolean accessor$hasCollision();
 
     @Invoker("getSignal") int invoker$getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction);
 

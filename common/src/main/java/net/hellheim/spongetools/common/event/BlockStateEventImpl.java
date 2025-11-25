@@ -71,7 +71,7 @@ public abstract class BlockStateEventImpl
 			
 			final BlockState oldDisplay = BlockStateExtension.getFor(state).display();
 			if (state != oldDisplay && oldDisplay != BlockTypeUtil.DEFAULT_STATE.get()) {
-				this.logger.warn("Duplicate display registered for state %s (old: %s, new: %s)",
+				this.logger.warn("Duplicate display registered for state {} (old: {}, new: {})",
 						state.asString(), oldDisplay.asString(), display.asString());
 			}
 			
@@ -104,7 +104,7 @@ public abstract class BlockStateEventImpl
 			
 			final @Nullable VariantList oldVariants = this.variants.put(state, variants.asVariantList());
 			if (oldVariants != null) {
-				this.logger.warn("Duplicate variants registered for state %s (old: %s, new: %s)",
+				this.logger.warn("Duplicate variants registered for state {} (old: {}, new: {})",
 						state.asString(), oldVariants.toString(), variants.toString());
 			}
 		}

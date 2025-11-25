@@ -102,7 +102,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 					.itemModel(UnaryOperator.identity(), model);
 		}
 		
-		public Builder simpleItemModel(final Function<ResourceKey, ModelLike> model) {
+		public Builder simpleItemModel(final Function<ResourceKey, ? extends ModelLike> model) {
 			return this.simpleItemModel(model.apply(ModelUtil.withItemPrefix(this.key)));
 		}
 		
@@ -115,7 +115,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 					.blockModel(UnaryOperator.identity(), model);
 		}
 		
-		public Builder simpleBlockModel(final Function<ResourceKey, ModelLike> model) {
+		public Builder simpleBlockModel(final Function<ResourceKey, ? extends ModelLike> model) {
 			return this.simpleBlockModel(model.apply(ModelUtil.withBlockPrefix(this.key)));
 		}
 		

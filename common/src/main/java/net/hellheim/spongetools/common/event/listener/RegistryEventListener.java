@@ -80,6 +80,7 @@ import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.ModeledItem;
+import net.hellheim.spongetools.mixin.world.level.block.state.BlockBehaviourAccessor;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
@@ -153,11 +154,20 @@ public final class RegistryEventListener {
 							.get(v -> (double) v.getJumpFactor())
 						.create(BlockTypeKeys.FRICTION_FACTOR)
 							.get(v -> (double) v.getFriction())
+						.create(BlockTypeKeys.HAS_DYNAMIC_SHAPE)
+							.get(v -> v.hasDynamicShape())
+					
+					.asImmutable(BlockBehaviourAccessor.class)
+						.create(BlockTypeKeys.HAS_COLLISION)
+							.get(v -> v.accessor$hasCollision())
+					
 					.asImmutable(BlockState.class)
 						.create(BlockTypeKeys.REQUIRE_TOOL)
 							.get(v -> v.requiresCorrectToolForDrops())
 						.create(BlockTypeKeys.SOUND_GROUP)
 							.get(v -> (BlockSoundGroup) v.getSoundType())
+						.create(BlockTypeKeys.HAS_OCCLUSION)
+							.get(v -> v.canOcclude())
 						;
 			}
 		}.register();;

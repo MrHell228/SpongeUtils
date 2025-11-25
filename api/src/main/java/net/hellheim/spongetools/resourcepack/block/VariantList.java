@@ -14,9 +14,12 @@ import net.hellheim.spongetools.codec.list.ExtraCodecs;
 
 public record VariantList(Set<Variant> variants) implements VariantListLike {
 	
-	public static final Codec<VariantList> CODEC = ExtraCodecs.setOf(Variant.CODEC)
+	private static final Codec<VariantList> SINGLE_CODEC = Variant.CODEC
+			.xmap(v -> new VariantList(Set.of(v)), list -> list.variants().iterator().next());
+	private static final Codec<VariantList> LIST_CODEC = ExtraCodecs.setOf(Variant.CODEC)
 			.xmap(VariantList::new, VariantList::variants)
 			.validate(VariantList::validate);
+	public static final Codec<VariantList> CODEC = Codec.withAlternative(SINGLE_CODEC, LIST_CODEC);
 	
 	public VariantList(final Set<Variant> variants) {
 		this.variants = Set.copyOf(variants);

@@ -23,7 +23,7 @@ public interface FakeableNetworkValueBridge {
     }
 
     @SuppressWarnings("unchecked")
-	static <V> V asNetworkValue(final V value) {
+	static <V> @PolyNull V asNetworkValue(final @PolyNull V value) {
         if (value instanceof final FakeableNetworkValueBridge bridge) {
             final @Nullable Object fakeValue = bridge.spongetools$bridge$asNetworkValue();
             if (fakeValue != null) {
