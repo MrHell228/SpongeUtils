@@ -5,6 +5,7 @@ import net.minecraft.core.IdMap;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,6 +19,12 @@ public final class NetworkUtil {
 	private static final Supplier<ClientboundUpdateAttributesPacket.AttributeSnapshot> MINING_SPEED_ATTRIBUTE =
 			Suppliers.memoize(() -> new ClientboundUpdateAttributesPacket.AttributeSnapshot(
 					Attributes.BLOCK_BREAK_SPEED, 0, Collections.emptyList()));
+	
+	// In vanilla Block#getId is only used for network so it's modified to always return id for network state.
+	// However there are special handling in some places where we need to pass the actual state id.
+	public static int getBlockStateId(final BlockState state) {
+		return Block.BLOCK_STATE_REGISTRY.getId(state);
+	}
 	
 	public static boolean isBlockStateRegistry(final IdMap<?> map) {
 		return map == Block.BLOCK_STATE_REGISTRY;

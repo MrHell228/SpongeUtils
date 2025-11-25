@@ -2,6 +2,7 @@ package net.hellheim.spongetools.common.util;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.spongepowered.common.SpongeCommon;
@@ -9,6 +10,7 @@ import org.spongepowered.common.SpongeCommon;
 import com.google.common.base.Suppliers;
 
 import io.netty.buffer.Unpooled;
+import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
@@ -81,16 +83,36 @@ public final class NetworkComponentSanitizer {
 	private static @PolyNull HoverEvent hoverEvent(final @PolyNull HoverEvent event) {
 		if (event == null) {
 			return null;
-		} else if (event.getAction() == HoverEvent.Action.SHOW_ITEM) {
-			final ItemStack originalStack = event.getValue(HoverEvent.Action.SHOW_ITEM).getItemStack();
-			final RegistryFriendlyByteBuf byteBuf = NetworkComponentSanitizer.BYTE_BUF.get();
-			ItemStack.OPTIONAL_STREAM_CODEC.encode(byteBuf, originalStack);
-			final ItemStack sanitizedStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(byteBuf);
-			byteBuf.clear();
-			return new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackInfo(sanitizedStack));
-		} else {
-			return event;
 		}
+		
+		final HoverEvent.Action<?> action = event.getAction();
+		if (action == HoverEvent.Action.SHOW_ITEM) {
+			return NetworkComponentSanitizer.hoverEventWithInfo(event, HoverEvent.Action.SHOW_ITEM, info -> {
+				final ItemStack originalStack = info.getItemStack();
+				final RegistryFriendlyByteBuf byteBuf = NetworkComponentSanitizer.BYTE_BUF.get();
+				ItemStack.OPTIONAL_STREAM_CODEC.encode(byteBuf, originalStack);
+				final ItemStack sanitizedStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(byteBuf);
+				byteBuf.clear();
+				return new HoverEvent.ItemStackInfo(sanitizedStack);
+			});
+		} else if (action == HoverEvent.Action.SHOW_ENTITY) {
+			return NetworkComponentSanitizer.hoverEventWithInfo(event, HoverEvent.Action.SHOW_ENTITY, info ->
+				new HoverEvent.EntityTooltipInfo(
+					FakeableNetworkValueBridge.asNetworkValue(info.type),
+					info.id,
+					info.name.map(NetworkComponentSanitizer::component)));
+		} else if (action == HoverEvent.Action.SHOW_TEXT) {
+			return NetworkComponentSanitizer.hoverEventWithInfo(event, HoverEvent.Action.SHOW_TEXT,
+				NetworkComponentSanitizer::component);
+		}
+		
+		throw new IllegalArgumentException("Unknown HoverEvent Action: " + action.getSerializedName());
+	}
+	
+	private static <T> HoverEvent hoverEventWithInfo(
+		final HoverEvent event, final HoverEvent.Action<T> action, final UnaryOperator<T> mapper
+	) {
+		return new HoverEvent(action, mapper.apply(event.getValue(action)));
 	}
 	
 	private NetworkComponentSanitizer() {

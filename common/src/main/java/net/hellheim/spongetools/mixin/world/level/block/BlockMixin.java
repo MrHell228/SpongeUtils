@@ -7,6 +7,7 @@ import net.hellheim.spongetools.bridge.BlockStateBaseBridge;
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
 import net.hellheim.spongetools.common.util.Converter;
+import net.hellheim.spongetools.common.util.NetworkUtil;
 import net.hellheim.spongetools.custom.behaviour.type.BlockTypeExtension;
 import net.hellheim.spongetools.mixin.core.MappedRegistryAccessor;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
@@ -147,6 +148,18 @@ public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkV
         } else {
             this.spongetools$blockItemVerified = true;
         }
+    }
+
+    @WrapOperation(
+            method = "spawnDestroyParticles",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/level/block/Block;getId(Lnet/minecraft/world/level/block/state/BlockState;)I"
+            )
+    )
+    private int spongetools$handleDestroyEffects(final BlockState state, final Operation<Integer> original) {
+        // special handling for ServerLevelMixin
+        return NetworkUtil.getBlockStateId(state);
     }
 
     private static <T extends Comparable<T>> BlockState spongetools$impl$setProperty(

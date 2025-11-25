@@ -3,6 +3,7 @@ package net.hellheim.spongetools.mixin.world.level;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.hellheim.spongetools.common.util.Converter;
+import net.hellheim.spongetools.common.util.NetworkUtil;
 import net.hellheim.spongetools.custom.behaviour.type.WorldExtension;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -46,9 +47,8 @@ public abstract class LevelMixin<W extends World<?, ?>> implements WorldExtensio
                     target = "Lnet/minecraft/world/level/block/Block;getId(Lnet/minecraft/world/level/block/state/BlockState;)I"
             )
     )
-    private int spongetools$useActualStateId(final BlockState state, final Operation<Integer> original) {
-        // Block#getId returns id for network state (in BlockMixin) but there is
-        // special handling in ServerLevelMixin so we need to pass actual state id here
-        return Block.BLOCK_STATE_REGISTRY.getId(state);
+    private int spongetools$handleDestroyEffects(final BlockState state, final Operation<Integer> original) {
+        // special handling for ServerLevelMixin
+        return NetworkUtil.getBlockStateId(state);
     }
 }
