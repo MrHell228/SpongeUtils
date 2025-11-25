@@ -7,31 +7,31 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.function.Function;
 
 @Mixin(ConsumeEffect.class)
-public abstract class ConsumeEffectMixin {
+public interface ConsumeEffectMixin {
 
     @WrapOperation(
             method = "<clinit>",
             at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/world/item/consume_effects/ConsumeEffect;STREAM_CODEC:Lnet/minecraft/network/codec/StreamCodec;",
-                    opcode = Opcodes.H_PUTFIELD
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/network/codec/StreamCodec;dispatch(Ljava/util/function/Function;Ljava/util/function/Function;)Lnet/minecraft/network/codec/StreamCodec;"
             )
     )
-    private static void spongetools$adjustStreamCodec(
-            final StreamCodec<RegistryFriendlyByteBuf, ConsumeEffect> value,
-            final Operation<Void> original
+    private static StreamCodec<RegistryFriendlyByteBuf, ConsumeEffect> spongetools$adjustStreamCodec(
+            final StreamCodec<RegistryFriendlyByteBuf, ConsumeEffect.Type<?>> instance,
+            final Function<? super ConsumeEffect, ? extends ConsumeEffect.Type<?>> getType,
+            final Function<? super ConsumeEffect.Type<?>, ? extends StreamCodec<? super RegistryFriendlyByteBuf, ? extends ConsumeEffect>> streamCodec,
+            final Operation<StreamCodec<RegistryFriendlyByteBuf, ConsumeEffect>> original
     ) {
-        original.call(value.map(
+        return original.call(instance, getType, streamCodec).map(
+                Function.identity(),
                 effect -> effect.getType() != CustomConsumeEffect.TYPE
                         ? effect
-                        : ClearAllStatusEffectsConsumeEffect.INSTANCE,
-                Function.identity()));
+                        : ClearAllStatusEffectsConsumeEffect.INSTANCE);
     }
 }

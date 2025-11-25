@@ -1,15 +1,15 @@
 package net.hellheim.spongetools.common.util;
 
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.PolyNull;
+import org.spongepowered.common.SpongeCommon;
 
-import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
-import net.hellheim.spongetools.mixin.network.chat.HoverEvent_ItemStackInfoAccessor;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
+import com.google.common.base.Suppliers;
+
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.HoverEvent;
@@ -18,27 +18,14 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.NbtContents;
 import net.minecraft.network.chat.contents.SelectorContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.item.ItemStack;
 
 // If only there were proper StreamCodec for Component...
 public final class NetworkComponentSanitizer {
 	
-	// Used to filter component patch in HoverEvent
-	// It's all exists because of this...
-	private static final Set<DataComponentType<?>> BADLY_NETWORKABLE_COMPONENTS = Set.of(
-			// Contains Block
-			DataComponents.TOOL,
-			DataComponents.CAN_BREAK,
-			DataComponents.CAN_PLACE_ON,
-			// Contains ItemStack
-			DataComponents.BUNDLE_CONTENTS,
-			DataComponents.CHARGED_PROJECTILES,
-			DataComponents.CONTAINER,
-			DataComponents.USE_REMAINDER,
-			// Contains ConsumeEffect (CustomConsumeEffect should not be sent to client)
-			DataComponents.CONSUMABLE,
-			DataComponents.DEATH_PROTECTION
-			);
-
+	private static final Supplier<RegistryFriendlyByteBuf> BYTE_BUF = Suppliers.memoize(
+			() -> new RegistryFriendlyByteBuf(Unpooled.buffer(), SpongeCommon.server().registryAccess()));
+	
 	public static Component component(final Component component) {
 		final MutableComponent result = MutableComponent.create(NetworkComponentSanitizer.componentContents(component.getContents()));
 		result.setStyle(NetworkComponentSanitizer.style(component.getStyle()));
@@ -75,7 +62,7 @@ public final class NetworkComponentSanitizer {
 			if (separator.isPresent()) {
 				return new SelectorContents(
 						selector.selector(),
-						Optional.of(NetworkComponentSanitizer.component(separator.get())));
+						separator.map(NetworkComponentSanitizer::component));
 			}
 		} else if (contents instanceof final NbtContents nbt) {
 			final Optional<Component> separator = nbt.getSeparator();
@@ -83,7 +70,7 @@ public final class NetworkComponentSanitizer {
 				return new NbtContents(
 						nbt.getNbtPath(),
 						nbt.isInterpreting(),
-						Optional.of(NetworkComponentSanitizer.component(separator.get())),
+						separator.map(NetworkComponentSanitizer::component),
 						nbt.getDataSource());
 			}
 		}
@@ -95,18 +82,15 @@ public final class NetworkComponentSanitizer {
 		if (event == null) {
 			return null;
 		} else if (event.getAction() == HoverEvent.Action.SHOW_ITEM) {
-			final HoverEvent_ItemStackInfoAccessor info = (HoverEvent_ItemStackInfoAccessor) event.getValue(HoverEvent.Action.SHOW_ITEM);
-			return new HoverEvent(HoverEvent.Action.SHOW_ITEM, HoverEvent_ItemStackInfoAccessor.invoker$init(
-					FakeableNetworkValueBridge.asNetworkItemHolder(info.accessor$item()),
-					info.accessor$count(),
-					NetworkComponentSanitizer.patch(info.accessor$patch())));
+			final ItemStack originalStack = event.getValue(HoverEvent.Action.SHOW_ITEM).getItemStack();
+			final RegistryFriendlyByteBuf byteBuf = NetworkComponentSanitizer.BYTE_BUF.get();
+			ItemStack.OPTIONAL_STREAM_CODEC.encode(byteBuf, originalStack);
+			final ItemStack sanitizedStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(byteBuf);
+			byteBuf.clear();
+			return new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackInfo(sanitizedStack));
 		} else {
 			return event;
 		}
-	}
-	
-	private static DataComponentPatch patch(final DataComponentPatch patch) {
-		return patch.forget(NetworkComponentSanitizer.BADLY_NETWORKABLE_COMPONENTS::contains);
 	}
 	
 	private NetworkComponentSanitizer() {

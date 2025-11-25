@@ -26,7 +26,7 @@ public record CustomConsumeEffect(Config config) implements ConsumeEffect, Custo
 	@SuppressWarnings("unchecked")
 	private static final MapCodec<CustomConsumeEffect> MAP_CODEC =
 			Codec.lazyInitialized(() -> ((Registry<MapCodec<? extends Config>>) CustomItemAction.registry().get()).byNameCodec())
-					.dispatchMap(Config::mapCodec, Function.identity())
+					.dispatchMap("config", Config::mapCodec, Function.identity())
 					.xmap(CustomConsumeEffect::new, CustomConsumeEffect::config);
 	// This StreamCodec should never be used
 	private static final StreamCodec<RegistryFriendlyByteBuf, CustomConsumeEffect> STREAM_CODEC =
