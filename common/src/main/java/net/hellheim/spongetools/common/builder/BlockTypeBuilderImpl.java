@@ -5,11 +5,11 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
-import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 
 public final class BlockTypeBuilderImpl
-		extends CustomTypeBuilderImpl.WithData<BlockType, BlockState, BlockArchetype, BlockTypeBuilder>
+		extends CustomTypeBuilderImpl.WithData<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder>
 		implements BlockTypeBuilder {
 	
 	public BlockTypeBuilderImpl() {
@@ -17,13 +17,18 @@ public final class BlockTypeBuilderImpl
 	}
 	
 	@Override
-	protected BlockArchetype baseArchetype() {
+	protected BlockTypeArchetype baseArchetype() {
 		return BlockTypeUtil.Archetypes.DEFAULT;
 	}
 	
 	@Override
-	protected DefaultedRegistryType<BlockArchetype> archetypeRegistry() {
-		return BlockArchetype.registry();
+	protected DefaultedRegistryType<BlockTypeArchetype> archetypeRegistry() {
+		return BlockTypeArchetype.registry();
+	}
+	
+	@Override
+	protected BlockTypeArchetype extractArchetype(final BlockType value) {
+		return BlockTypeArchetype.forType(value);
 	}
 	
 	@Override

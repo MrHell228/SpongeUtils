@@ -18,7 +18,7 @@ import net.hellheim.spongetools.util.TranslationUtil;
  * {@link CustomTypeBuilder} for {@link ItemType}.
  */
 public interface ItemTypeBuilder
-		extends CustomTypeBuilder.WithData<ItemType, ItemStackLike, ItemArchetype, ItemTypeBuilder> {
+		extends CustomTypeBuilder.WithData<ItemType, ItemStackLike, ItemTypeArchetype, ItemTypeBuilder> {
 	
 	/**
 	 * Creates the new {@link ItemTypeBuilder}.
@@ -33,7 +33,7 @@ public interface ItemTypeBuilder
 	 * Returns the mandatory registry dependencies that must be used when registering custom type. <br>
 	 * These registries include:
 	 * <ul>
-	 * <li> {@link ItemArchetype#registry()}
+	 * <li> {@link ItemTypeArchetype#registry()}
 	 * <li> {@link LoreProvider#registry()}
 	 * <li> {@link LoreProcessor#registry()}
 	 * <li> {@link CustomItemAction#registry()}
@@ -44,7 +44,7 @@ public interface ItemTypeBuilder
 	 */
 	static RegistryType<?>[] dependencies() {
 		return new RegistryType[] {
-				ItemArchetype.registry(),
+				ItemTypeArchetype.registry(),
 				LoreProvider.registry(),
 				LoreProcessor.registry(),
 				CustomItemAction.registry()

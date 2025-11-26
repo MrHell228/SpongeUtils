@@ -172,9 +172,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
 import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
-import net.hellheim.spongetools.custom.type.item.ItemArchetype;
+import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.resourcepack.Model;
@@ -188,9 +188,9 @@ public final class RegistryCodecs {
 	
 	// SpongeToolsAPI
 	
-	public static final Codec<BlockArchetype> BLOCK_ARCHETYPE = RegistryCodecs.register(BlockArchetype.class, BlockArchetype.registry());
+	public static final Codec<BlockTypeArchetype> BLOCK_ARCHETYPE = RegistryCodecs.register(BlockTypeArchetype.class, BlockTypeArchetype.registry());
 	
-	public static final Codec<ItemArchetype> ITEM_ARCHETYPE = RegistryCodecs.register(ItemArchetype.class, ItemArchetype.registry());
+	public static final Codec<ItemTypeArchetype> ITEM_ARCHETYPE = RegistryCodecs.register(ItemTypeArchetype.class, ItemTypeArchetype.registry());
 	
 	public static final Codec<ItemDefinition> ITEM_DEFINITION = RegistryCodecs.register(ItemDefinition.class, ItemDefinition.registry());
 	

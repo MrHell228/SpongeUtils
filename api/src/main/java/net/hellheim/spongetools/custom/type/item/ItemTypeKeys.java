@@ -7,7 +7,7 @@ import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.object.TypedKey;
 
 /**
- * Contains {@link TypedKey context keys} used for {@link ItemTypeBuilder} by builtin {@link ItemArchetype}s.
+ * Contains {@link TypedKey context keys} used for {@link ItemTypeBuilder} by builtin {@link ItemTypeArchetype}s.
  */
 public final class ItemTypeKeys {
 	

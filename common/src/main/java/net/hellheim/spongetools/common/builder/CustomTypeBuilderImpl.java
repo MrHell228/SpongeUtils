@@ -6,21 +6,21 @@ import java.util.stream.Collectors;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
-import net.hellheim.spongetools.custom.type.CustomArchetype;
+import net.hellheim.spongetools.custom.type.CustomTypeArchetype;
 import net.hellheim.spongetools.custom.type.CustomTypeBuilder;
 import net.hellheim.spongetools.object.DataOperator;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 import net.hellheim.spongetools.object.ValueSetBuilder;
 
-public abstract class CustomTypeBuilderImpl<T, I, A extends CustomArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
+public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
 		implements CustomTypeBuilder<T, I, A ,B>, TypedKeyMap.Operator.MutableProxy<B> {
 	
 	protected A archetype = this.baseArchetype();
 	protected final TypedKeyMap.Impl.Mutable context = TypedKeyMap.create();
 	
 	@SuppressWarnings("unchecked")
-	private B cast() {
+	protected B cast() {
 		return (B) this;
 	}
 	
@@ -40,11 +40,8 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomArchetype<T, A
 		Objects.requireNonNull(value, "value");
 		this.reset();
 		
-		this.archetype = CustomArchetype.forType(this.archetypeRegistry().get(), this.baseArchetype(), value);
-		
+		this.archetype = this.extractArchetype(value);
 		this.archetype.cumulativeContextExtractor().accept(value, this.context);
-		
-		this.extractData(value);
 		
 		// TODO extract behaviour
 		
@@ -80,11 +77,11 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomArchetype<T, A
 	
 	protected abstract DefaultedRegistryType<A> archetypeRegistry();
 	
-	protected abstract void extractData(T value);
+	protected abstract A extractArchetype(T value);
 	
 	protected abstract T build0();
 	
-	public static abstract class WithData<T, I, A extends CustomArchetype<T, A>, B extends CustomTypeBuilder.WithData<T, I, A, B>>
+	public static abstract class WithData<T, I, A extends CustomTypeArchetype<T, A>, B extends CustomTypeBuilder.WithData<T, I, A, B>>
 			extends CustomTypeBuilderImpl<T, I, A, B>
 			implements CustomTypeBuilder.WithData<T, I, A, B>, DataOperator.Proxy<B> {
 		
@@ -96,9 +93,18 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomArchetype<T, A
 		}
 		
 		@Override
+		public B from(final T value) {
+			super.from(value);
+			this.extractData(value);
+			return this.cast();
+		}
+		
+		@Override
 		public B reset() {
 			this.data.reset();
 			return super.reset();
 		}
+		
+		protected abstract void extractData(T value);
 	}
 }

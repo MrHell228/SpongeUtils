@@ -27,7 +27,7 @@ import net.hellheim.spongetools.util.TranslationUtil;
  * {@link CustomTypeBuilder} for {@link BlockType}.
  */
 public interface BlockTypeBuilder
-		extends CustomTypeBuilder.WithData<BlockType, BlockState, BlockArchetype, BlockTypeBuilder> {
+		extends CustomTypeBuilder.WithData<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder> {
 	
 	/**
 	 * Creates the new {@link BlockTypeBuilder}.
@@ -42,7 +42,7 @@ public interface BlockTypeBuilder
 	 * Returns the mandatory registry dependencies that must be used when registering custom type. <br>
 	 * These registries include:
 	 * <ul>
-	 * <li> {@link BlockArchetype#registry()}
+	 * <li> {@link BlockTypeArchetype#registry()}
 	 * </ul>
 	 * 
 	 * @return The registry types
@@ -50,7 +50,7 @@ public interface BlockTypeBuilder
 	 */
 	static RegistryType<?>[] dependencies() {
 		return new RegistryType[] {
-				BlockArchetype.registry()
+				BlockTypeArchetype.registry()
 				};
 	}
 	
@@ -191,7 +191,7 @@ public interface BlockTypeBuilder
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#REQUIRE_TOOL}.
+	 * Sets the {@link BlockTypeKeys#REQUIRE_TOOL} to true.
 	 */
 	default BlockTypeBuilder requireTool() {
 		return this.add(BlockTypeKeys.REQUIRE_TOOL, true);
@@ -247,28 +247,28 @@ public interface BlockTypeBuilder
 	}
 	
 	/**
-	 * Sets the {@link Keys#BURNABLE}.
+	 * Sets the {@link Keys#BURNABLE} to true.
 	 */
 	default BlockTypeBuilder burnable() {
 		return this.add(Keys.BURNABLE, true);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#HAS_DYNAMIC_SHAPE}.
+	 * Sets the {@link BlockTypeKeys#HAS_DYNAMIC_SHAPE} to true.
 	 */
 	default BlockTypeBuilder dynamicShape() {
 		return this.add(BlockTypeKeys.HAS_DYNAMIC_SHAPE, true);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#HAS_COLLISION}.
+	 * Sets the {@link BlockTypeKeys#HAS_COLLISION} to false.
 	 */
 	default BlockTypeBuilder noCollision() {
 		return this.add(BlockTypeKeys.HAS_COLLISION, false);
 	}
 	
 	/**
-	 * Sets the {@link BlockTypeKeys#HAS_OCCLUSION}.
+	 * Sets the {@link BlockTypeKeys#HAS_OCCLUSION} to false.
 	 */
 	default BlockTypeBuilder noOcclusion() {
 		return this.add(BlockTypeKeys.HAS_OCCLUSION, false);

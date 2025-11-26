@@ -28,7 +28,7 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * 
  * @param <T> The type built by this builder
  * @param <I> The type of the corresponding instance with the custom type
- * @param <A> The type of the corresponding {@link CustomArchetype}
+ * @param <A> The type of the corresponding {@link CustomTypeArchetype}
  * @param <B> The type of this builder
  * 
  * @see ItemTypeBuilder
@@ -38,8 +38,8 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * @see TODO PotionEffectTypeBuilder (no data)
  * @see TODO AttributeTypeBuilder    (no data)
  */
-public interface CustomTypeBuilder<T, I, A extends CustomArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
-		extends Builder<T, B>, CopyableBuilder<T, B>, TypedKeyMap.Operator<B> {
+public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
+		extends Builder<T, B>, TypedKeyMap.Operator<B> {
 	
 	/**
 	 * Sets the archetype of the built type.
@@ -63,6 +63,19 @@ public interface CustomTypeBuilder<T, I, A extends CustomArchetype<T, A>, B exte
 	B reset();
 	
 	/**
+	 * {@link CustomTypeBuilder} for type which instance's logic depends on corresponding type's logic. <br>
+	 * 
+	 */
+	interface TypeBased<T, I, A extends CustomTypeArchetype<T, A>, B extends TypeBased<T, I, A, B>> extends
+			CustomTypeBuilder<T, I, A, B>,
+			CopyableBuilder<T, B> {
+	}
+	
+	interface InstanceBased<T, I, A extends CustomTypeArchetype<T, A>, B extends InstanceBased<T, I, A, B>> extends
+			CustomTypeBuilder<T, I, A, B> {
+	}
+	
+	/**
 	 * {@link CustomTypeBuilder} that supports data (applied through {@link Key}s). <br>
 	 * All the supported data applies to the {@link I instances}. <br>
 	 * <br>
@@ -71,10 +84,10 @@ public interface CustomTypeBuilder<T, I, A extends CustomArchetype<T, A>, B exte
 	 * 
 	 * @param <T> The type built by this builder
 	 * @param <I> The type of the corresponding instance with the custom type
-	 * @param <A> The type of the corresponding {@link CustomArchetype}
+	 * @param <A> The type of the corresponding {@link CustomTypeArchetype}
 	 * @param <B> The type of this builder
 	 */
-	interface WithData<T, I, A extends CustomArchetype<T, A>, B extends WithData<T, I, A, B>> extends
+	interface WithData<T, I, A extends CustomTypeArchetype<T, A>, B extends WithData<T, I, A, B>> extends
 			CustomTypeBuilder<T, I, A, B>,
 			DataOperator<B> {
 	}

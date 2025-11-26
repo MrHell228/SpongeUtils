@@ -23,7 +23,7 @@ public final class ItemArchetypes {
 	 * Supported behaviour: <br>
 	 * - TODO
 	 */
-	public static final DefaultedRegistryReference<ItemArchetype> BLOCK = ItemArchetypes.key("block");
+	public static final DefaultedRegistryReference<ItemTypeArchetype> BLOCK = ItemArchetypes.key("block");
 	
 	/**
 	 * Regular item without any specific behaviour. <br>
@@ -37,7 +37,7 @@ public final class ItemArchetypes {
 	 * Supported behaviour: <br>
 	 * - TODO
 	 */
-	public static final DefaultedRegistryReference<ItemArchetype> DEFAULT = ItemArchetypes.key("item");
+	public static final DefaultedRegistryReference<ItemTypeArchetype> DEFAULT = ItemArchetypes.key("item");
 	
 	/**
 	 * Item that can cast a bobber. <br>
@@ -46,23 +46,23 @@ public final class ItemArchetypes {
 	 * Supported behaviour: <br>
 	 * - TODO
 	 */
-	public static final DefaultedRegistryReference<ItemArchetype> FISHING_ROD = ItemArchetypes.key("fishing_rod");
+	public static final DefaultedRegistryReference<ItemTypeArchetype> FISHING_ROD = ItemArchetypes.key("fishing_rod");
 	
 	/**
 	 * Block item that properly handles {@link BlockArchetypes#SCAFFOLDING scaffolding-like} block placement. <br>
 	 * <br>
 	 * Parent Archetype: {@link #BLOCK}. <br>
 	 */
-	public static final DefaultedRegistryReference<ItemArchetype> SCAFFOLDING = ItemArchetypes.key("scaffolding");
+	public static final DefaultedRegistryReference<ItemTypeArchetype> SCAFFOLDING = ItemArchetypes.key("scaffolding");
 	
 	private ItemArchetypes() {
 	}
 
-    public static Registry<ItemArchetype> registry() {
-    	return ItemArchetype.registry().get();
+    public static Registry<ItemTypeArchetype> registry() {
+    	return ItemTypeArchetype.registry().get();
     }
 
-    private static DefaultedRegistryReference<ItemArchetype> key(final String key) {
-        return RegistryKey.of(ItemArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
+    private static DefaultedRegistryReference<ItemTypeArchetype> key(final String key) {
+        return RegistryKey.of(ItemTypeArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
     }
 }

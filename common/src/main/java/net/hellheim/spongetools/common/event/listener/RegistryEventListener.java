@@ -65,7 +65,7 @@ import net.hellheim.spongetools.custom.behaviour.util.InteractionResult;
 import net.hellheim.spongetools.custom.behaviour.util.SignalBias;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
-import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockArchetypes;
 import net.hellheim.spongetools.custom.type.block.BlockSoundGroupBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
@@ -74,7 +74,7 @@ import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.block.StateProperties;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
-import net.hellheim.spongetools.custom.type.item.ItemArchetype;
+import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
@@ -200,15 +200,15 @@ public final class RegistryEventListener {
 		
 		// Archetypes
 		
-		event.register(BlockArchetype.registry().location(), true, $ -> {
-			final Map<ResourceKey, BlockArchetype> map = new HashMap<>();
+		event.register(BlockTypeArchetype.registry().location(), true, $ -> {
+			final Map<ResourceKey, BlockTypeArchetype> map = new HashMap<>();
 			map.put(BlockArchetypes.DEFAULT.location(), BlockTypeUtil.Archetypes.DEFAULT);
 			map.put(BlockArchetypes.SCAFFOLDING.location(), BlockTypeUtil.Archetypes.SCAFFOLDING);
 			return map;
 		});
 		
-		event.register(ItemArchetype.registry().location(), true, $ -> {
-			final Map<ResourceKey, ItemArchetype> map = new HashMap<>();
+		event.register(ItemTypeArchetype.registry().location(), true, $ -> {
+			final Map<ResourceKey, ItemTypeArchetype> map = new HashMap<>();
 			map.put(ItemArchetypes.BLOCK.location(), ItemTypeUtil.Archetypes.BLOCK);
 			map.put(ItemArchetypes.DEFAULT.location(), ItemTypeUtil.Archetypes.DEFAULT);
 			map.put(ItemArchetypes.FISHING_ROD.location(), ItemTypeUtil.Archetypes.FISHING_ROD);

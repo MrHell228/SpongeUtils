@@ -20,7 +20,7 @@ public final class BlockArchetypes {
 	 * - {@link BlockTypeKeys#DEFAULT_STATE} <br>
 	 * - {@link BlockTypeKeys#STATE_PROPERTIES} <br>
 	 */
-	public static final DefaultedRegistryReference<BlockArchetype> DEFAULT = BlockArchetypes.key("default");
+	public static final DefaultedRegistryReference<BlockTypeArchetype> DEFAULT = BlockArchetypes.key("default");
 	
 	/**
 	 * Block that behaves like {@link BlockTypes#SCAFFOLDING}. <br>
@@ -32,16 +32,16 @@ public final class BlockArchetypes {
 	 * Required Context: <br>
 	 * - {@link BlockTypeKeys#STATE_PROPERTIES}
 	 */
-	public static final DefaultedRegistryReference<BlockArchetype> SCAFFOLDING = BlockArchetypes.key("scaffolding");
+	public static final DefaultedRegistryReference<BlockTypeArchetype> SCAFFOLDING = BlockArchetypes.key("scaffolding");
 	
 	private BlockArchetypes() {
 	}
 	
-	public static Registry<BlockArchetype> registry() {
-    	return BlockArchetype.registry().get();
+	public static Registry<BlockTypeArchetype> registry() {
+    	return BlockTypeArchetype.registry().get();
     }
 
-    private static DefaultedRegistryReference<BlockArchetype> key(final String key) {
-        return RegistryKey.of(BlockArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
+    private static DefaultedRegistryReference<BlockTypeArchetype> key(final String key) {
+        return RegistryKey.of(BlockTypeArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
     }
 }

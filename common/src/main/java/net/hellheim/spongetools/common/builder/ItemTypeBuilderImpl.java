@@ -6,11 +6,11 @@ import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
-import net.hellheim.spongetools.custom.type.item.ItemArchetype;
+import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 
 public final class ItemTypeBuilderImpl
-		extends CustomTypeBuilderImpl.WithData<ItemType, ItemStackLike, ItemArchetype, ItemTypeBuilder>
+		extends CustomTypeBuilderImpl.WithData<ItemType, ItemStackLike, ItemTypeArchetype, ItemTypeBuilder>
 		implements ItemTypeBuilder {
 	
 	public ItemTypeBuilderImpl() {
@@ -18,13 +18,18 @@ public final class ItemTypeBuilderImpl
 	}
 	
 	@Override
-	protected ItemArchetype baseArchetype() {
+	protected ItemTypeArchetype baseArchetype() {
 		return ItemTypeUtil.Archetypes.DEFAULT;
 	}
 	
 	@Override
-	protected DefaultedRegistryType<ItemArchetype> archetypeRegistry() {
-		return ItemArchetype.registry();
+	protected DefaultedRegistryType<ItemTypeArchetype> archetypeRegistry() {
+		return ItemTypeArchetype.registry();
+	}
+	
+	@Override
+	protected ItemTypeArchetype extractArchetype(final ItemType value) {
+		return ItemTypeArchetype.forType(value);
 	}
 	
 	@Override

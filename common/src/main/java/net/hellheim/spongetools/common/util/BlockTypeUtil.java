@@ -24,7 +24,7 @@ import com.google.common.base.Suppliers;
 
 import net.hellheim.spongetools.bridge.BlockPropertiesBridge;
 import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
-import net.hellheim.spongetools.custom.type.block.BlockArchetype;
+import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.mixin.world.level.block.ScaffoldingBlockAccessor;
 import net.hellheim.spongetools.mixin.world.level.block.state.BlockBehaviour_PropertiesAccessor;
@@ -93,20 +93,20 @@ public final class BlockTypeUtil {
 		return properties;
 	}
 	
-	public static <I extends Block> BlockArchetype archetype(
-		final Optional<BlockArchetype> parent,
+	public static <I extends Block> BlockTypeArchetype archetype(
+		final Optional<BlockTypeArchetype> parent,
 		final Class<I> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
 		final BiConsumer<I, TypedKeyMap.Mutable> contextExtractor,
 		final BiFunction<TypedKeyMap, BlockBehaviour.Properties, I> assembler
 	) {
-		return BlockArchetype.of(parent, baseClass, requiredKeys, contextExtractor,
+		return BlockTypeArchetype.of(parent, baseClass, requiredKeys, contextExtractor,
 				(data, context, behaviour) -> assembler.apply(context, properties(NETWORK_BLOCK, data, context, behaviour)));
 	}
 	
 	public static final class Archetypes {
 		
-		public static final BlockArchetype DEFAULT = BlockTypeUtil.archetype(
+		public static final BlockTypeArchetype DEFAULT = BlockTypeUtil.archetype(
 				Optional.empty(),
 				Block.class,
 				Set.of(BlockTypeKeys.TRANSLATION_KEY),
@@ -123,7 +123,7 @@ public final class BlockTypeUtil {
 				},
 				(context, properties) -> new Block(properties));
 		
-		public static final BlockArchetype SCAFFOLDING = BlockTypeUtil.archetype(
+		public static final BlockTypeArchetype SCAFFOLDING = BlockTypeUtil.archetype(
 				Optional.of(Archetypes.DEFAULT),
 				ScaffoldingBlock.class,
 				Set.of(BlockTypeKeys.STATE_PROPERTIES),

@@ -9,8 +9,9 @@ import java.util.stream.Stream;
 import org.spongepowered.api.registry.DefaultedRegistryValue;
 import org.spongepowered.api.registry.Registry;
 
-import net.hellheim.spongetools.custom.type.block.BlockArchetype;
-import net.hellheim.spongetools.custom.type.item.ItemArchetype;
+import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
+import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
+import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 
@@ -19,18 +20,29 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * The archetype can declare required/supported context keys and supported behaviour.
  * 
  * @see CustomTypeBuilder
- * @see ItemArchetype
- * @see BlockArchetype
+ * @see ItemTypeArchetype
+ * @see BlockTypeArchetype
+ * @see EntityTypeArchetype
+ * 
+ * @param <T> The type of the value this archetype represents
+ * @param <A> The type of this archetype
  */
-public interface CustomArchetype<T, A extends CustomArchetype<T, A>> extends DefaultedRegistryValue<A> {
+public interface CustomTypeArchetype<T, A extends CustomTypeArchetype<T, A>> extends DefaultedRegistryValue<A> {
 	
-	static <T, A extends CustomArchetype<T, A>> void validate(
-		final Class<T> rootClass, final Class<?> baseClass, final Optional<A> parent
+	/**
+	 * Validates the archetype's base class against the root class and the archetype's parent archetype.
+	 * 
+	 * @param rootClass The root class of all archetypes' base classes
+	 * @param baseClass The base class to validate
+	 * @param parent The parent archetype
+	 */
+	static void validate(
+		final Class<?> rootClass, final Class<?> baseClass, final Optional<? extends CustomTypeArchetype<?, ?>> parent
 	) {
 		if (!rootClass.isAssignableFrom(Objects.requireNonNull(baseClass, "baseClass"))) {
 			throw new IllegalArgumentException(String.format(
-					"Provided base class must be a subclass of ItemType: %s",
-					baseClass));
+					"Provided base class (%s) must be a subclass of root class (%s)",
+					baseClass, rootClass));
 		}
 		
 		Objects.requireNonNull(parent, "parent").ifPresent(archetype -> {
@@ -43,7 +55,7 @@ public interface CustomArchetype<T, A extends CustomArchetype<T, A>> extends Def
 	}
 	
 	/**
-	 * Returns the most appropriate known {@link CustomArchetype} for the given <code>type</code>.
+	 * Returns the most appropriate known {@link CustomTypeArchetype} for the given <code>type</code>.
 	 * 
 	 * @param <T> The type of values archetype exists for
 	 * @param <A> The type of archetype
@@ -52,7 +64,7 @@ public interface CustomArchetype<T, A extends CustomArchetype<T, A>> extends Def
 	 * @param type The type
 	 * @return The most specific archetype
 	 */
-	static <T, A extends CustomArchetype<T, A>> A forType(
+	static <T, A extends CustomTypeArchetype<T, A>> A forType(
 		final Registry<A> archetypes, final A baseArchetype, final T type
 	) {
 		A archetype = baseArchetype;
@@ -74,22 +86,42 @@ public interface CustomArchetype<T, A extends CustomArchetype<T, A>> extends Def
 	Optional<A> parent();
 	
 	/**
-	 * Returns the base class of t
+	 * Returns the base value class this archetype is based on.
 	 * 
-	 * @return
+	 * @return The base class
 	 */
 	Class<?> baseClass();
 	
+	/**
+	 * Returns the {@link TypedKey}s this archetype requires over all parent archetypes.
+	 * 
+	 * @return The set of {@link TypedKey}s
+	 */
 	Set<TypedKey<?>> requiredKeys();
 	
+	/**
+	 * Returns the extractor of {@link TypedKey}s from {@link T type}.
+	 * 
+	 * @return The {@link TypedKey}s extractor
+	 */
 	BiConsumer<T, TypedKeyMap.Mutable> contextExtractor();
 	
+	/**
+	 * Returns the total {@link #requiredKeys()} of this and all parent archetypes.
+	 * 
+	 * @return The stream of {@link TypedKey}s
+	 */
 	default Stream<TypedKey<?>> cumulativeRequiredKeys() {
 		return this.parent().isEmpty()
 				? this.requiredKeys().stream()
 				: Stream.concat(this.parent().get().cumulativeRequiredKeys(), this.requiredKeys().stream());
 	}
 	
+	/**
+	 * Returns the total {@link #contextExtractor()} of this and all parent archetypes.
+	 * 
+	 * @return The {@link TypedKey}s extractor
+	 */
 	default BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor() {
 		return this.parent().isEmpty()
 				? this.contextExtractor()

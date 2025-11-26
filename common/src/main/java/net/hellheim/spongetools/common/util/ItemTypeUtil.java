@@ -15,7 +15,7 @@ import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.common.item.util.ItemStackUtil;
 
 import net.hellheim.spongetools.bridge.ItemPropertiesBridge;
-import net.hellheim.spongetools.custom.type.item.ItemArchetype;
+import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeKeys;
 import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
@@ -59,19 +59,19 @@ public final class ItemTypeUtil {
 		return properties;
 	}
 	
-	public static <I extends Item> ItemArchetype archetype(
-		final Optional<ItemArchetype> parent,
+	public static <I extends Item> ItemTypeArchetype archetype(
+		final Optional<ItemTypeArchetype> parent,
 		final Class<I> baseClass,
 		final Set<TypedKey<?>> requiredKeys,
 		final BiConsumer<I, TypedKeyMap.Mutable> contextExtractor,
 		final BiFunction<TypedKeyMap, Item.Properties, I> assembler
 	) {
-		return ItemArchetype.of(parent, baseClass, requiredKeys, contextExtractor,
+		return ItemTypeArchetype.of(parent, baseClass, requiredKeys, contextExtractor,
 				(data, context, behaviour) -> assembler.apply(context, properties(NETWORK_ITEM, data, context, behaviour)));
 	}
 	
-	public static <I extends Item> ItemArchetype simpleArchetype(
-		final Optional<ItemArchetype> parent,
+	public static <I extends Item> ItemTypeArchetype simpleArchetype(
+		final Optional<ItemTypeArchetype> parent,
 		final Class<I> baseClass,
 		final Function<Item.Properties, I> assembler
 	) {
@@ -82,7 +82,7 @@ public final class ItemTypeUtil {
 	
 	public static final class Archetypes {
 		
-		public static final ItemArchetype DEFAULT = archetype(
+		public static final ItemTypeArchetype DEFAULT = archetype(
 				Optional.empty(),
 				Item.class,
 				Set.of(ItemTypeKeys.TRANSLATION_KEY),
@@ -96,7 +96,7 @@ public final class ItemTypeUtil {
 				},
 				(context, properties) -> new Item(properties));
 		
-		public static final ItemArchetype BLOCK = archetype(
+		public static final ItemTypeArchetype BLOCK = archetype(
 				Optional.of(DEFAULT),
 				BlockItem.class,
 				Set.of(ItemTypeKeys.BLOCK),
@@ -104,9 +104,9 @@ public final class ItemTypeUtil {
 				(context, properties) -> new BlockItem((Block) context.require(ItemTypeKeys.BLOCK), properties)
 				);
 		
-		public static final ItemArchetype FISHING_ROD = simpleArchetype(Optional.of(DEFAULT), FishingRodItem.class, FishingRodItem::new);
+		public static final ItemTypeArchetype FISHING_ROD = simpleArchetype(Optional.of(DEFAULT), FishingRodItem.class, FishingRodItem::new);
 		
-		public static final ItemArchetype SCAFFOLDING = archetype(
+		public static final ItemTypeArchetype SCAFFOLDING = archetype(
 				Optional.of(BLOCK),
 				ScaffoldingBlockItem.class,
 				Set.of(),
