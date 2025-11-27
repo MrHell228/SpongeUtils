@@ -9,7 +9,7 @@ import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 
 public final class BlockTypeBuilderImpl
-		extends CustomTypeBuilderImpl.WithData<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder>
+		extends CustomTypeBuilderImpl.TypeBasedWithData<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder>
 		implements BlockTypeBuilder {
 	
 	public BlockTypeBuilderImpl() {

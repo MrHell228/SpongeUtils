@@ -26,8 +26,9 @@ import net.hellheim.spongetools.util.TranslationUtil;
 /**
  * {@link CustomTypeBuilder} for {@link BlockType}.
  */
-public interface BlockTypeBuilder
-		extends CustomTypeBuilder.WithData<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder> {
+public interface BlockTypeBuilder extends
+		CustomTypeBuilder.TypeBased<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder>,
+		CustomTypeBuilder.WithData<BlockType, BlockState, BlockTypeArchetype, BlockTypeBuilder> {
 	
 	/**
 	 * Creates the new {@link BlockTypeBuilder}.

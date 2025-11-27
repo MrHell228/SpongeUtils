@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
@@ -18,8 +19,7 @@ import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 
 /**
- * @see CustomTypeArchetype
- * @see ItemTypeBuilder
+ * {@link CustomTypeArchetype} of {@link ItemType} used for {@link ItemTypeBuilder}.
  */
 @CatalogedBy(ItemArchetypes.class)
 public record ItemTypeArchetype(
@@ -28,7 +28,7 @@ public record ItemTypeArchetype(
 		Set<TypedKey<?>> requiredKeys,
 		BiConsumer<ItemType, TypedKeyMap.Mutable> contextExtractor,
 		TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<ItemType>, ItemType> assembler
-		) implements CustomTypeArchetype<ItemType, ItemTypeArchetype> {
+		) implements CustomTypeArchetype.TypeBased<ItemType, ItemStack, ItemTypeArchetype> {
 	
 	public ItemTypeArchetype(
 		final Optional<ItemTypeArchetype> parent,
@@ -46,7 +46,7 @@ public record ItemTypeArchetype(
 	}
 	
 	public static DefaultedRegistryType<ItemTypeArchetype> registry() {
-		return SpongeTools.Registries.ITEM_ARCHETYPE;
+		return SpongeTools.Registries.ITEM_TYPE_ARCHETYPE;
 	}
 	
 	/**

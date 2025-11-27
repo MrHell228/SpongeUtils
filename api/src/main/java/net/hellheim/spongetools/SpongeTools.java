@@ -34,9 +34,9 @@ public final class SpongeTools {
 	
 	public static final class Registries {
 		
-		public static final DefaultedRegistryType<BlockTypeArchetype> BLOCK_ARCHETYPE = Registries.key("block_type_archetype");
+		public static final DefaultedRegistryType<BlockTypeArchetype> BLOCK_TYPE_ARCHETYPE = Registries.key("block_type_archetype");
 		
-		public static final DefaultedRegistryType<ItemTypeArchetype> ITEM_ARCHETYPE = Registries.key("item_type_archetype");
+		public static final DefaultedRegistryType<ItemTypeArchetype> ITEM_TYPE_ARCHETYPE = Registries.key("item_type_archetype");
 		
 		public static final DefaultedRegistryType<ModeledBlock> MODELED_BLOCK = Registries.key("modeled_block");
 		

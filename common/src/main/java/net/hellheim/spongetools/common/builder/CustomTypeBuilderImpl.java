@@ -13,8 +13,8 @@ import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 import net.hellheim.spongetools.object.ValueSetBuilder;
 
-public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
-		implements CustomTypeBuilder<T, I, A ,B>, TypedKeyMap.Operator.MutableProxy<B> {
+public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<T, I, A>, B extends CustomTypeBuilder<T, I, A, B>>
+		implements CustomTypeBuilder<T, I, A, B>, TypedKeyMap.Operator.MutableProxy<B> {
 	
 	protected A archetype = this.baseArchetype();
 	protected final TypedKeyMap.Impl.Mutable context = TypedKeyMap.create();
@@ -32,19 +32,6 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<
 	@Override
 	public B archetype(final A archetype) {
 		this.archetype = Objects.requireNonNull(archetype, "archetype");
-		return this.cast();
-	}
-	
-	@Override
-	public B from(final T value) {
-		Objects.requireNonNull(value, "value");
-		this.reset();
-		
-		this.archetype = this.extractArchetype(value);
-		this.archetype.cumulativeContextExtractor().accept(value, this.context);
-		
-		// TODO extract behaviour
-		
 		return this.cast();
 	}
 	
@@ -77,11 +64,9 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<
 	
 	protected abstract DefaultedRegistryType<A> archetypeRegistry();
 	
-	protected abstract A extractArchetype(T value);
-	
 	protected abstract T build0();
 	
-	public static abstract class WithData<T, I, A extends CustomTypeArchetype<T, A>, B extends CustomTypeBuilder.WithData<T, I, A, B>>
+	public static abstract class WithDataImpl<T, I, A extends CustomTypeArchetype<T, I, A>, B extends WithData<T, I, A, B>>
 			extends CustomTypeBuilderImpl<T, I, A, B>
 			implements CustomTypeBuilder.WithData<T, I, A, B>, DataOperator.Proxy<B> {
 		
@@ -93,17 +78,32 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<
 		}
 		
 		@Override
-		public B from(final T value) {
-			super.from(value);
-			this.extractData(value);
-			return this.cast();
-		}
-		
-		@Override
 		public B reset() {
 			this.data.reset();
 			return super.reset();
 		}
+	}
+	
+	public static abstract class TypeBasedWithData<T, I, A extends CustomTypeArchetype.TypeBased<T, I, A>, B extends TypeBased<T, I, A, B> & WithData<T, I, A, B>>
+			extends WithDataImpl<T, I, A, B>
+			implements CustomTypeBuilder.TypeBased<T, I, A, B> {
+		
+		@Override
+		public B from(final T value) {
+			Objects.requireNonNull(value, "value");
+			this.reset();
+			
+			this.archetype = this.extractArchetype(value);
+			this.archetype.cumulativeContextExtractor().accept(value, this.context);
+			
+			this.extractData(value);
+			
+			// TODO extract behaviour
+			
+			return this.cast();
+		}
+		
+		protected abstract A extractArchetype(T value);
 		
 		protected abstract void extractData(T value);
 	}

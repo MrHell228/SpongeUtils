@@ -38,10 +38,10 @@ public final class BlockArchetypes {
 	}
 	
 	public static Registry<BlockTypeArchetype> registry() {
-    	return BlockTypeArchetype.registry().get();
-    }
-
-    private static DefaultedRegistryReference<BlockTypeArchetype> key(final String key) {
-        return RegistryKey.of(BlockTypeArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
-    }
+		return BlockTypeArchetype.registry().get();
+	}
+	
+	private static DefaultedRegistryReference<BlockTypeArchetype> key(final String key) {
+		return RegistryKey.of(BlockTypeArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
+	}
 }

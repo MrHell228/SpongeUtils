@@ -57,12 +57,12 @@ public final class ItemArchetypes {
 	
 	private ItemArchetypes() {
 	}
-
-    public static Registry<ItemTypeArchetype> registry() {
-    	return ItemTypeArchetype.registry().get();
-    }
-
-    private static DefaultedRegistryReference<ItemTypeArchetype> key(final String key) {
-        return RegistryKey.of(ItemTypeArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
-    }
+	
+	public static Registry<ItemTypeArchetype> registry() {
+		return ItemTypeArchetype.registry().get();
+	}
+	
+	private static DefaultedRegistryReference<ItemTypeArchetype> key(final String key) {
+		return RegistryKey.of(ItemTypeArchetype.registry(), SpongeTools.key(key)).asDefaultedReference(Sponge::game);
+	}
 }

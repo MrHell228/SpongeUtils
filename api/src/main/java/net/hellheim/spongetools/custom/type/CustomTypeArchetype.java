@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.registry.DefaultedRegistryValue;
 import org.spongepowered.api.registry.Registry;
 
@@ -16,18 +17,18 @@ import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 
 /**
- * Represents the core of the custom type. <br>
+ * Represents the core of the custom type used for {@link CustomTypeBuilder}. <br>
  * The archetype can declare required/supported context keys and supported behaviour.
  * 
- * @see CustomTypeBuilder
  * @see ItemTypeArchetype
  * @see BlockTypeArchetype
  * @see EntityTypeArchetype
  * 
- * @param <T> The type of the value this archetype represents
- * @param <A> The type of this archetype
+ * @param <T> The type of the value this archetype is used to build for
+ * @param <I> The type of the corresponding instance with the custom {@link T type}
+ * @param <A> The child archetype type
  */
-public interface CustomTypeArchetype<T, A extends CustomTypeArchetype<T, A>> extends DefaultedRegistryValue<A> {
+public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A>> extends DefaultedRegistryValue<A> {
 	
 	/**
 	 * Validates the archetype's base class against the root class and the archetype's parent archetype.
@@ -37,7 +38,8 @@ public interface CustomTypeArchetype<T, A extends CustomTypeArchetype<T, A>> ext
 	 * @param parent The parent archetype
 	 */
 	static void validate(
-		final Class<?> rootClass, final Class<?> baseClass, final Optional<? extends CustomTypeArchetype<?, ?>> parent
+		final Class<?> rootClass, final Class<?> baseClass,
+		final Optional<? extends CustomTypeArchetype<?, ?, ?>> parent
 	) {
 		if (!rootClass.isAssignableFrom(Objects.requireNonNull(baseClass, "baseClass"))) {
 			throw new IllegalArgumentException(String.format(
@@ -64,12 +66,35 @@ public interface CustomTypeArchetype<T, A extends CustomTypeArchetype<T, A>> ext
 	 * @param type The type
 	 * @return The most specific archetype
 	 */
-	static <T, A extends CustomTypeArchetype<T, A>> A forType(
+	static <T, A extends CustomTypeArchetype.TypeBased<T, ?, A>> A forType(
 		final Registry<A> archetypes, final A baseArchetype, final T type
 	) {
 		A archetype = baseArchetype;
 		for (final A arch : archetypes.stream().toList()) {
 			if (arch.baseClass().isInstance(type)
+					&& archetype.baseClass().isAssignableFrom(arch.baseClass())) {
+				archetype = arch;
+			}
+		}
+		return archetype;
+	}
+	
+	/**
+	 * Returns the most appropriate known {@link CustomTypeArchetype} for the given <code>type</code>.
+	 * 
+	 * @param <I> The type of value instances archetype exists for
+	 * @param <A> The type of archetype
+	 * @param archetypes The known archetypes
+	 * @param baseArchetype The base archetype
+	 * @param type The type
+	 * @return The most specific archetype
+	 */
+	static <I, A extends CustomTypeArchetype.TypeBased<?, I, A>> A forInstance(
+		final Registry<A> archetypes, final A baseArchetype, final I instance
+	) {
+		A archetype = baseArchetype;
+		for (final A arch : archetypes.stream().toList()) {
+			if (arch.baseClass().isInstance(instance)
 					&& archetype.baseClass().isAssignableFrom(arch.baseClass())) {
 				archetype = arch;
 			}
@@ -93,38 +118,99 @@ public interface CustomTypeArchetype<T, A extends CustomTypeArchetype<T, A>> ext
 	Class<?> baseClass();
 	
 	/**
-	 * Returns the {@link TypedKey}s this archetype requires over all parent archetypes.
-	 * 
-	 * @return The set of {@link TypedKey}s
-	 */
-	Set<TypedKey<?>> requiredKeys();
-	
-	/**
-	 * Returns the extractor of {@link TypedKey}s from {@link T type}.
-	 * 
-	 * @return The {@link TypedKey}s extractor
-	 */
-	BiConsumer<T, TypedKeyMap.Mutable> contextExtractor();
-	
-	/**
 	 * Returns the total {@link #requiredKeys()} of this and all parent archetypes.
 	 * 
 	 * @return The stream of {@link TypedKey}s
 	 */
-	default Stream<TypedKey<?>> cumulativeRequiredKeys() {
-		return this.parent().isEmpty()
-				? this.requiredKeys().stream()
-				: Stream.concat(this.parent().get().cumulativeRequiredKeys(), this.requiredKeys().stream());
-	}
+	Stream<TypedKey<?>> cumulativeRequiredKeys();
 	
 	/**
 	 * Returns the total {@link #contextExtractor()} of this and all parent archetypes.
 	 * 
 	 * @return The {@link TypedKey}s extractor
 	 */
-	default BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor() {
-		return this.parent().isEmpty()
-				? this.contextExtractor()
-				: this.parent().get().cumulativeContextExtractor().andThen(this.contextExtractor());
+	BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor();
+	
+	/**
+	 * {@link CustomTypeArchetype} of type which {@link I instance}
+	 * logic does not depend on corresponding {@link T type} logic. <br>
+	 * 
+	 * Usually this means that {@link I instance}s are represented by multiple
+	 * classes while {@link T type}s are represented by single class. <br>
+	 * This results in {@link #baseClass()} representing some subclass of {@link T type}.
+	 * 
+	 * @param <T> The type of the value this archetype is used to build for
+	 * @param <I> The type of the corresponding instance with the custom {@link T type}
+	 * @param <A> The child archetype type
+	 */
+	interface TypeBased<T, I, A extends TypeBased<T, I, A>> extends CustomTypeArchetype<T, I, A> {
+		
+		/**
+		 * Returns the {@link TypedKey}s this archetype requires over all parent archetypes.
+		 * 
+		 * @return The set of {@link TypedKey}s
+		 */
+		Set<TypedKey<?>> requiredKeys();
+		
+		/**
+		 * Returns the extractor of {@link TypedKey}s from {@link T type}.
+		 * 
+		 * @return The {@link TypedKey}s extractor
+		 */
+		BiConsumer<T, TypedKeyMap.Mutable> contextExtractor();
+		
+		@Override
+		default BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor() {
+			return this.parent().isEmpty()
+					? this.contextExtractor()
+					: this.parent().get().cumulativeContextExtractor().andThen(this.contextExtractor());
+		}
+		
+		@Override
+		default Stream<TypedKey<?>> cumulativeRequiredKeys() {
+			return this.parent().isEmpty()
+					? this.requiredKeys().stream()
+					: Stream.concat(this.parent().get().cumulativeRequiredKeys(), this.requiredKeys().stream());
+		}
+	}
+	
+	/**
+	 * {@link CustomTypeArchetype} for type which {@link I instance}
+	 * logic does not depend on corresponding {@link T type} logic. <br>
+	 * 
+	 * Usually this means that {@link I instance}s are represented by multiple
+	 * classes while {@link T type}s are represented by single class.
+	 * This results in {@link #baseClass()} representing some subclass of {@link I instance}.
+	 * 
+	 * @param <T> The type of the value this archetype is used to build for
+	 * @param <I> The type of the corresponding instance with the custom {@link T type}
+	 * @param <A> The child archetype type
+	 */
+	interface InstanceBased<T, I, A extends InstanceBased<T, I, A>> extends CustomTypeArchetype<T, I, A> {
+		
+		/**
+		 * Returns the corresponding {@link CustomTypeArchetype.InstanceBased.Factory}
+		 * that provides all the required context data.
+		 * 
+		 * @return The factory class
+		 */
+		Class<? extends Factory<T>> contextFactory();
+		
+		@Override
+		default Stream<TypedKey<?>> cumulativeRequiredKeys() {
+			return Sponge.game().factoryProvider().provide(this.contextFactory()).cumulativeRequiredKeys();
+		}
+		
+		@Override
+		default BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor() {
+			return Sponge.game().factoryProvider().provide(this.contextFactory()).cumulativeContextExtractor();
+		}
+		
+		interface Factory<T> {
+			
+			Stream<TypedKey<?>> cumulativeRequiredKeys();
+			
+			BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor();
+		}
 	}
 }

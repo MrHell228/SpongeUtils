@@ -11,6 +11,7 @@ import org.spongepowered.api.util.CopyableBuilder;
 
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
+import net.hellheim.spongetools.custom.type.entity.EntityTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.object.DataOperator;
 import net.hellheim.spongetools.object.TypedKey;
@@ -27,18 +28,18 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * {@link #dependencies(RegistryType...)} methods of the specific builder classes.
  * 
  * @param <T> The type built by this builder
- * @param <I> The type of the corresponding instance with the custom type
+ * @param <I> The type of the corresponding instance with the custom {@link T type}
  * @param <A> The type of the corresponding {@link CustomTypeArchetype}
- * @param <B> The type of this builder
+ * @param <B> The child builder type
  * 
  * @see ItemTypeBuilder
  * @see BlockTypeBuilder
  * @see TODO BlockEntityTypeBuilder
- * @see TODO EntityTypeBuilder
+ * @see EntityTypeBuilder
  * @see TODO PotionEffectTypeBuilder (no data)
  * @see TODO AttributeTypeBuilder    (no data)
  */
-public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, A>, B extends CustomTypeBuilder<T, I, A, B>>
+public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, I, A>, B extends CustomTypeBuilder<T, I, A, B>>
 		extends Builder<T, B>, TypedKeyMap.Operator<B> {
 	
 	/**
@@ -63,15 +64,27 @@ public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, A>, B 
 	B reset();
 	
 	/**
-	 * {@link CustomTypeBuilder} for type which instance's logic depends on corresponding type's logic. <br>
+	 * {@link CustomTypeBuilder} for {@link CustomTypeArchetype.TypeBased}.
 	 * 
+	 * @param <T> The type built by this builder
+	 * @param <I> The type of the corresponding instance with the custom {@link T type}
+	 * @param <A> The type of the corresponding {@link CustomTypeArchetype}
+	 * @param <B> The child builder type
 	 */
-	interface TypeBased<T, I, A extends CustomTypeArchetype<T, A>, B extends TypeBased<T, I, A, B>> extends
+	interface TypeBased<T, I, A extends CustomTypeArchetype.TypeBased<T, I, A>, B extends TypeBased<T, I, A, B>> extends
 			CustomTypeBuilder<T, I, A, B>,
 			CopyableBuilder<T, B> {
 	}
 	
-	interface InstanceBased<T, I, A extends CustomTypeArchetype<T, A>, B extends InstanceBased<T, I, A, B>> extends
+	/**
+	 * {@link CustomTypeBuilder} for {@link CustomTypeArchetype.InstanceBased}.
+	 * 
+	 * @param <T> The type built by this builder
+	 * @param <I> The type of the corresponding instance with the custom {@link T type}
+	 * @param <A> The type of the corresponding {@link CustomTypeArchetype}
+	 * @param <B> The child builder type
+	 */
+	interface InstanceBased<T, I, A extends CustomTypeArchetype.InstanceBased<T, I, A>, B extends InstanceBased<T, I, A, B>> extends
 			CustomTypeBuilder<T, I, A, B> {
 	}
 	
@@ -83,11 +96,11 @@ public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, A>, B 
 	 * It should not be an issue as most of mentioned data is usually applied per mutable {@link I instance}.
 	 * 
 	 * @param <T> The type built by this builder
-	 * @param <I> The type of the corresponding instance with the custom type
+	 * @param <I> The type of the corresponding instance with the custom {@link T type}
 	 * @param <A> The type of the corresponding {@link CustomTypeArchetype}
-	 * @param <B> The type of this builder
+	 * @param <B> The child builder type
 	 */
-	interface WithData<T, I, A extends CustomTypeArchetype<T, A>, B extends WithData<T, I, A, B>> extends
+	interface WithData<T, I, A extends CustomTypeArchetype<T, I, A>, B extends WithData<T, I, A, B>> extends
 			CustomTypeBuilder<T, I, A, B>,
 			DataOperator<B> {
 	}

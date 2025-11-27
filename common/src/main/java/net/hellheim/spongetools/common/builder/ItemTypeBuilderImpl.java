@@ -2,7 +2,6 @@ package net.hellheim.spongetools.common.builder;
 
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackLike;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
@@ -10,7 +9,7 @@ import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 
 public final class ItemTypeBuilderImpl
-		extends CustomTypeBuilderImpl.WithData<ItemType, ItemStackLike, ItemTypeArchetype, ItemTypeBuilder>
+		extends CustomTypeBuilderImpl.TypeBasedWithData<ItemType, ItemStack, ItemTypeArchetype, ItemTypeBuilder>
 		implements ItemTypeBuilder {
 	
 	public ItemTypeBuilderImpl() {

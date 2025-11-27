@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.registry.DefaultedRegistryType;
@@ -18,8 +19,7 @@ import net.hellheim.spongetools.object.TypedKey;
 import net.hellheim.spongetools.object.TypedKeyMap;
 
 /**
- * @see CustomTypeArchetype
- * @see BlockTypeBuilder
+ * {@link CustomTypeArchetype} of {@link BlockType} used for {@link BlockTypeBuilder}.
  */
 @CatalogedBy(BlockArchetypes.class)
 public record BlockTypeArchetype(
@@ -28,7 +28,7 @@ public record BlockTypeArchetype(
 		Set<TypedKey<?>> requiredKeys,
 		BiConsumer<BlockType, TypedKeyMap.Mutable> contextExtractor,
 		TriFunction<ValueContainer, TypedKeyMap, BehaviourCallbackHolder<BlockType>, BlockType> assembler
-		) implements CustomTypeArchetype<BlockType, BlockTypeArchetype> {
+		) implements CustomTypeArchetype.TypeBased<BlockType, BlockState, BlockTypeArchetype> {
 	
 	public BlockTypeArchetype(
 		final Optional<BlockTypeArchetype> parent,
@@ -46,7 +46,7 @@ public record BlockTypeArchetype(
 	}
 	
 	public static DefaultedRegistryType<BlockTypeArchetype> registry() {
-		return SpongeTools.Registries.BLOCK_ARCHETYPE;
+		return SpongeTools.Registries.BLOCK_TYPE_ARCHETYPE;
 	}
 	
 	/**
