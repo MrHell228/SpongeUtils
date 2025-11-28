@@ -20,7 +20,4 @@ public interface BehaviourHolderProxy extends BehaviourHolder {
 	default <B extends Behaviour<?, ?>> B require(final BehaviourType<B> type) {
 		return this.getAsBehaviourHolder().require(type);
 	}
-	
-	interface Mutable<H, M extends Mutable<H, M>> extends BehaviourHolder.Mutable<H, M>, BehaviourHolderProxy {
-	}
 }

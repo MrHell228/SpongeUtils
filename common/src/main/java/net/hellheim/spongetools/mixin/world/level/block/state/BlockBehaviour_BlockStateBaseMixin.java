@@ -62,12 +62,12 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
         BlockStateExtension,
         BehaviourCallbackHolderProxy<BlockStateExtension> {
 
-    private static final @Unique BehaviourCallbackHolderLogic<BlockStateExtension> SPONGETOOLS$EMPTY_HOLDER = BehaviourCallbackHolderLogic.immutable();
+    @Unique private static final BehaviourCallbackHolderLogic<BlockStateExtension> SPONGETOOLS$EMPTY_HOLDER = BehaviourCallbackHolderLogic.immutable();
 
     @Shadow protected abstract BlockState shadow$asState();
 
-    private @Unique @MonotonicNonNull BehaviourCallbackHolderLogic<BlockStateExtension> spongetools$callbacks;
-    private @Nullable BlockState spongetools$networkState;
+    @Unique private @MonotonicNonNull BehaviourCallbackHolderLogic<BlockStateExtension> spongetools$callbacks;
+    @Unique private @Nullable BlockState spongetools$networkState;
 
     @Override
     public org.spongepowered.api.block.BlockState state() {

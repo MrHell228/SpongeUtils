@@ -1,40 +1,15 @@
 package net.hellheim.spongetools.custom.behaviour;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
- * Represents something that can have {@link Behaviour}s.
+ * {@link BehaviourGroup} that consists of other {@link BehaviourGroup}s.
  */
-public interface BehaviourHolder {
+public interface BehaviourHolder extends BehaviourGroup {
 	
-	/**
-	 * Returns whether the given type is registered for this {@link BehaviourHolder}.
-	 * 
-	 * @param type The type of the behaviour
-	 * @return True if this holder supports the given type
-	 */
-	boolean supports(BehaviourType<?> type);
+	boolean supports(BehaviourGroupType<?> type);
 	
-	/**
-	 * Returns the actual behaviour this {@link BehaviourHolder} will use, if present.
-	 * If no behaviour callbacks are registered, this would be the "vanilla" behaviour.
-	 * 
-	 * @param type The type of the behaviour
-	 * @return The behaviour, if present
-	 */
-	<B extends Behaviour<?, ?>> Optional<B> get(BehaviourType<B> type);
+	<G extends BehaviourGroup> Optional<G> get(BehaviourGroupType<G> type);
 	
-	/**
-	 * Returns the actual behaviour this {@link BehaviourHolder} will use.
-	 * If no custom behaviour is registered, this would be the "vanilla" behaviour.
-	 * 
-	 * @param type The type of the behaviour
-	 * @return The behaviour
-	 * @throws NoSuchElementException if the behaviour is not present on this {@link BehaviourHolder}
-	 */
-	<B extends Behaviour<?, ?>> B require(final BehaviourType<B> type);
-	
-	interface Mutable<H, M extends Mutable<H, M>> extends BehaviourHolder, BehaviourCallbackHolder.Mutable<H, M> {
-	}
+	<G extends BehaviourGroup> G require(BehaviourGroupType<G> type);
 }
