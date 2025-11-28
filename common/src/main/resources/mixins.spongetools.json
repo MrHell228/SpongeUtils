@@ -18,6 +18,7 @@
     "world.InteractionResultMixin",
     "world.effect.MobEffectMixin",
     "world.entity.EntityMixin",
+    "world.entity.EntityType_BuilderAccessor",
     "world.item.BlockItemMixin",
     "world.item.BucketItemMixin",
     "world.item.Item_PropertiesMixin",

@@ -35,7 +35,7 @@ public final class ItemTypeUtil {
 	
 	public static DataComponentPatch componentPatch(final ItemType baseType, final ValueContainer data) {
 		final ItemStack stack = ItemStack.of(baseType);
-		data.getValues().forEach(stack::offer);
+		stack.copyFrom(data);
 		return ItemStackUtil.toNative(stack).getComponentsPatch();
 	}
 	

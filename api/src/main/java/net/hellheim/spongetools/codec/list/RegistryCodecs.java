@@ -25,7 +25,6 @@ import org.spongepowered.api.data.type.AxolotlVariant;
 import org.spongepowered.api.data.type.BambooLeavesType;
 import org.spongepowered.api.data.type.BannerPatternShape;
 import org.spongepowered.api.data.type.BellAttachmentType;
-import org.spongepowered.api.data.type.BoatType;
 import org.spongepowered.api.data.type.BodyPart;
 import org.spongepowered.api.data.type.CatType;
 import org.spongepowered.api.data.type.ChestAttachmentType;
@@ -315,8 +314,6 @@ public final class RegistryCodecs {
 	public static final Codec<BellAttachmentType> BELL_ATTACHMENT_TYPE = RegistryCodecs.register(BellAttachmentType.class, RegistryTypes.BELL_ATTACHMENT_TYPE);
 	
 	public static final Codec<BillboardType> BILLBOARD_TYPE = RegistryCodecs.register(BillboardType.class, RegistryTypes.BILLBOARD_TYPE);
-	
-	public static final Codec<BoatType> BOAT_TYPE = RegistryCodecs.register(BoatType.class, RegistryTypes.BOAT_TYPE);
 	
 	public static final Codec<BodyPart> BODY_PART = RegistryCodecs.register(BodyPart.class, RegistryTypes.BODY_PART);
 	

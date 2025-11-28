@@ -15,6 +15,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
+import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
@@ -35,6 +36,8 @@ public final class SpongeTools {
 	public static final class Registries {
 		
 		public static final DefaultedRegistryType<BlockTypeArchetype> BLOCK_TYPE_ARCHETYPE = Registries.key("block_type_archetype");
+		
+		public static final DefaultedRegistryType<EntityTypeArchetype> ENTITY_TYPE_ARCHETYPE = Registries.key("entity_type_archetype");
 		
 		public static final DefaultedRegistryType<ItemTypeArchetype> ITEM_TYPE_ARCHETYPE = Registries.key("item_type_archetype");
 		
