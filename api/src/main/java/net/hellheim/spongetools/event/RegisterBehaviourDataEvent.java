@@ -1,15 +1,26 @@
 package net.hellheim.spongetools.event;
 
+import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.event.lifecycle.LifecycleEvent;
 
-import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
-import net.hellheim.spongetools.custom.behaviour.BehaviourManager.BehaviourRegistration;
+import net.hellheim.spongetools.custom.behaviour.Behaviour;
+import net.hellheim.spongetools.custom.behaviour.BehaviourGroup;
+import net.hellheim.spongetools.custom.behaviour.BehaviourType;
 
 public interface RegisterBehaviourDataEvent extends LifecycleEvent {
 	
-	BehaviourManager manager();
+	<H> BehaviourRegistration<H> group(BehaviourGroup<H> group);
 	
-	default <H> BehaviourRegistration<H> behaviour(final Class<H> holder) {
-		return this.manager().behaviour(holder);
+	interface BehaviourRegistration<H> {
+		
+		/**
+		 * Registers behaviour provider
+		 */
+		<B extends Behaviour<?, ?>> BehaviourRegistration<H> register(
+			BehaviourType<B> type,
+			Function<H, @Nullable B> behaviourProvider
+		);
 	}
 }

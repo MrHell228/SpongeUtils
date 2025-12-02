@@ -1,37 +1,39 @@
 package net.hellheim.spongetools.custom.behaviour;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.function.Function;
 
-/**
- * Represents something that can have {@link Behaviour}s.
- */
-public interface BehaviourGroup {
+import org.spongepowered.api.ResourceKey;
+import org.spongepowered.api.ResourceKeyed;
+
+public interface BehaviourGroup<H> {
 	
-	/**
-	 * Returns whether the given type is registered for this {@link BehaviourGroup}.
-	 * 
-	 * @param type The behaviour type
-	 * @return True if this holder supports the given type
-	 */
-	boolean supports(BehaviourType<?> type);
+	static <I, T> Simple<I, T> of(
+		final ResourceKey key,
+		final Class<? extends T> baseClass,
+		final Function<I, T> behaviourBaseExtractor
+	) {
+		return new Simple<>(key, baseClass, behaviourBaseExtractor);
+	}
 	
-	/**
-	 * Returns the actual behaviour this {@link BehaviourGroup} will use, if present.
-	 * If no behaviour callbacks are registered, this would be the "vanilla" behaviour.
-	 * 
-	 * @param type The behaviour type
-	 * @return The behaviour, if present
-	 */
-	<B extends Behaviour<?, ?>> Optional<B> get(BehaviourType<B> type);
+	Class<H> behaviourHolderClass();
 	
-	/**
-	 * Returns the actual behaviour this {@link BehaviourGroup} will use.
-	 * If no custom behaviour is registered, this would be the "vanilla" behaviour.
-	 * 
-	 * @param type The behaviour type
-	 * @return The behaviour
-	 * @throws NoSuchElementException if the behaviour is not present on this {@link BehaviourGroup}
-	 */
-	<B extends Behaviour<?, ?>> B require(BehaviourType<B> type);
+	Class<?> behaviourBaseClass();
+	
+	Object extractBehaviourBase(H holder);
+	
+	record Simple<I, T>(ResourceKey key, Class<T> baseClass, Function<I, T> behaviourBaseExtractor)
+			implements BehaviourGroup<I>, ResourceKeyed {
+		
+		public Simple(final ResourceKey key, final Class<? extends T> baseClass, final Function<I, T> behaviourBaseExtractor) {
+			this.key = Objects.requireNonNull(key, "key");
+			this.baseClass = Objects.requireNonNull(baseClass, "baseClass");
+			this.behaviourBaseExtractor = Objects.requireNonNull(behaviourBaseExtractor, "behaviourBaseExtractor");
+		}
+		
+		@Override
+		public Object extractBehaviourBase(final I holder) {
+			return this.behaviourBaseExtractor.apply(holder);
+		}
+	}
 }

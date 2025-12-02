@@ -10,6 +10,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.registry.DefaultedRegistryValue;
 import org.spongepowered.api.registry.Registry;
 
+import net.hellheim.spongetools.custom.behaviour.BehaviourGroup;
+import net.hellheim.spongetools.custom.behaviour.BehaviourLayer;
 import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
@@ -28,7 +30,8 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * @param <I> The type of the corresponding instance with the custom {@link T type}
  * @param <A> The child archetype type
  */
-public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A>> extends DefaultedRegistryValue<A> {
+public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A>>
+		extends DefaultedRegistryValue<A>, BehaviourLayer, BehaviourGroup<I> {
 	
 	/**
 	 * Validates the archetype's base class against the root class and the archetype's parent archetype.
@@ -131,6 +134,11 @@ public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A
 	 */
 	BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor();
 	
+	@Override
+	default Class<?> behaviourBaseClass() {
+		return this.baseClass();
+	}
+	
 	/**
 	 * {@link CustomTypeArchetype} of type which {@link I instance}
 	 * logic does not depend on corresponding {@link T type} logic. <br>
@@ -159,6 +167,8 @@ public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A
 		 */
 		BiConsumer<T, TypedKeyMap.Mutable> contextExtractor();
 		
+		T extractType(I instance);
+		
 		@Override
 		default BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor() {
 			return this.parent().isEmpty()
@@ -171,6 +181,11 @@ public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A
 			return this.parent().isEmpty()
 					? this.requiredKeys().stream()
 					: Stream.concat(this.parent().get().cumulativeRequiredKeys(), this.requiredKeys().stream());
+		}
+		
+		@Override
+		default Object extractBehaviourBase(I holder) {
+			return this.extractType(holder);
 		}
 	}
 	
@@ -204,6 +219,11 @@ public interface CustomTypeArchetype<T, I, A extends CustomTypeArchetype<T, I, A
 		@Override
 		default BiConsumer<T, TypedKeyMap.Mutable> cumulativeContextExtractor() {
 			return Sponge.game().factoryProvider().provide(this.contextFactory()).cumulativeContextExtractor();
+		}
+		
+		@Override
+		default Object extractBehaviourBase(final I holder) {
+			return holder;
 		}
 		
 		interface Factory<T> {

@@ -6,6 +6,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
 
 import net.hellheim.spongetools.bridge.BlockStateBaseBridge;
+import net.hellheim.spongetools.common.behaviour.BehaviourManagerImpl;
 import net.hellheim.spongetools.common.event.RegisterBehaviourDataEventImpl;
 import net.hellheim.spongetools.common.event.RegisterBlockStateBehaviourEventImpl;
 import net.hellheim.spongetools.common.util.BucketUtil;
@@ -22,7 +23,7 @@ public final class BehaviourEventListener {
 	
 	@Listener
 	public void fireBehaviourEvents(final StartingEngineEvent<Server> e) {
-		final var manager = BehaviourManager.get();
+		final var manager = (BehaviourManagerImpl) BehaviourManager.get();
 		Sponge.eventManager().post(new RegisterBehaviourDataEventImpl(e.cause(), e.game(), manager));
 		
 		final var event = new RegisterBlockStateBehaviourEventImpl(e.cause(), e.game(), manager);
@@ -41,7 +42,7 @@ public final class BehaviourEventListener {
 	}
 	
 	private void blockStateData(final RegisterBehaviourDataEvent event) {
-		event.behaviour(BlockState.class)
+		event.group(BlockState.class)
 				.register(BlockStateBehaviours.SPAWN_VALIDATOR,
 						(state) -> (volume, position, entity) -> state.isValidSpawn(
 								Converter.asVanilla(volume),
@@ -218,7 +219,7 @@ public final class BehaviourEventListener {
 	}
 	
 	private void blockTypeData(final RegisterBehaviourDataEvent event) {
-		event.behaviour(Block.class).callbacks(BlockState.class)
+		event.group(Block.class).callbacks(BlockState.class)
 				.register(BlockStateBehaviours.SPAWN_VALIDATOR, 
 						(block) -> (state, origin, args) -> properties(block).accessor$isValidSpawn().test(
 								state,
@@ -238,21 +239,21 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(args.position())
 								))
 				.register(BlockStateBehaviours.DIRECT_SIGNAL,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$getSignal(
+						(block) -> (state, origin, args) -> group(block).invoker$getSignal(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
 								Converter.asVanilla(args.direction().opposite())
 								))
 				.register(BlockStateBehaviours.INDIRECT_SIGNAL,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$getDirectSignal(
+						(block) -> (state, origin, args) -> group(block).invoker$getDirectSignal(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
 								Converter.asVanilla(args.direction().opposite())
 								))
 				.register(BlockStateBehaviours.ANALOG_SIGNAL,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$getAnalogOutputSignal(
+						(block) -> (state, origin, args) -> group(block).invoker$getAnalogOutputSignal(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position())
@@ -260,37 +261,37 @@ public final class BehaviourEventListener {
 				.registerResult(BlockStateBehaviours.DESTRUCTION_RESISTANCE,
 						(block) -> (double) block.defaultDestroyTime())
 				.register(BlockStateBehaviours.DESTRUCTION_INCREMENT,
-						(block) -> (state, origin, args) -> (double) behaviour(block).invoker$getDestroyProgress(
+						(block) -> (state, origin, args) -> (double) group(block).invoker$getDestroyProgress(
 								state,
 								Converter.asVanilla(args.entity()),
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position())
 								))
 				.registerAction(BlockStateBehaviours.BASE_TICK,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$tick(
+						(block) -> (state, origin, args) -> group(block).invoker$tick(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
 								Converter.asVanilla(args.random())
 								))
 				.registerAction(BlockStateBehaviours.RANDOM_TICK,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$randomTick(
+						(block) -> (state, origin, args) -> group(block).invoker$randomTick(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
 								Converter.asVanilla(args.random())
 								))
 				.register(BlockStateBehaviours.HAS_RANDOM_TICK,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$isRandomlyTicking(state))
+						(block) -> (state, origin, args) -> group(block).invoker$isRandomlyTicking(state))
 				.registerAction(BlockStateBehaviours.ENTITY_INSIDE,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$entityInside(
+						(block) -> (state, origin, args) -> group(block).invoker$entityInside(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
 								Converter.asVanilla(args.entity())
 								))
 				.registerAction(BlockStateBehaviours.PLACE,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$onPlace(
+						(block) -> (state, origin, args) -> group(block).invoker$onPlace(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
@@ -298,7 +299,7 @@ public final class BehaviourEventListener {
 								args.movedByPiston()
 								))
 				.registerAction(BlockStateBehaviours.REMOVE,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$onRemove(
+						(block) -> (state, origin, args) -> group(block).invoker$onRemove(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
@@ -306,7 +307,7 @@ public final class BehaviourEventListener {
 								args.movedByPiston()
 								))
 				.registerAction(BlockStateBehaviours.EXPLOSION,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$onExplosionHit(
+						(block) -> (state, origin, args) -> group(block).invoker$onExplosionHit(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
@@ -314,7 +315,7 @@ public final class BehaviourEventListener {
 								(item, pos) -> args.drop().accept(Converter.asSponge(item), Converter.asSponge(pos))
 								))
 				.register(BlockStateBehaviours.SHAPE_UPDATE,
-						(block) -> (state, origin, args) -> Converter.asSponge(behaviour(block).invoker$updateShape(
+						(block) -> (state, origin, args) -> Converter.asSponge(group(block).invoker$updateShape(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.updates()),
@@ -325,7 +326,7 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(args.random())
 								)))
 				.registerAction(BlockStateBehaviours.SIGNAL_UPDATE,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$neighborChanged(
+						(block) -> (state, origin, args) -> group(block).invoker$neighborChanged(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
@@ -334,7 +335,7 @@ public final class BehaviourEventListener {
 								args.movedByPiston()
 								))
 				.register(BlockStateBehaviours.USE_WITH_ITEM,
-						(block) -> (state, origin, args) -> Converter.asSponge(behaviour(block).invoker$useItemOn(
+						(block) -> (state, origin, args) -> Converter.asSponge(group(block).invoker$useItemOn(
 								Converter.asVanilla(args.item()),
 								state,
 								Converter.asVanilla(args.volume()),
@@ -344,7 +345,7 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(args.hit())
 								)))
 				.register(BlockStateBehaviours.USE_WITHOUT_ITEM,
-						(block) -> (state, origin, args) -> Converter.asSponge(behaviour(block).invoker$useWithoutItem(
+						(block) -> (state, origin, args) -> Converter.asSponge(group(block).invoker$useWithoutItem(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.hit()).getBlockPos(),
@@ -352,7 +353,7 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(args.hit())
 								)))
 				.registerAction(BlockStateBehaviours.ATTACK,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$attack(
+						(block) -> (state, origin, args) -> group(block).invoker$attack(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
@@ -364,7 +365,7 @@ public final class BehaviourEventListener {
 				.registerResult(BlockStateBehaviours.INSTRUMENT,
 						(block) -> Converter.asSponge(properties(block).accessor$instrument()))
 				.register(BlockStateBehaviours.FLUID,
-						(block) -> (state, origin, args) -> Converter.asSponge(behaviour(block).invoker$getFluidState(
+						(block) -> (state, origin, args) -> Converter.asSponge(group(block).invoker$getFluidState(
 								state
 								)))
 				.registerResult(BlockStateBehaviours.REQUIRE_TOOL,
@@ -372,12 +373,12 @@ public final class BehaviourEventListener {
 				.registerResult(BlockStateBehaviours.REPLACEABLE,
 						(block) -> properties(block).accessor$replaceable())
 				.register(BlockStateBehaviours.REPLACEABLE_BY_FLUID,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$canBeReplaced(
+						(block) -> (state, origin, args) -> group(block).invoker$canBeReplaced(
 								state,
 								Converter.asVanilla(args.fluid())
 								))
 				.register(BlockStateBehaviours.REPLACEABLE_BY_BLOCK,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$canBeReplaced(
+						(block) -> (state, origin, args) -> group(block).invoker$canBeReplaced(
 								state,
 								Converter.asVanilla(args.context())
 								))
@@ -388,14 +389,14 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(args.position())
 								))
 				.register(BlockStateBehaviours.CAN_SURVIVE,
-						(block) -> (state, origin, args) -> behaviour(block).invoker$canSurvive(
+						(block) -> (state, origin, args) -> group(block).invoker$canSurvive(
 								state,
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position())
 								))
 				// Neo adds extension
 				.register(BlockStateBehaviours.CLONE_ITEM,
-						(block) -> (state, origin, args) -> Converter.asSponge(behaviour(block).invoker$getCloneItemStack(
+						(block) -> (state, origin, args) -> Converter.asSponge(group(block).invoker$getCloneItemStack(
 								Converter.asVanilla(args.volume()),
 								Converter.asVanilla(args.position()),
 								state,

@@ -8,7 +8,6 @@ import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
 import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.common.util.NetworkUtil;
-import net.hellheim.spongetools.custom.behaviour.type.BlockTypeExtension;
 import net.hellheim.spongetools.mixin.core.MappedRegistryAccessor;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
-import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,18 +32,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
-public abstract class BlockMixin implements BlockTypeExtension, FakeableNetworkValueBridge {
+public abstract class BlockMixin implements FakeableNetworkValueBridge {
 
     @Shadow @Final protected StateDefinition<Block, BlockState> stateDefinition;
     @Shadow @Nullable private Item item;
 
     @Unique private BlockTypeUtil.@Nullable AdditionalData spongetools$data;
     @Unique private boolean spongetools$blockItemVerified = false;
-
-    @Override
-    public BlockType type() {
-        return (BlockType) this;
-    }
 
     @Override
     public @Nullable Object spongetools$bridge$asNetworkValue() {

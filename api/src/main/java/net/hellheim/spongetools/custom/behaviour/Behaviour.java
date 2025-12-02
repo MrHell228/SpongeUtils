@@ -2,6 +2,7 @@ package net.hellheim.spongetools.custom.behaviour;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
@@ -13,15 +14,20 @@ import java.util.function.Supplier;
  * @param <A> Behaviour arguments
  */
 @FunctionalInterface
-public interface Behaviour<R, A extends BehaviourArgs> {
+public interface Behaviour<R, A extends BehaviourArgs> extends Function<A, R> {
 	
 	R call(A args);
+	
+	@Override
+	default R apply(final A args) {
+		return this.call(args);
+	}
 	
 	@FunctionalInterface
 	interface SimpleAction extends Behaviour<Void, BehaviourArgs>, Runnable {
 		
 		@Override
-		default Void call(BehaviourArgs args) {
+		default Void call(final BehaviourArgs args) {
 			this.call();
 			return null;
 		}

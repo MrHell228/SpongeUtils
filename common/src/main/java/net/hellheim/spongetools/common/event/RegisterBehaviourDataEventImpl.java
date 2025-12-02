@@ -6,24 +6,25 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.common.event.lifecycle.AbstractLifecycleEvent;
 
-import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
+import net.hellheim.spongetools.common.behaviour.BehaviourManagerImpl;
+import net.hellheim.spongetools.custom.behaviour.BehaviourGroup;
 import net.hellheim.spongetools.event.RegisterBehaviourDataEvent;
 
 public final class RegisterBehaviourDataEventImpl
 		extends AbstractLifecycleEvent
 		implements RegisterBehaviourDataEvent {
 	
-	private final BehaviourManager manager;
+	private final BehaviourManagerImpl manager;
 	
 	public RegisterBehaviourDataEventImpl(
-		final Cause cause, final Game game, final BehaviourManager manager
+		final Cause cause, final Game game, final BehaviourManagerImpl manager
 	) {
 		super(cause, game);
 		this.manager = Objects.requireNonNull(manager, "manager");
 	}
 	
 	@Override
-	public BehaviourManager manager() {
-		return this.manager;
+	public <H> BehaviourRegistration<H> group(final BehaviourGroup<H> group) {
+		return this.manager.registration(group);
 	}
 }

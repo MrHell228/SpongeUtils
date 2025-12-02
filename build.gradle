@@ -54,6 +54,9 @@ project(":$sub_common") {
 		// Mixins
 		api 'org.spongepowered:mixin:0.8.7'
 		api 'io.github.llamalad7:mixinextras-neoforge:0.4.1'
+		
+		// Dynamic class creation
+		api 'net.bytebuddy:byte-buddy:1.14.3'
 	}
 	
 	jar {

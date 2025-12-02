@@ -15,7 +15,7 @@ import org.spongepowered.api.entity.living.Hostile;
  * <li> {@link Saddleable} - hand or dispenser interaction with saddle
  * <li> Shearable - hand or dispenser interaction with shears
  * <li> {@link Angerable} (NeutralMob) ? - used in some {@link Goal}s, gets notification when player dies
- * <li> {@link Aerial} (FlyingAnimal) ? - used to adjust movement in air, maybe not needed?
+ * <li> {@link Aerial} (FlyingAnimal) ? - used to adjust movement in air
  * <li> Bucketable ? - allows using some bucket-pickup logic, probably not needed
  * <li> ItemSteerable - allows using FoonOnAStick item to perform boost while riding the entity
  * <li> PlayerRideableJumping - can listen to jump-control packets and adds jump strength bar to client, but

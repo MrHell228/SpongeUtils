@@ -58,6 +58,7 @@ import net.hellheim.spongetools.common.factory.SwingTypeFactory;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
 import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.common.util.CustomConsumeEffect;
+import net.hellheim.spongetools.common.util.EntityTypeUtil;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
 import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
@@ -73,6 +74,8 @@ import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.block.StateProperties;
+import net.hellheim.spongetools.custom.type.entity.EntityArchetypes;
+import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
@@ -116,6 +119,7 @@ public final class RegistryEventListener {
 		event.register(ExtraCodecs.Factory.class, new ExtraCodecsFactory());
 		event.register(AdventureCodecs.Factory.class, new AdventureCodecsFactory());
 		event.register(StringRepresentableCodecs.Factory.class, new StringRepresentableCodecsFactory());
+		event.register(EntityTypeArchetype.Factory.class, new EntityTypeUtil.ContextFactory());
 	}
 	
 	@Listener
@@ -213,6 +217,16 @@ public final class RegistryEventListener {
 			map.put(ItemArchetypes.DEFAULT.location(), ItemTypeUtil.Archetypes.DEFAULT);
 			map.put(ItemArchetypes.FISHING_ROD.location(), ItemTypeUtil.Archetypes.FISHING_ROD);
 			map.put(ItemArchetypes.SCAFFOLDING.location(), ItemTypeUtil.Archetypes.SCAFFOLDING);
+			return map;
+		});
+		
+		event.register(EntityTypeArchetype.registry().location(), true, $ -> {
+			final Map<ResourceKey, EntityTypeArchetype> map = new HashMap<>();
+			map.put(EntityArchetypes.ENTITY.location(), EntityTypeUtil.Archetypes.ENTITY);
+			map.put(EntityArchetypes.LIVING.location(), EntityTypeUtil.Archetypes.LIVING);
+			map.put(EntityArchetypes.AGENT.location(), EntityTypeUtil.Archetypes.AGENT);
+			map.put(EntityArchetypes.PATHFINDER_AGENT.location(), EntityTypeUtil.Archetypes.PATHFINDER_AGENT);
+			map.put(EntityArchetypes.MONSTER.location(), EntityTypeUtil.Archetypes.MONSTER);
 			return map;
 		});
 	}
