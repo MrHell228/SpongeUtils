@@ -24,6 +24,7 @@ public class EntityTypeBuilderImpl
 	
 	@Override
 	protected EntityType<?> build0() {
-		return (EntityType<?>) EntityTypeUtil.type(this.archetype, this.data.asImmutableManipulator(), this.context, null);
+		return EntityTypeUtil.type(
+				this.archetype, this.data.asImmutableManipulator(), this.context.asImmutable(), this.behaviour.asImmutable());
 	}
 }

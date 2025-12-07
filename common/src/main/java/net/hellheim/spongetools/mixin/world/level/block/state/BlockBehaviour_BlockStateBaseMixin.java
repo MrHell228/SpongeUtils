@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.hellheim.spongetools.bridge.BlockStateBaseBridge;
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.common.behaviour.BlockStateArgs;
+import net.hellheim.spongetools.common.behaviour.CommonArgs;
 import net.hellheim.spongetools.common.util.BucketUtil;
 import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.custom.behaviour.Behaviour;
@@ -13,6 +14,7 @@ import net.hellheim.spongetools.custom.behaviour.BehaviourCallback;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderProxy;
+import net.hellheim.spongetools.custom.behaviour.BehaviourLayer;
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviours;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
@@ -146,7 +148,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : callback.call(
                         this,
                         args -> original.getPickupSound().map(Converter::asSponge),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                 ).map(Converter::asVanilla);
     }
 
@@ -378,7 +380,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : callback.call(
                         this,
                         args -> original.call(),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                         );
     }
 
@@ -663,7 +665,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : Converter.asVanilla(callback.call(
                         this,
                         args -> Converter.asSponge(original.call()),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                         ));
     }
 
@@ -677,7 +679,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : Converter.asVanilla(callback.call(
                         this,
                         args -> Converter.asSponge(original.call()),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                         ));
     }
 
@@ -691,7 +693,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : Converter.asVanilla(callback.call(
                         this,
                         args -> Converter.asSponge(original.call()),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                         ));
     }
 
@@ -705,7 +707,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : callback.call(
                         this,
                         args -> original.call(),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                         );
     }
 
@@ -719,7 +721,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                 : callback.call(
                         this,
                         args -> original.call(),
-                        BlockStateArgs.empty()
+                        CommonArgs.empty()
                         );
     }
 
@@ -830,6 +832,6 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
     private <R, A extends BehaviourArgs> @Nullable BehaviourCallback<BlockStateExtension, R, A> spongetools$impl$callback(
             final BehaviourType<? extends Behaviour<R, A>> type
     ) {
-        return this.spongetools$callbacks == null ? null : this.spongetools$callbacks.callbackOrNull(type);
+        return this.spongetools$callbacks == null ? null : this.spongetools$callbacks.callbackOrNull(BehaviourLayer.TOP, type);
     }
 }

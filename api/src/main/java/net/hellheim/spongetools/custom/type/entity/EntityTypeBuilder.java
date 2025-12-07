@@ -1,6 +1,8 @@
 package net.hellheim.spongetools.custom.type.entity;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.spongepowered.api.ResourceKey;
@@ -43,6 +45,20 @@ public interface EntityTypeBuilder extends
 	 */
 	default EntityTypeBuilder lootTable(final ResourceKey key) {
 		return this.set(EntityTypeKeys.LOOT_TABLE, key);
+	}
+	
+	/**
+	 * Sets the {@link EntityTypeKeys#FLAGS}.
+	 */
+	default EntityTypeBuilder flags(final ResourceKey... flags) {
+		return this.set(EntityTypeKeys.FLAGS, Set.of(flags));
+	}
+	
+	/**
+	 * Sets the {@link EntityTypeKeys#FLAGS}.
+	 */
+	default EntityTypeBuilder flags(final Collection<? extends ResourceKey> flags) {
+		return this.set(EntityTypeKeys.FLAGS, Set.copyOf(flags));
 	}
 	
 	/**

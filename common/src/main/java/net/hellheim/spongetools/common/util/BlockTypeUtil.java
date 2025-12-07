@@ -152,8 +152,8 @@ public final class BlockTypeUtil {
 		}
 	}
 	
-	public static final record AdditionalData(
-		BlockType networkBlock, Set<StateProperty<?>> properties, List<StatePropertyValue<?>> defautProperties) {
+	public record AdditionalData(
+		BlockType networkType, Set<StateProperty<?>> properties, List<StatePropertyValue<?>> defaultProperties) {
 	}
 	
 	private BlockTypeUtil() {

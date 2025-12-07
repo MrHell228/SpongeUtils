@@ -22,7 +22,6 @@ import org.spongepowered.api.world.volume.game.Region;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
 import org.spongepowered.math.vector.Vector3i;
 
-import net.hellheim.spongetools.custom.behaviour.BehaviourArgs;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
@@ -30,14 +29,6 @@ import net.hellheim.spongetools.custom.behaviour.util.UseContext;
 import net.hellheim.spongetools.custom.behaviour.util.UseContext.BlockPlace;
 
 public final class BlockStateArgs {
-	
-	public static BehaviourArgs empty() {
-		return Empty.INSTANCE;
-	}
-	
-	private record Empty() implements BehaviourArgs {
-		public static final Empty INSTANCE = new Empty();
-	}
 	
 	public record Locatable<V extends Volume>(V volume, Vector3i position)
 			implements BlockStateBehaviour.Locatable.Args<V> {

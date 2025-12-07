@@ -72,9 +72,4 @@ public record BlockTypeArchetype(
 				(data, context, behaviour) -> (BlockType) assembler.apply(data, context, behaviour)
 				);
 	}
-	
-	@Override
-	public BlockType extractType(final BlockState instance) {
-		return instance.type();
-	}
 }

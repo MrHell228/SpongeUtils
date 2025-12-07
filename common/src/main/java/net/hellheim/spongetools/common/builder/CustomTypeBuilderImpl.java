@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 
+import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
+import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
+import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderProxy;
 import net.hellheim.spongetools.custom.type.CustomTypeArchetype;
 import net.hellheim.spongetools.custom.type.CustomTypeBuilder;
 import net.hellheim.spongetools.object.DataOperator;
@@ -14,10 +17,11 @@ import net.hellheim.spongetools.object.TypedKeyMap;
 import net.hellheim.spongetools.object.ValueSetBuilder;
 
 public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<T, I, A>, B extends CustomTypeBuilder<T, I, A, B>>
-		implements CustomTypeBuilder<T, I, A, B>, TypedKeyMap.Operator.MutableProxy<B> {
+		implements CustomTypeBuilder<T, I, A, B>, TypedKeyMap.Operator.MutableProxy<B>, BehaviourCallbackHolderProxy.Mutable<I, B> {
 	
 	protected A archetype = this.baseArchetype();
 	protected final TypedKeyMap.Impl.Mutable context = TypedKeyMap.create();
+	protected final BehaviourCallbackHolderLogic.Mutable<I> behaviour = BehaviourCallbackHolderLogic.mutable();
 	
 	@SuppressWarnings("unchecked")
 	protected B cast() {
@@ -25,8 +29,13 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<
 	}
 	
 	@Override
-	public Mutable context() {
+	public TypedKeyMap.Mutable context() {
 		return this.context;
+	}
+	
+	@Override
+	public BehaviourCallbackHolder.Mutable<I, ?> getAsBehaviourCallbackHolder() {
+		return this.behaviour;
 	}
 	
 	@Override
@@ -39,7 +48,7 @@ public abstract class CustomTypeBuilderImpl<T, I, A extends CustomTypeArchetype<
 	public B reset() {
 		this.archetype = this.baseArchetype();
 		this.context.clear();
-		// TODO clear behaviour
+		this.behaviour.clear();
 		return this.cast();
 	}
 	

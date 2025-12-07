@@ -48,7 +48,7 @@ public final class ItemTypeUtil {
 		
 		final ItemType networkItem = networkItemKey.get();
 		((ItemPropertiesBridge) properties).spongetools$bridge$applyData(new AdditionalData(
-				Converter.asVanilla(networkItem),
+				networkItem,
 				context.require(ItemTypeKeys.TRANSLATION_KEY),
 				componentPatch(networkItem, data)
 				));
@@ -124,7 +124,7 @@ public final class ItemTypeUtil {
 		}
 	}
 	
-	public static final record AdditionalData(Item networkItem, String translationKey, DataComponentPatch patch) {
+	public record AdditionalData(ItemType networkType, String translationKey, DataComponentPatch patch) {
 	}
 	
 	private ItemTypeUtil() {

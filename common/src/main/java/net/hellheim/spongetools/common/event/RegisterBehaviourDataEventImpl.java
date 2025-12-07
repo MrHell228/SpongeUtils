@@ -7,7 +7,7 @@ import org.spongepowered.api.event.Cause;
 import org.spongepowered.common.event.lifecycle.AbstractLifecycleEvent;
 
 import net.hellheim.spongetools.common.behaviour.BehaviourManagerImpl;
-import net.hellheim.spongetools.custom.behaviour.BehaviourGroup;
+import net.hellheim.spongetools.custom.behaviour.BehaviourManager;
 import net.hellheim.spongetools.event.RegisterBehaviourDataEvent;
 
 public final class RegisterBehaviourDataEventImpl
@@ -24,7 +24,7 @@ public final class RegisterBehaviourDataEventImpl
 	}
 	
 	@Override
-	public <H> BehaviourRegistration<H> group(final BehaviourGroup<H> group) {
-		return this.manager.registration(group);
+	public <H> BehaviourManager.BehaviourRegistration<H> registration(final Class<H> behaviourHolder) {
+		return this.manager.registration(behaviourHolder);
 	}
 }

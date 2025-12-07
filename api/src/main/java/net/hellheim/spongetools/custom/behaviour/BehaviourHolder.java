@@ -9,14 +9,6 @@ import java.util.Optional;
 public interface BehaviourHolder {
 	
 	/**
-	 * Returns whether the given behaviour group is registered for this {@link BehaviourHolder}.
-	 * 
-	 * @param group The behaviour group
-	 * @return True if this holder supports the given group
-	 */
-	boolean supports(BehaviourGroup<?> group);
-	
-	/**
 	 * Returns whether the given behaviour type is registered for this {@link BehaviourHolder}.
 	 * 
 	 * @param type The behaviour type
@@ -46,11 +38,6 @@ public interface BehaviourHolder {
 	interface Defaulted extends BehaviourHolder {
 		
 		Object getAsActualBehaviourHolder();
-		
-		@Override
-		default boolean supports(final BehaviourGroup<?> group) {
-			return BehaviourManager.get().supports(this.getAsActualBehaviourHolder(), group);
-		}
 		
 		@Override
 		default boolean supports(final BehaviourType<?> type) {

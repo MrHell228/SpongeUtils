@@ -42,7 +42,7 @@ public abstract class BlockMixin implements FakeableNetworkValueBridge {
 
     @Override
     public @Nullable Object spongetools$bridge$asNetworkValue() {
-        return this.spongetools$data == null ? null : this.spongetools$data.networkBlock();
+        return this.spongetools$data == null ? null : this.spongetools$data.networkType();
     }
 
     @ModifyVariable(
@@ -116,11 +116,11 @@ public abstract class BlockMixin implements FakeableNetworkValueBridge {
             final Block instance, final BlockState value,
             final Operation<Void> original
     ) {
-        if (this.spongetools$data == null || this.spongetools$data.defautProperties().isEmpty()) {
+        if (this.spongetools$data == null || this.spongetools$data.defaultProperties().isEmpty()) {
             original.call(instance, value);
         } else {
             BlockState result = this.stateDefinition.any();
-            for (final StatePropertyValue<?> property : this.spongetools$data.defautProperties()) {
+            for (final StatePropertyValue<?> property : this.spongetools$data.defaultProperties()) {
                 result = BlockMixin.spongetools$impl$setProperty(result, Converter.asVanilla(property));
             }
             original.call(instance, result);

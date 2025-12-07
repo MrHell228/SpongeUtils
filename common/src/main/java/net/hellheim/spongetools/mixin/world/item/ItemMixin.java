@@ -37,6 +37,6 @@ public abstract class ItemMixin implements ItemBridge, FakeableNetworkValueBridg
 
     @Override
     public @Nullable Object spongetools$bridge$asNetworkValue() {
-        return this.spongetools$data == null ? null : this.spongetools$data.networkItem();
+        return this.spongetools$data == null ? null : this.spongetools$data.networkType();
     }
 }

@@ -9,6 +9,7 @@ import org.spongepowered.api.registry.RegistryType;
 import org.spongepowered.api.util.Builder;
 import org.spongepowered.api.util.CopyableBuilder;
 
+import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolder;
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeBuilder;
@@ -40,7 +41,7 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * @see TODO AttributeTypeBuilder    (no data)
  */
 public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, I, A>, B extends CustomTypeBuilder<T, I, A, B>>
-		extends Builder<T, B>, TypedKeyMap.Operator<B> {
+		extends Builder<T, B>, TypedKeyMap.Operator<B>, BehaviourCallbackHolder.Mutable<I, B> {
 	
 	/**
 	 * Sets the archetype of the built type.

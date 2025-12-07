@@ -125,6 +125,11 @@ public abstract class BehaviourCallbackHolderLogic<H> implements BehaviourCallba
 		public BehaviourCallbackHolderLogic.Immutable<H> asImmutable() {
 			return BehaviourCallbackHolderLogic.immutableOf(this.callbackSet);
 		}
+		
+		public void clear() {
+			this.callbackSet.clear();
+			this.callbackMap.clear();
+		}
 	}
 	
 	public static class Immutable<H>

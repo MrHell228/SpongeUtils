@@ -1,25 +1,21 @@
 package net.hellheim.spongetools.common.util;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.data.value.ValueContainer;
-import org.spongepowered.api.entity.Aerial;
-import org.spongepowered.api.entity.Angerable;
 import org.spongepowered.api.entity.EntityCategory;
-import org.spongepowered.api.entity.Ranger;
-import org.spongepowered.api.entity.living.Hostile;
+import org.spongepowered.api.entity.EntityTypes;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.description.modifier.Visibility;
-import net.bytebuddy.implementation.SuperMethodCall;
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.bridge.EntityTypeBridge;
+import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeKeys;
 import net.hellheim.spongetools.mixin.world.entity.EntityType_BuilderAccessor;
@@ -30,75 +26,28 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.HasCustomInventoryScreen;
-import net.minecraft.world.entity.ItemSteerable;
-import net.minecraft.world.entity.Leashable;
+import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.PlayerRideableJumping;
-import net.minecraft.world.entity.Saddleable;
-import net.minecraft.world.entity.Shearable;
-import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.level.Level;
 
 public final class EntityTypeUtil {
 	
 	private static final MutableInt NO_SAVE_COUNTER = new MutableInt();
-	private static final Map<?, ?> GROUPS = Map.of(
-			Hostile.class, Enemy.class, // No behaviour
-			Ranger.class, RangedAttackMob.class, // #performRangedAttack
-			org.spongepowered.api.entity.Leashable.class, Leashable.class, // A lot of behaviour
-			org.spongepowered.api.entity.Saddleable.class, Saddleable.class, // Some behaviour
-			null, Shearable.class, // Few behaviour
-			Angerable.class, NeutralMob.class, // A lot of behaviour
-			Aerial.class, FlyingAnimal.class, // #isFlying
-			//null, Bucketable.class,
-			null, ItemSteerable.class, // #boost
-			null, PlayerRideableJumping.class, // Some behaviour
-			null, HasCustomInventoryScreen.class // #openCustomInventoryScreen
-			);
 	
-	public static final <E extends Entity> EntityType.EntityFactory<E> factory(
-		final Class<E> baseClass, final Object behaviour
-	) {
-		final var builder = new ByteBuddy()
-				.subclass(baseClass)
-				.defineConstructor(Visibility.PUBLIC)
-				.withParameters(EntityType.class, Level.class)
-				.intercept(SuperMethodCall.INSTANCE);
-		
-		// TODO add interfaces
-		
-		try {
-			final var constructor = builder
-					.make()
-					.load(Entity.class.getClassLoader())
-					.getLoaded()
-					.getConstructor(EntityType.class, Level.class);
-			
-			return (type, world) -> {
-				try {
-					return (E) constructor.newInstance(type, world);
-				} catch (final InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					throw new RuntimeException("Could not create new custom entity", e);
-				}
-			};
-		} catch (final NoSuchMethodException e) {
-			throw new RuntimeException("Could not find custom entity constructor (this should not happen)", e);
-		}
-	}
+	private static final Supplier<? extends org.spongepowered.api.entity.EntityType<?>> NETWORK_ENTITY = EntityTypes.PIG;
 	
 	public static final <E extends Entity> EntityType<E> type(
-		final Class<E> baseClass, final ValueContainer data, final TypedKeyMap context, final Object behaviour
+		final Class<E> baseClass,
+		final ValueContainer data, final TypedKeyMap context, final BehaviourCallbackHolderLogic<Entity> behaviour
 	) {
 		final EntityType.Builder<E> builder = EntityType.Builder.of(
-				EntityTypeUtil.factory(baseClass, behaviour), 
+				EntityFactoryUtil.create(
+						baseClass,
+						context.getOrElse(EntityTypeKeys.FLAGS, Collections.emptyList()),
+						behaviour), 
 				(MobCategory) (Object) context.require(EntityTypeKeys.CATEGORY));
 		
 		final EntityType_BuilderAccessor accessor = (EntityType_BuilderAccessor) builder;
@@ -116,17 +65,30 @@ public final class EntityTypeUtil {
 			builder.noSave();
 		}
 		
-		return builder.build(ResourceKey.create(Registries.ENTITY_TYPE, Converter.asVanilla(
+		final EntityType<E> type = builder.build(ResourceKey.create(Registries.ENTITY_TYPE, Converter.asVanilla(
 				context.get(EntityTypeKeys.SERIALIZATION_KEY)
 					.orElseGet(() -> SpongeTools.key("nosave_" + EntityTypeUtil.NO_SAVE_COUNTER.incrementAndGet()))
 				)));
+		
+		((EntityTypeBridge) type).spongetools$bridge$applyData(new AdditionalData(
+				EntityTypeUtil.NETWORK_ENTITY.get(),
+				behaviour
+				));
+		
+		return type;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static final EntityType<?> type(
-		final EntityTypeArchetype archetype, final ValueContainer data, final TypedKeyMap context, final Object behaviour
+	public static final org.spongepowered.api.entity.EntityType<?> type(
+		final EntityTypeArchetype archetype,
+		final ValueContainer data, final TypedKeyMap context,
+		final BehaviourCallbackHolderLogic<org.spongepowered.api.entity.Entity> behaviour
 	) {
-		return EntityTypeUtil.type((Class<Entity>) archetype.baseClass(), data, context, behaviour);
+		return (org.spongepowered.api.entity.EntityType<?>) EntityTypeUtil.type(
+				(Class<Entity>) archetype.baseClass(),
+				data,
+				context,
+				(BehaviourCallbackHolderLogic<Entity>) (Object) behaviour);
 	}
 	
 	public static final <E extends Entity> EntityTypeArchetype archetype(
@@ -142,6 +104,8 @@ public final class EntityTypeUtil {
 		public static final EntityTypeArchetype LIVING = EntityTypeUtil.archetype(ENTITY, LivingEntity.class);
 		
 		public static final EntityTypeArchetype AGENT = EntityTypeUtil.archetype(LIVING, Mob.class);
+		
+		public static final EntityTypeArchetype AERIAL = EntityTypeUtil.archetype(AGENT, FlyingMob.class);
 		
 		public static final EntityTypeArchetype PATHFINDER_AGENT = EntityTypeUtil.archetype(AGENT, PathfinderMob.class);
 		
@@ -168,6 +132,9 @@ public final class EntityTypeUtil {
 				context.set(EntityTypeKeys.SUMMONABLE, type.canSummon());
 			};
 		}
+	}
+	
+	public record AdditionalData(org.spongepowered.api.entity.EntityType<?> networkType, BehaviourCallbackHolderLogic<Entity> behaviour) {
 		
 	}
 	

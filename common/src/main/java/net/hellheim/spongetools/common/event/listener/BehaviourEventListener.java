@@ -42,7 +42,7 @@ public final class BehaviourEventListener {
 	}
 	
 	private void blockStateData(final RegisterBehaviourDataEvent event) {
-		event.group(BlockState.class)
+		event.registration(BlockState.class)
 				.register(BlockStateBehaviours.SPAWN_VALIDATOR,
 						(state) -> (volume, position, entity) -> state.isValidSpawn(
 								Converter.asVanilla(volume),
@@ -218,8 +218,8 @@ public final class BehaviourEventListener {
 								;
 	}
 	
-	private void blockTypeData(final RegisterBehaviourDataEvent event) {
-		event.group(Block.class).callbacks(BlockState.class)
+	private void blockTypeData(final RegisterBehaviourDataEvent event) {/*
+		event.registration(Block.class).callbacks(BlockState.class)
 				.register(BlockStateBehaviours.SPAWN_VALIDATOR, 
 						(block) -> (state, origin, args) -> properties(block).accessor$isValidSpawn().test(
 								state,
@@ -412,7 +412,7 @@ public final class BehaviourEventListener {
 
 				.register(BlockStateBehaviours.BUCKET_PICKUP_SOUND,
 						(block) -> (state, origin, args) -> BucketUtil.bucketPickup(block).getPickupSound().map(Converter::asSponge))
-						;
+						;*/
 	}
 	
 	private static BlockBehaviourAccessor behaviour(final Block block) {

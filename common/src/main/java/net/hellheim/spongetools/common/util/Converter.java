@@ -10,6 +10,7 @@ import org.spongepowered.api.data.type.PushReaction;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.fluid.FluidState;
 import org.spongepowered.api.fluid.FluidType;
@@ -44,6 +45,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -107,6 +109,10 @@ public final class Converter {
 	
 	public static Entity asSponge(final net.minecraft.world.entity.Entity entity) {
 		return (Entity) entity;
+	}
+	
+	public static Living asSponge(final LivingEntity living) {
+		return (Living) living;
 	}
 	
 	public static Player asSponge(final net.minecraft.world.entity.player.Player player) {
@@ -257,6 +263,10 @@ public final class Converter {
 	
 	public static net.minecraft.world.entity.Entity asVanilla(final Entity entity) {
 		return (net.minecraft.world.entity.Entity) entity;
+	}
+	
+	public static LivingEntity asVanilla(final Living living) {
+		return (LivingEntity) living;
 	}
 	
 	public static net.minecraft.world.entity.player.Player asVanilla(final Player player) {

@@ -1,10 +1,13 @@
 package net.hellheim.spongetools.custom.type.entity;
 
+import java.util.Set;
+
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.entity.EntityCategory;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.attribute.AttributeHolder;
 
+import io.leangen.geantyref.TypeToken;
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.object.TypedKey;
 
@@ -19,6 +22,12 @@ public final class EntityTypeKeys {
 	 * The default {@link AttributeHolder}'s attributes.
 	 */
 	public static final TypedKey<EntityDefaultAttributes> ATTRIBUTES = TypedKey.of(SpongeTools.key("attributes"), EntityDefaultAttributes.class);
+	
+	/**
+	 * The list of flags that built entity should implement. <br>
+	 * The supported flags are catalogued in {@link EntityFlags}.
+	 */
+	public static final TypedKey<Set<ResourceKey>> FLAGS = TypedKey.of(SpongeTools.key("flags"), new TypeToken<Set<ResourceKey>>() {});
 	
 	/**
 	 * @see EntityType#isFlammable()

@@ -72,9 +72,4 @@ public record ItemTypeArchetype(
 				(data, context, behaviour) -> (ItemType) assembler.apply(data, context, behaviour)
 				);
 	}
-	
-	@Override
-	public ItemType extractType(final ItemStack instance) {
-		return instance.type();
-	}
 }
