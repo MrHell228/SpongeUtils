@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.behaviour.type;
+package net.hellheim.spongetools.custom.type.entity;
 
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.custom.behaviour.Behaviour;
@@ -13,6 +13,8 @@ public final class EntityBehaviours {
 	public static final BehaviourType<EntityBehaviour.OpenInventory> OPEN_INVENTORY = BehaviourType.of(SpongeTools.key("open_inventory"));
 	
 	public static final BehaviourType<EntityBehaviour.PerformRangedAttack> PERFORM_RANGED_ATTACK = BehaviourType.of(SpongeTools.key("perform_ranged_attack"));
+	
+	public static final BehaviourType<Behaviour.SimpleAction> REGISTER_GOALS = BehaviourType.of(SpongeTools.key("register_goals"));
 	
 	private EntityBehaviours() {
 	}

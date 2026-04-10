@@ -1,4 +1,4 @@
-package net.hellheim.spongetools.custom.behaviour.type;
+package net.hellheim.spongetools.custom.type.entity;
 
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;

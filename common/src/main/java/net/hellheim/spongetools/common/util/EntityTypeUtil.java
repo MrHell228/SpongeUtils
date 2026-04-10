@@ -41,13 +41,15 @@ public final class EntityTypeUtil {
 	
 	public static final <E extends Entity> EntityType<E> type(
 		final Class<E> baseClass,
-		final ValueContainer data, final TypedKeyMap context, final BehaviourCallbackHolderLogic<Entity> behaviour
+		final ValueContainer data, final TypedKeyMap context,
+		final BehaviourCallbackHolderLogic<org.spongepowered.api.entity.Entity> behaviour
 	) {
+		@SuppressWarnings("unchecked")
 		final EntityType.Builder<E> builder = EntityType.Builder.of(
 				EntityFactoryUtil.create(
 						baseClass,
 						context.getOrElse(EntityTypeKeys.FLAGS, Collections.emptyList()),
-						behaviour), 
+						(BehaviourCallbackHolderLogic<Entity>) (Object) behaviour), 
 				(MobCategory) (Object) context.require(EntityTypeKeys.CATEGORY));
 		
 		final EntityType_BuilderAccessor accessor = (EntityType_BuilderAccessor) builder;
@@ -70,10 +72,11 @@ public final class EntityTypeUtil {
 					.orElseGet(() -> SpongeTools.key("nosave_" + EntityTypeUtil.NO_SAVE_COUNTER.incrementAndGet()))
 				)));
 		
-		((EntityTypeBridge) type).spongetools$bridge$applyData(new AdditionalData(
-				EntityTypeUtil.NETWORK_ENTITY.get(),
-				behaviour
+		((EntityTypeBridge) type).spongetools$bridge$setData(new AdditionalData(
+				EntityTypeUtil.NETWORK_ENTITY.get()
 				));
+		
+		((EntityTypeBridge) type).spongetools$bridge$setCallbacks(behaviour);
 		
 		return type;
 	}
@@ -85,10 +88,7 @@ public final class EntityTypeUtil {
 		final BehaviourCallbackHolderLogic<org.spongepowered.api.entity.Entity> behaviour
 	) {
 		return (org.spongepowered.api.entity.EntityType<?>) EntityTypeUtil.type(
-				(Class<Entity>) archetype.baseClass(),
-				data,
-				context,
-				(BehaviourCallbackHolderLogic<Entity>) (Object) behaviour);
+				(Class<Entity>) archetype.baseClass(), data, context, behaviour);
 	}
 	
 	public static final <E extends Entity> EntityTypeArchetype archetype(
@@ -134,7 +134,7 @@ public final class EntityTypeUtil {
 		}
 	}
 	
-	public record AdditionalData(org.spongepowered.api.entity.EntityType<?> networkType, BehaviourCallbackHolderLogic<Entity> behaviour) {
+	public record AdditionalData(org.spongepowered.api.entity.EntityType<?> networkType) {
 		
 	}
 	

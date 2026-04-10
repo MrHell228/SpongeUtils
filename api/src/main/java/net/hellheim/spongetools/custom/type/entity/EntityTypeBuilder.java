@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.spongepowered.api.ResourceKey;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityCategory;
 import org.spongepowered.api.entity.EntityType;
@@ -17,6 +18,10 @@ import net.hellheim.spongetools.util.TranslationUtil;
 public interface EntityTypeBuilder extends
 		CustomTypeBuilder.InstanceBased<EntityType<?>, Entity, EntityTypeArchetype, EntityTypeBuilder>,
 		CustomTypeBuilder.WithData<EntityType<?>, Entity, EntityTypeArchetype, EntityTypeBuilder> {
+	
+	static EntityTypeBuilder create() {
+		return Sponge.game().builderProvider().provide(EntityTypeBuilder.class);
+	}
 	
 	/**
 	 * Sets {@link #serializationKey(ResourceKey)}, {@link #translationKey(ResourceKey)}

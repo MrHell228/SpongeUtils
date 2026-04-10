@@ -11,7 +11,6 @@ import org.spongepowered.api.entity.living.Hostile;
 import org.spongepowered.api.item.ItemTypes;
 
 import net.hellheim.spongetools.SpongeTools;
-import net.hellheim.spongetools.custom.behaviour.type.EntityBehaviours;
 
 public final class EntityFlags {
 	

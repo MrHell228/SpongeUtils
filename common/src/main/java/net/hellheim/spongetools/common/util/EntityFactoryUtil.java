@@ -32,7 +32,7 @@ import net.hellheim.spongetools.custom.behaviour.BehaviourArgs;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
 import net.hellheim.spongetools.custom.behaviour.BehaviourLayer;
 import net.hellheim.spongetools.custom.behaviour.BehaviourType;
-import net.hellheim.spongetools.custom.behaviour.type.EntityBehaviours;
+import net.hellheim.spongetools.custom.type.entity.EntityBehaviours;
 import net.hellheim.spongetools.custom.type.entity.EntityFlags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -40,6 +40,7 @@ import net.minecraft.world.entity.HasCustomInventoryScreen;
 import net.minecraft.world.entity.ItemSteerable;
 import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.Saddleable;
@@ -60,6 +61,8 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
  */
 final class EntityFactoryUtil {
 	
+	// TODO EntityFlags to implement
+	@SuppressWarnings("unused")
 	private static final Map<?, ?> GROUPS = Map.of(
 			org.spongepowered.api.entity.Leashable.class, Leashable.class, // A lot of behaviour
 			org.spongepowered.api.entity.Saddleable.class, Saddleable.class, // Some behaviour
@@ -104,6 +107,18 @@ final class EntityFactoryUtil {
 		final Collection<org.spongepowered.api.ResourceKey> flags,
 		final BehaviourCallbackHolderLogic<Entity> behaviour
 	) {
+		// Archetypes
+		
+		if (Mob.class.isAssignableFrom(baseClass)) {
+			builder = EntityFactoryUtil.methodWithCallbackNoArgs(builder, behaviour,
+					named("registerGoals"),
+					EntityBehaviours.REGISTER_GOALS,
+					e -> () -> {}
+					);
+		}
+		
+		// Flags
+		
 		if (flags.contains(EntityFlags.HOSTILE)) {
 			builder = builder.implement(Enemy.class);
 		}
@@ -150,8 +165,6 @@ final class EntityFactoryUtil {
 					);
 			// There is also stop jump packet but in vanilla it's never sent by client so no need to support it yet
 		}
-		
-		// TODO implement all EntityFlags
 		
 		return builder;
 	}

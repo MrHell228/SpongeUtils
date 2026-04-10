@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.common.event.listener.BehaviourEventListener;
 import net.hellheim.spongetools.common.event.listener.BlockStateEventListener;
+import net.hellheim.spongetools.common.event.listener.EntityEventListener;
 import net.hellheim.spongetools.common.event.listener.RegistryEventListener;
 import net.hellheim.spongetools.common.event.listener.ResourcePackEventListener;
 import net.hellheim.spongetools.common.web.MineHttpd;
@@ -58,6 +59,7 @@ public final class SpongeToolsPlugin implements PluginProxy {
 		final var lookup = MethodHandles.lookup();
 		eventManager.registerListeners(this.plugin, new BehaviourEventListener(), lookup);
 		eventManager.registerListeners(this.plugin, new BlockStateEventListener(), lookup);
+		eventManager.registerListeners(this.plugin, new EntityEventListener(), lookup);
 		eventManager.registerListeners(this.plugin, new RegistryEventListener(this.logger, this.assetsToLoad), lookup);
 		eventManager.registerListeners(this.plugin, new ResourcePackEventListener(this.logger, this.port, this.packResult, this.assetsToCopy), lookup);
 		this.web.ifPresent(web -> eventManager.registerListeners(this.plugin, web.eventListener(), lookup));

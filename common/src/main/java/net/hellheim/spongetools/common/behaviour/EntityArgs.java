@@ -3,7 +3,7 @@ package net.hellheim.spongetools.common.behaviour;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
-import net.hellheim.spongetools.custom.behaviour.type.EntityBehaviour;
+import net.hellheim.spongetools.custom.type.entity.EntityBehaviour;
 
 public final class EntityArgs {
 	

@@ -69,7 +69,8 @@ public record ModeledBlock(
 		return Tuple.of(this.providers.getFor(state), this.variants.getFor(state));
 	}
 	
-	public static final class Builder extends ModeledCustomType.Builder<BlockType, BlockTypeBuilder, ModeledBlock, Builder> {
+	public static final class Builder
+			extends ModeledCustomType.Builder<BlockType, BlockTypeBuilder, ModeledBlock, Builder> {
 		
 		private final ResourceKey prefixedKey;
 		private StateDispatch<BlockStateProvider> providers;

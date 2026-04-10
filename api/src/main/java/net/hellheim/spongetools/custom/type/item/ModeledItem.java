@@ -43,7 +43,8 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		return new Builder(key);
 	}
 	
-	public static final class Builder extends ModeledCustomType.Builder<ItemType, ItemTypeBuilder, ModeledItem, Builder> {
+	public static final class Builder
+			extends ModeledCustomType.Builder<ItemType, ItemTypeBuilder, ModeledItem, Builder> {
 		
 		private @Nullable ItemDefinition definition;
 		

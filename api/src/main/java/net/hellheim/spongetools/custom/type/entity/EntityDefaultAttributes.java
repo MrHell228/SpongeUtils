@@ -22,11 +22,11 @@ public record EntityDefaultAttributes(Map<ResourceKey, OptionalDouble> attribute
 		
 		private final Map<ResourceKey, OptionalDouble> attributes = new HashMap<>();
 		
-		public Builder add(final RegistryKey<AttributeType> attribute, final double base) {
+		public Builder add(final RegistryKey<? extends AttributeType> attribute, final double base) {
 			return this.add(attribute.location(), base);
 		}
 		
-		public Builder add(final RegistryKey<AttributeType> attribute) {
+		public Builder add(final RegistryKey<? extends AttributeType> attribute) {
 			return this.add(attribute.location());
 		}
 		

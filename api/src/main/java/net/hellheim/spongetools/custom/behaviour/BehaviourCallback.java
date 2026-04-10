@@ -1,6 +1,7 @@
 package net.hellheim.spongetools.custom.behaviour;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -30,6 +31,14 @@ public interface BehaviourCallback<H, R, A extends BehaviourArgs> {
 	static <H, R, A extends BehaviourArgs> BehaviourCallback<H, R, A> result(final R result) {
 		Objects.requireNonNull(result, "result");
 		return (holder, origin, args) -> result;
+	}
+	
+	static <H, A extends BehaviourArgs> BehaviourCallback<H, Void, A> action(final BiConsumer<H, A> action) {
+		Objects.requireNonNull(action, "action");
+		return (holder, origin, args) -> {
+			action.accept(holder, args);
+			return null;
+		};
 	}
 	
 	static <H, A extends BehaviourArgs> BehaviourCallback<H, Void, A> action(final Consumer<A> action) {

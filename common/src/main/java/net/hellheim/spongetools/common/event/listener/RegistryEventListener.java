@@ -14,6 +14,7 @@ import org.spongepowered.api.block.BlockSoundGroup;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.type.ItemActionType;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.lifecycle.FreezeRegistryEvent;
 import org.spongepowered.api.event.lifecycle.RegisterBuilderEvent;
 import org.spongepowered.api.event.lifecycle.RegisterDataEvent;
 import org.spongepowered.api.event.lifecycle.RegisterFactoryEvent;
@@ -43,6 +44,7 @@ import net.hellheim.spongetools.common.behaviour.BlockStateDispatcherImpl;
 import net.hellheim.spongetools.common.builder.BlockHitResultBuilder;
 import net.hellheim.spongetools.common.builder.BlockSoundGroupBuilderImpl;
 import net.hellheim.spongetools.common.builder.BlockTypeBuilderImpl;
+import net.hellheim.spongetools.common.builder.EntityTypeBuilderImpl;
 import net.hellheim.spongetools.common.builder.ItemTypeBuilderImpl;
 import net.hellheim.spongetools.common.codec.AdventureCodecsFactory;
 import net.hellheim.spongetools.common.codec.ExtraCodecsFactory;
@@ -76,6 +78,8 @@ import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.block.StateProperties;
 import net.hellheim.spongetools.custom.type.entity.EntityArchetypes;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
+import net.hellheim.spongetools.custom.type.entity.EntityTypeBuilder;
+import net.hellheim.spongetools.custom.type.entity.ModeledEntity;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
 import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
@@ -126,8 +130,9 @@ public final class RegistryEventListener {
 	public void registerBuilders(final RegisterBuilderEvent event) {
 		event.register(HitResult.BlockHitResult.Builder.class, BlockHitResultBuilder::new);
 		event.register(BlockSoundGroupBuilder.class, BlockSoundGroupBuilderImpl::new);
-		event.register(ItemTypeBuilder.class, ItemTypeBuilderImpl::new);
+		event.register(EntityTypeBuilder.class, EntityTypeBuilderImpl::new);
 		event.register(BlockTypeBuilder.class, BlockTypeBuilderImpl::new);
+		event.register(ItemTypeBuilder.class, ItemTypeBuilderImpl::new);
 	}
 	
 	@Listener
@@ -182,6 +187,7 @@ public final class RegistryEventListener {
 		
 		// Resourcepack-based registries
 		
+		event.register(ModeledEntity.registry().location(), true);
 		event.register(ModeledBlock.registry().location(), true);
 		event.register(ModeledItem.registry().location(), true);
 		event.register(Model.registry().location(), true);
@@ -240,10 +246,15 @@ public final class RegistryEventListener {
 		event.registry(RegistryTypes.ITEM_ACTION_TYPE, ($, step) ->
 			step.register(SpongeTools.key("custom"), (ItemActionType) (Object) CustomConsumeEffect.TYPE));
 		
+		final var modeledEntities = ModeledEntity.registry();
 		final var modeledBlocks = ModeledBlock.registry();
 		final var modeledItems = ModeledItem.registry();
 		
 		event.registry(Model.registry(), ($, step) -> {
+			modeledEntities.get().stream().forEach(entity ->
+				entity.models().forEach((key, model) ->
+					step.register(key, model)));
+			
 			modeledBlocks.get().stream().forEach(block ->
 				block.models().forEach((key, model) ->
 					step.register(key, model)));
@@ -252,6 +263,10 @@ public final class RegistryEventListener {
 				item.models().forEach((key, model) ->
 					step.register(key, model)));
 		}, modeledBlocks, modeledItems);
+		
+		event.registry(RegistryTypes.ENTITY_TYPE, ($, step) ->
+			modeledEntities.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
+			modeledEntities);
 		
 		event.registry(RegistryTypes.BLOCK_TYPE, ($, step) ->
 			modeledBlocks.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
@@ -285,6 +300,11 @@ public final class RegistryEventListener {
 		event.registry(ItemDefinition.registry(), ($, step) ->
 			modeledItems.get().streamEntries().forEach(e -> step.register(e.key(), e.value().definition())),
 			modeledItems, RegistryTypes.ITEM_TYPE);
+	}
+	
+	@Listener
+	public void freezeRegistries(final FreezeRegistryEvent.Post.GameScoped event) {
+		EntityEventListener.fireEvents(event.game(), event.cause());
 	}
 	
 	/* TODO Is this needed?

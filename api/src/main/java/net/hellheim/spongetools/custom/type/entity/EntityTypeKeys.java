@@ -1,27 +1,32 @@
 package net.hellheim.spongetools.custom.type.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.entity.EntityCategory;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.ai.goal.GoalExecutorType;
+import org.spongepowered.api.entity.ai.goal.GoalExecutorTypes;
 import org.spongepowered.api.entity.attribute.AttributeHolder;
+import org.spongepowered.api.entity.living.Agent;
 
 import io.leangen.geantyref.TypeToken;
 import net.hellheim.spongetools.SpongeTools;
+import net.hellheim.spongetools.custom.type.entity.goal.GoalTemplate;
 import net.hellheim.spongetools.object.TypedKey;
 
 public final class EntityTypeKeys {
 	
 	/**
-	 * @see EntityType#category()
-	 */
-	public static final TypedKey<EntityCategory> CATEGORY = TypedKey.of(SpongeTools.key("category"), EntityCategory.class);
-	
-	/**
 	 * The default {@link AttributeHolder}'s attributes.
 	 */
 	public static final TypedKey<EntityDefaultAttributes> ATTRIBUTES = TypedKey.of(SpongeTools.key("attributes"), EntityDefaultAttributes.class);
+	
+	/**
+	 * @see EntityType#category()
+	 */
+	public static final TypedKey<EntityCategory> CATEGORY = TypedKey.of(SpongeTools.key("category"), EntityCategory.class);
 	
 	/**
 	 * The list of flags that built entity should implement. <br>
@@ -33,6 +38,21 @@ public final class EntityTypeKeys {
 	 * @see EntityType#isFlammable()
 	 */
 	public static final TypedKey<Boolean> FLAMMABLE = TypedKey.of(SpongeTools.key("flammable"), Boolean.class);
+	
+	/**
+	 * @see Agent#goal(GoalExecutorType) for {@link GoalExecutorTypes#NORMAL}.
+	 */
+	public static final TypedKey<List<GoalTemplate<?, ?>>> GOALS_NORMAL = TypedKey.of(SpongeTools.key("normal_goals"), new TypeToken<List<GoalTemplate<?, ?>>>() {});
+	
+	/**
+	 * @see Agent#goal(GoalExecutorType) for {@link GoalExecutorTypes#TARGET}.
+	 */
+	public static final TypedKey<List<GoalTemplate<?, ?>>> GOALS_TARGET = TypedKey.of(SpongeTools.key("target_goals"), new TypeToken<List<GoalTemplate<?, ?>>>() {});
+	
+	/**
+	 * The entity drops.
+	 */
+	public static final TypedKey<ResourceKey> LOOT_TABLE = TypedKey.of(SpongeTools.key("loot_table"), ResourceKey.class);
 	
 	/**
 	 * If not set, entity will not be serializable.
@@ -55,11 +75,6 @@ public final class EntityTypeKeys {
 	 * @see EntityType#asComponent()
 	 */
 	public static final TypedKey<String> TRANSLATION_KEY = TypedKey.of(SpongeTools.key("translation_key"), String.class);
-	
-	/**
-	 * The entity drops.
-	 */
-	public static final TypedKey<ResourceKey> LOOT_TABLE = TypedKey.of(SpongeTools.key("loot_table"), ResourceKey.class);
 	
 	private EntityTypeKeys() {
 	}
