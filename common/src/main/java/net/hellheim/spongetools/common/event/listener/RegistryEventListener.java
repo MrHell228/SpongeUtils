@@ -50,6 +50,7 @@ import net.hellheim.spongetools.common.codec.AdventureCodecsFactory;
 import net.hellheim.spongetools.common.codec.ExtraCodecsFactory;
 import net.hellheim.spongetools.common.codec.SpongeToolsCodecs;
 import net.hellheim.spongetools.common.codec.StringRepresentableCodecsFactory;
+import net.hellheim.spongetools.common.event.listener.data.EquipmentData;
 import net.hellheim.spongetools.common.factory.EffectUtilFactory;
 import net.hellheim.spongetools.common.factory.HitResultFactory;
 import net.hellheim.spongetools.common.factory.InteractionResultFactory;
@@ -68,10 +69,10 @@ import net.hellheim.spongetools.custom.behaviour.util.InteractionResult;
 import net.hellheim.spongetools.custom.behaviour.util.SignalBias;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.SwingType;
-import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockArchetypes;
 import net.hellheim.spongetools.custom.type.block.BlockSoundGroupBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockStateDispatcher;
+import net.hellheim.spongetools.custom.type.block.BlockTypeArchetype;
 import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
@@ -81,8 +82,8 @@ import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeBuilder;
 import net.hellheim.spongetools.custom.type.entity.ModeledEntity;
 import net.hellheim.spongetools.custom.type.item.CustomItemAction;
-import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemArchetypes;
+import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
@@ -148,6 +149,7 @@ public final class RegistryEventListener {
 		new DataProviderRegistratorBuilder() {
 			@Override
 			protected void registerProviders() {
+				EquipmentData.register(this.registrator);
 				this.registrator
 					.asImmutable(Block.class)
 						.create(BlockTypeKeys.LOOT_TABLE)

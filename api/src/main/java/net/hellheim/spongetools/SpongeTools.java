@@ -6,6 +6,8 @@ import org.spongepowered.api.block.BlockSoundGroup;
 import org.spongepowered.api.data.Key;
 import org.spongepowered.api.data.value.ListValue;
 import org.spongepowered.api.data.value.Value;
+import org.spongepowered.api.effect.sound.SoundType;
+import org.spongepowered.api.item.inventory.equipment.EquipmentType;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.registry.RegistryRoots;
@@ -84,6 +86,20 @@ public final class SpongeTools {
 	public static final class Keys {
 		
 		public static final Key<Value<BlockSoundGroup>> BLOCK_SOUND_GROUP = Keys.key("block_sound_group", BlockSoundGroup.class);
+		
+		public static final Key<Value<ResourceKey>> EQUIPMENT_ASSET = Keys.key("equipment_asset", ResourceKey.class);
+		
+		public static final Key<Value<ResourceKey>> EQUIPMENT_CAMERA_OVERLAY = Keys.key("equipment_camera_overlay", ResourceKey.class);
+		
+		public static final Key<Value<Boolean>> EQUIPMENT_DAMAGEABLE = Keys.key("equipment_damageable", Boolean.class);
+		
+		public static final Key<Value<Boolean>> EQUIPMENT_DISPENSABLE = Keys.key("equipment_dispensable", Boolean.class);
+		
+		public static final Key<Value<SoundType>> EQUIPMENT_SOUND = Keys.key("equipment_sound", SoundType.class);
+		
+		public static final Key<Value<Boolean>> EQUIPMENT_SWAPPABLE = Keys.key("equipment_swappable", Boolean.class);
+		
+		public static final Key<Value<EquipmentType>> EQUIPMENT_TYPE = Keys.key("equipment_type", EquipmentType.class);
 		
 		public static final Key<Value<Double>> FRICTION_FACTOR = Keys.key("friction_factor", Double.class);
 		

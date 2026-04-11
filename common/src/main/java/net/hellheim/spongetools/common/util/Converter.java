@@ -16,6 +16,7 @@ import org.spongepowered.api.fluid.FluidState;
 import org.spongepowered.api.fluid.FluidType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.equipment.EquipmentType;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.api.util.Direction;
@@ -45,6 +46,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -223,6 +225,10 @@ public final class Converter {
 		return (SoundType) (Object) sound;
 	}
 	
+	public static EquipmentType asSponge(final EquipmentSlot equipment) {
+		return (EquipmentType) (Object) equipment;
+	}
+	
 	
 	public static ResourceLocation asVanilla(final ResourceKey key) {
 		return (ResourceLocation) (Object) key;
@@ -379,6 +385,10 @@ public final class Converter {
 	
 	public static SoundEvent asVanilla(final SoundType sound) {
 		return (SoundEvent) (Object) sound;
+	}
+	
+	public static EquipmentSlot asVanilla(final EquipmentType equipment) {
+		return (EquipmentSlot) (Object) equipment;
 	}
 	
 	private Converter() {
