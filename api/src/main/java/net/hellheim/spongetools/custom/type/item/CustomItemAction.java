@@ -26,8 +26,6 @@ public interface CustomItemAction extends ItemAction {
 	/**
 	 * This interface is supposed to be implemented by API consumers. <br>
 	 * Codec returned by {@link #mapCodec()} must be registered to {@link CustomItemAction#registry()}.
-	 * 
-	 * @param <C> The type of config
 	 */
 	interface Config extends MapCodecProxy<Config> {
 		

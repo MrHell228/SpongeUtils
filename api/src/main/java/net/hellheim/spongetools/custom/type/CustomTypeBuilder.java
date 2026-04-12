@@ -38,7 +38,6 @@ import net.hellheim.spongetools.object.TypedKeyMap;
  * @see TODO BlockEntityTypeBuilder
  * @see EntityTypeBuilder
  * @see TODO PotionEffectTypeBuilder (no data)
- * @see TODO AttributeTypeBuilder    (no data)
  */
 public interface CustomTypeBuilder<T, I, A extends CustomTypeArchetype<T, I, A>, B extends CustomTypeBuilder<T, I, A, B>>
 		extends Builder<T, B>, TypedKeyMap.Operator<B>, BehaviourCallbackHolder.Mutable<I, B> {
