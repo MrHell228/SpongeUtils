@@ -21,6 +21,8 @@
     "world.entity.EntityType_BuilderAccessor",
     "world.entity.ai.attributes.AttributeMixin",
     "world.entity.ai.attributes.AttributesMixin",
+    "world.entity.ai.attributes.AttributeSupplierAccessor",
+    "world.entity.ai.attributes.DefaultAttributesMixin",
     "world.entity.ai.attributes.RangedAttributeMixin",
     "world.item.BlockItemMixin",
     "world.item.BucketItemMixin",

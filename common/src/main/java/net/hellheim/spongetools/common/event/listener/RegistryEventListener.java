@@ -44,7 +44,7 @@ import net.hellheim.spongetools.common.behaviour.BlockStateDispatcherImpl;
 import net.hellheim.spongetools.common.builder.BlockHitResultBuilder;
 import net.hellheim.spongetools.common.builder.BlockSoundGroupBuilderImpl;
 import net.hellheim.spongetools.common.builder.BlockTypeBuilderImpl;
-import net.hellheim.spongetools.common.builder.CustomAttributesBuilder;
+import net.hellheim.spongetools.common.builder.AttributeBuilderImpl;
 import net.hellheim.spongetools.common.builder.EntityTypeBuilderImpl;
 import net.hellheim.spongetools.common.builder.ItemTypeBuilderImpl;
 import net.hellheim.spongetools.common.codec.AdventureCodecsFactory;
@@ -52,7 +52,6 @@ import net.hellheim.spongetools.common.codec.ExtraCodecsFactory;
 import net.hellheim.spongetools.common.codec.SpongeToolsCodecs;
 import net.hellheim.spongetools.common.codec.StringRepresentableCodecsFactory;
 import net.hellheim.spongetools.common.event.listener.data.EquipmentData;
-import net.hellheim.spongetools.common.factory.CustomAttributesFactory;
 import net.hellheim.spongetools.common.factory.EffectUtilFactory;
 import net.hellheim.spongetools.common.factory.HitResultFactory;
 import net.hellheim.spongetools.common.factory.InteractionResultFactory;
@@ -79,7 +78,7 @@ import net.hellheim.spongetools.custom.type.block.BlockTypeBuilder;
 import net.hellheim.spongetools.custom.type.block.BlockTypeKeys;
 import net.hellheim.spongetools.custom.type.block.ModeledBlock;
 import net.hellheim.spongetools.custom.type.block.StateProperties;
-import net.hellheim.spongetools.custom.type.entity.CustomAttributes;
+import net.hellheim.spongetools.custom.type.entity.AttributeBuilder;
 import net.hellheim.spongetools.custom.type.entity.EntityArchetypes;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeArchetype;
 import net.hellheim.spongetools.custom.type.entity.EntityTypeBuilder;
@@ -128,7 +127,6 @@ public final class RegistryEventListener {
 		event.register(AdventureCodecs.Factory.class, new AdventureCodecsFactory());
 		event.register(StringRepresentableCodecs.Factory.class, new StringRepresentableCodecsFactory());
 		event.register(EntityTypeArchetype.Factory.class, new EntityTypeUtil.ContextFactory());
-		event.register(CustomAttributes.Factory.class, new CustomAttributesFactory());
 	}
 	
 	@Listener
@@ -138,7 +136,7 @@ public final class RegistryEventListener {
 		event.register(EntityTypeBuilder.class, EntityTypeBuilderImpl::new);
 		event.register(BlockTypeBuilder.class, BlockTypeBuilderImpl::new);
 		event.register(ItemTypeBuilder.class, ItemTypeBuilderImpl::new);
-		event.register(CustomAttributes.Builder.class, CustomAttributesBuilder::new);
+		event.register(AttributeBuilder.class, AttributeBuilderImpl::new);
 	}
 	
 	@Listener

@@ -8,11 +8,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.entity.attribute.type.AttributeType;
 import org.spongepowered.api.util.Tristate;
 
-import net.hellheim.spongetools.custom.type.entity.CustomAttributes;
+import net.hellheim.spongetools.custom.type.entity.AttributeBuilder;
 import net.minecraft.world.entity.ai.attributes.Attribute.Sentiment;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 
-public final class CustomAttributesBuilder implements CustomAttributes.Builder {
+public final class AttributeBuilderImpl implements AttributeBuilder {
 	
 	private @Nullable String tranlationKey;
 	private @Nullable Double defaultValue;
@@ -20,24 +20,24 @@ public final class CustomAttributesBuilder implements CustomAttributes.Builder {
 	private double min;
 	private double max;
 	
-	public CustomAttributesBuilder() {
+	public AttributeBuilderImpl() {
 		this.reset();
 	}
 	
 	@Override
-	public CustomAttributes.Builder translationKey(final String key) {
+	public AttributeBuilder translationKey(final String key) {
 		this.tranlationKey = Objects.requireNonNull(key, "key");
 		return this;
 	}
 	
 	@Override
-	public CustomAttributes.Builder defaultValue(final double defaultValue) {
+	public AttributeBuilder defaultValue(final double defaultValue) {
 		this.defaultValue = defaultValue;
 		return this;
 	}
 	
 	@Override
-	public CustomAttributes.Builder sentiment(final Tristate sentiment) {
+	public AttributeBuilder sentiment(final Tristate sentiment) {
 		this.sentiment = switch (Objects.requireNonNull(sentiment, "sentiment")) {
 			case TRUE -> Sentiment.POSITIVE;
 			case UNDEFINED -> Sentiment.NEUTRAL;
@@ -47,14 +47,14 @@ public final class CustomAttributesBuilder implements CustomAttributes.Builder {
 	}
 	
 	@Override
-	public CustomAttributes.Builder ranged(final double min, final double max) {
+	public AttributeBuilder ranged(final double min, final double max) {
 		this.min = min;
 		this.max = max;
 		return this;
 	}
 	
 	@Override
-	public CustomAttributes.Builder reset() {
+	public AttributeBuilder reset() {
 		this.tranlationKey = null;
 		this.defaultValue = null;
 		this.sentiment = Sentiment.NEUTRAL;

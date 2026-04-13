@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import net.hellheim.spongetools.custom.type.entity.EntityDefaultAttributes;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.data.value.ValueContainer;
@@ -39,7 +40,7 @@ public final class EntityTypeUtil {
 	
 	private static final Supplier<? extends org.spongepowered.api.entity.EntityType<?>> NETWORK_ENTITY = EntityTypes.PIG;
 	
-	public static final <E extends Entity> EntityType<E> type(
+	public static <E extends Entity> EntityType<E> type(
 		final Class<E> baseClass,
 		final ValueContainer data, final TypedKeyMap context,
 		final BehaviourCallbackHolderLogic<org.spongepowered.api.entity.Entity> behaviour
@@ -73,8 +74,10 @@ public final class EntityTypeUtil {
 				)));
 		
 		((EntityTypeBridge) type).spongetools$bridge$setData(new AdditionalData(
-				EntityTypeUtil.NETWORK_ENTITY.get()
-				));
+				EntityTypeUtil.NETWORK_ENTITY.get(),
+				LivingEntity.class.isAssignableFrom(baseClass)
+						? context.getOrElse(EntityTypeKeys.ATTRIBUTES, null)
+						: null));
 		
 		((EntityTypeBridge) type).spongetools$bridge$setCallbacks(behaviour);
 		
@@ -82,7 +85,7 @@ public final class EntityTypeUtil {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static final org.spongepowered.api.entity.EntityType<?> type(
+	public static org.spongepowered.api.entity.EntityType<?> type(
 		final EntityTypeArchetype archetype,
 		final ValueContainer data, final TypedKeyMap context,
 		final BehaviourCallbackHolderLogic<org.spongepowered.api.entity.Entity> behaviour
@@ -91,7 +94,7 @@ public final class EntityTypeUtil {
 				(Class<Entity>) archetype.baseClass(), data, context, behaviour);
 	}
 	
-	public static final <E extends Entity> EntityTypeArchetype archetype(
+	public static <E extends Entity> EntityTypeArchetype archetype(
 		final @Nullable EntityTypeArchetype parent, final Class<E> baseClass
 	) {
 		return EntityTypeArchetype.of(Optional.ofNullable(parent), baseClass);
@@ -134,8 +137,10 @@ public final class EntityTypeUtil {
 		}
 	}
 	
-	public record AdditionalData(org.spongepowered.api.entity.EntityType<?> networkType) {
-		
+	public record AdditionalData(
+            org.spongepowered.api.entity.EntityType<?> networkType,
+            @Nullable EntityDefaultAttributes attributes
+    ) {
 	}
 	
 	private EntityTypeUtil() {
