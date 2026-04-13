@@ -2,6 +2,8 @@ package net.hellheim.spongetools.common.builder;
 
 import java.util.Objects;
 
+import net.hellheim.spongetools.bridge.AttributeBridge;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.entity.attribute.type.AttributeType;
 import org.spongepowered.api.util.Tristate;
@@ -69,8 +71,10 @@ public final class CustomAttributesBuilder implements CustomAttributes.Builder {
 			throw new IllegalStateException("Default value must be set");
 		}
 		
-		return (AttributeType) new RangedAttribute(this.tranlationKey, this.defaultValue, this.min, this.max)
+		final Attribute attribute = new RangedAttribute(this.tranlationKey, this.defaultValue, this.min, this.max)
 				.setSyncable(false)
 				.setSentiment(this.sentiment);
+        ((AttributeBridge) attribute).spongetools$bridge$setCustom();
+        return (AttributeType) attribute;
 	}
 }

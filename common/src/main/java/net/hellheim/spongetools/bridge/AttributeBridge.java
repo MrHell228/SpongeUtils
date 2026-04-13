@@ -5,4 +5,6 @@ import java.util.function.DoubleUnaryOperator;
 public interface AttributeBridge {
 	
 	void spongetools$bridge$modifyBase(DoubleUnaryOperator modifier);
+
+    void spongetools$bridge$setCustom();
 }
