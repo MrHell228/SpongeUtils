@@ -1,11 +1,10 @@
 subprojects {
-	apply plugin: 'java-library'
+	apply plugin: "java-library"
 	
 	repositories {
-        jcenter()
-		maven {
-			name = 'sponge'
-			url = 'https://repo.spongepowered.org/repository/maven-public/'
+        maven {
+			name = "sponge"
+			url = "https://repo.spongepowered.org/repository/maven-public/"
 		}
 		maven {
 			name = "sonatype-oss-snapshots1"
@@ -18,9 +17,7 @@ subprojects {
 	group = project.plugin_group
 	java.toolchain.languageVersion = JavaLanguageVersion.of(project.java_version)
 	
-	compileJava.options.encoding = 'UTF-8'
-	targetCompatibility = 21
-	sourceCompatibility = 21
+	compileJava.options.encoding = "UTF-8"
 }
 
 [sub_api, sub_common, sub_vanilla, sub_forge, sub_neoforge].each {
@@ -33,7 +30,7 @@ project(":$sub_api") {
 		api "org.spongepowered:spongeapi:${spongeapi_version}"
 		
 		// DataFixerUpper
-		api 'com.mojang:datafixerupper:8.0.16'
+		api "com.mojang:datafixerupper:${lib_version_dfu}"
 	}
 	
 	base.archivesName = project.plugin_name + "-api"
@@ -52,11 +49,11 @@ project(":$sub_common") {
 		api "org.spongepowered:sponge:${sponge_version}"
 		
 		// Mixins
-		api 'org.spongepowered:mixin:0.8.7'
-		api 'io.github.llamalad7:mixinextras-neoforge:0.4.1'
+		api "org.spongepowered:mixin:${lib_version_mixin}"
+		api "io.github.llamalad7:mixinextras-common:${lib_version_mixinextras}"
 		
 		// Dynamic class creation
-		api 'net.bytebuddy:byte-buddy:1.14.3'
+		api "net.bytebuddy:byte-buddy:${lib_version_bytebuddy}"
 	}
 	
 	jar {
