@@ -27,7 +27,7 @@ import net.hellheim.spongetools.common.event.listener.RegistryEventListener;
 import net.hellheim.spongetools.common.event.listener.ResourcePackEventListener;
 import net.hellheim.spongetools.common.web.MineHttpd;
 import net.hellheim.spongetools.proxy.solid.PluginProxy;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @Plugin(SpongeTools.NAMESPACE)
 public final class SpongeToolsPlugin implements PluginProxy {
@@ -70,8 +70,8 @@ public final class SpongeToolsPlugin implements PluginProxy {
 		return this.plugin;
 	}
 	
-	public static ResourceLocation location(final String key) {
-		return ResourceLocation.fromNamespaceAndPath(SpongeTools.NAMESPACE, key);
+	public static Identifier location(final String key) {
+		return Identifier.fromNamespaceAndPath(SpongeTools.NAMESPACE, key);
 	}
 	
 	public static boolean customMiningEnabled() {

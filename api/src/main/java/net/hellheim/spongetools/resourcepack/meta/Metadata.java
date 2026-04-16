@@ -3,14 +3,16 @@ package net.hellheim.spongetools.resourcepack.meta;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
+
+import org.spongepowered.api.resource.pack.PackType;
 
 import com.mojang.serialization.Codec;
 
-import net.hellheim.spongetools.proxy.solid.codec.CodecProxy;
-
-public record Metadata(List<MetadataSection> sections) implements CodecProxy<Metadata>, MetadataLike {
+public record Metadata(List<MetadataSection> sections) implements MetadataLike {
 	
-	public static final Codec<Metadata> CODEC = MetadataSection.LIST_CODEC.xmap(Metadata::new, Metadata::sections);
+	public static final Codec<Metadata> CODEC_CLIENT = Metadata.codec(PackType::client);
+	public static final Codec<Metadata> CODEC_SERVER = Metadata.codec(PackType::server);
 	
 	public Metadata(final List<MetadataSection> sections) {
 		this.sections = List.copyOf(sections);
@@ -24,9 +26,12 @@ public record Metadata(List<MetadataSection> sections) implements CodecProxy<Met
 		return new Metadata(sections.stream().map(MetadataSectionLike::asSection).toList());
 	}
 	
-	@Override
-	public Codec<Metadata> codec() {
-		return CODEC;
+	private static Codec<Metadata> codec(final Supplier<PackType> type) {
+		return Codec.lazyInitialized(() -> (type.get() == PackType.client()
+				? MetadataSection.LIST_CODEC_CLIENT
+				: MetadataSection.LIST_CODEC_SERVER).xmap(
+						sections -> new Metadata(sections),
+						Metadata::sections));
 	}
 	
 	@Override

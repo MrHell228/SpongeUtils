@@ -26,10 +26,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.HoverEvent.EntityTooltipInfo;
-import net.minecraft.network.chat.HoverEvent.ItemStackInfo;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 	
@@ -74,12 +73,12 @@ public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 	
 	@Override
 	public Codec<ShowItem> showItem() {
-		return ItemStackInfo.CODEC.xmap(AdventureCodecsFactory::asAdventure, AdventureCodecsFactory::asVanilla);
+		return net.minecraft.network.chat.HoverEvent.ShowItem.CODEC.xmap(AdventureCodecsFactory::asAdventure, AdventureCodecsFactory::asVanilla).codec();
 	}
 	
 	@Override
 	public Codec<ShowEntity> showEntity() {
-		return EntityTooltipInfo.CODEC.xmap(AdventureCodecsFactory::asAdventure, AdventureCodecsFactory::asVanilla);
+		return EntityTooltipInfo.CODEC.xmap(AdventureCodecsFactory::asAdventure, AdventureCodecsFactory::asVanilla).codec();
 	}
 	
 	@Override
@@ -94,7 +93,7 @@ public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 	
 	@Override
 	public Codec<ClickEvent.Action> clickEventAction() {
-		return net.minecraft.network.chat.ClickEvent.Action.CODEC.codec().xmap(SpongeAdventure::asAdventure, SpongeAdventure::asVanilla);
+		return net.minecraft.network.chat.ClickEvent.Action.CODEC.xmap(SpongeAdventure::asAdventure, SpongeAdventure::asVanilla);
 	}
 	
 	@Override
@@ -114,12 +113,12 @@ public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 	
 	@Override
 	public Codec<Component> flatComponent() {
-		return ComponentSerialization.FLAT_CODEC.xmap(SpongeAdventure::asAdventure, SpongeAdventure::asVanilla);
+		return ComponentSerialization.flatRestrictedCodec(Integer.MAX_VALUE).xmap(SpongeAdventure::asAdventure, SpongeAdventure::asVanilla);
 	}
 	
 	@Override
 	public Codec<Component> flatComponent(final int maxSize) {
-		return ComponentSerialization.flatCodec(maxSize).xmap(SpongeAdventure::asAdventure, SpongeAdventure::asVanilla);
+		return ComponentSerialization.flatRestrictedCodec(maxSize).xmap(SpongeAdventure::asAdventure, SpongeAdventure::asVanilla);
 	}
 	
 	@Override
@@ -154,13 +153,13 @@ public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 	
 	// This should really be separated into specific methods in SpongeAdventure :<
 	
-	private static ShowItem asAdventure(final ItemStackInfo info) {
+	private static ShowItem asAdventure(final net.minecraft.network.chat.HoverEvent.ShowItem show) {
 		final Registry<Item> itemRegistry = SpongeCommon.vanillaRegistry(Registries.ITEM);
-		final ItemStack itemStack = info.getItemStack();
+		final var info = show.item();
 		return ShowItem.showItem(
-				SpongeAdventure.asAdventure(itemRegistry.getKey(itemStack.getItem())),
-				itemStack.getCount(),
-				SpongeAdventure.asAdventure(itemStack.getComponentsPatch())
+				SpongeAdventure.asAdventure(itemRegistry.getKey(info.item().value())),
+				info.count(),
+				SpongeAdventure.asAdventure(info.components())
 				);
 	}
 	
@@ -168,12 +167,12 @@ public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 		final Registry<EntityType<?>> entityTypeRegistry = SpongeCommon.vanillaRegistry(Registries.ENTITY_TYPE);
 		return ShowEntity.showEntity(
 				SpongeAdventure.asAdventure(entityTypeRegistry.getKey(info.type)),
-				info.id,
+				info.uuid,
 				SpongeAdventure.asAdventure(info.name)
 				);
 	}
 	
-	private static HoverEvent.Action<?> asAdventure(final net.minecraft.network.chat.HoverEvent.Action<?> action) {
+	private static HoverEvent.Action<?> asAdventure(final net.minecraft.network.chat.HoverEvent.Action action) {
 		if (action == net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT) {
 			return HoverEvent.Action.SHOW_TEXT;
 		} else if (action == net.minecraft.network.chat.HoverEvent.Action.SHOW_ITEM) {
@@ -186,18 +185,17 @@ public final class AdventureCodecsFactory implements AdventureCodecs.Factory {
 	}
 	
 	private static ClickEvent asAdventure(final net.minecraft.network.chat.ClickEvent event) {
-		return ClickEvent.clickEvent(SpongeAdventure.asAdventure(event.getAction()), event.getValue());
+		return SpongeAdventure.asAdventure(event);
 	}
 	
-	private static ItemStackInfo asVanilla(final ShowItem info) {
-		// TODO make mixin
-		return (ItemStackInfo) null;
-		/*final Registry<Item> itemRegistry = SpongeCommon.vanillaRegistry(Registries.ITEM);
-		return HoverEvent_ItemStackInfoAccessor.invoker$new(
-				itemRegistry.getValue(SpongeAdventure.asVanilla(adventure.item())).builtInRegistryHolder(),
-				adventure.count(),
-				SpongeAdventure.asVanilla(adventure.dataComponents())
-				);*/
+	@SuppressWarnings("deprecation")
+	private static net.minecraft.network.chat.HoverEvent.ShowItem asVanilla(final ShowItem info) {
+		final Registry<Item> itemRegistry = SpongeCommon.vanillaRegistry(Registries.ITEM);
+		return new net.minecraft.network.chat.HoverEvent.ShowItem(new ItemStackTemplate(
+				itemRegistry.getValue(SpongeAdventure.asVanilla(info.item())).builtInRegistryHolder(),
+				info.count(),
+				SpongeAdventure.asVanilla(info.dataComponents())
+				));
 	}
 	
 	private static EntityTooltipInfo asVanilla(final ShowEntity info) {

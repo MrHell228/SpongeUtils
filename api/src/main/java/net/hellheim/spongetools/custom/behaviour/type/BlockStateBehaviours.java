@@ -29,7 +29,8 @@ import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.CloneI
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.ExplosionHit;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Locatable;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.LocatableEntity;
-import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Replace;
+import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Place;
+import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Remove;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.ReplaceableByBlock;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.ReplaceableByFluid;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.ShapeUpdate;
@@ -50,7 +51,7 @@ public final class BlockStateBehaviours {
 	/**
 	 * Signal that will power neighbour blocks.
 	 */
-	public static final BehaviourType<SignalPower> DIRECT_SIGNAL = BehaviourType.of(SpongeTools.key("direct_signal"));
+	public static final BehaviourType<SignalPower<PrimitiveGameVolume>> DIRECT_SIGNAL = BehaviourType.of(SpongeTools.key("direct_signal"));
 	
 	/**
 	 * Signal that will go through neighbour blocks. <br>
@@ -61,12 +62,12 @@ public final class BlockStateBehaviours {
 	 * 
 	 * Used by {@link BlockTypes#REPEATER} (horizontally) and other redstone-related blocks (upwards).
 	 */
-	public static final BehaviourType<SignalPower> INDIRECT_SIGNAL = BehaviourType.of(SpongeTools.key("indirect_signal"));
+	public static final BehaviourType<SignalPower<PrimitiveGameVolume>> INDIRECT_SIGNAL = BehaviourType.of(SpongeTools.key("indirect_signal"));
 	
 	/**
 	 * Result of this behaviour is usually used by {@link BlockTypes#COMPARATOR}.
 	 */
-	public static final BehaviourType<Locatable<Integer, World<?, ?>>> ANALOG_SIGNAL = BehaviourType.of(SpongeTools.key("analog_signal"));
+	public static final BehaviourType<SignalPower<World<?, ?>>> ANALOG_SIGNAL = BehaviourType.of(SpongeTools.key("analog_signal"));
 	
 	/**
 	 * The strength of the block for destruction. <br>
@@ -96,7 +97,7 @@ public final class BlockStateBehaviours {
 	public static final BehaviourType<Tick> RANDOM_TICK = BehaviourType.of(SpongeTools.key("random_tick"));
 	
 	/**
-	 * Used to decide whether block should recieve natural random ticks.
+	 * Used to decide whether block should receive natural random ticks.
 	 * 
 	 * @see #RANDOM_TICK
 	 */
@@ -110,12 +111,12 @@ public final class BlockStateBehaviours {
 	/**
 	 * Called when {@link BlockState} enters the world.
 	 */
-	public static final BehaviourType<Replace> PLACE = BehaviourType.of(SpongeTools.key("place"));
+	public static final BehaviourType<Place> PLACE = BehaviourType.of(SpongeTools.key("place"));
 	
 	/**
 	 * Called when {@link BlockState} leaves the world.
 	 */
-	public static final BehaviourType<Replace> REMOVE = BehaviourType.of(SpongeTools.key("remove"));
+	public static final BehaviourType<Remove> REMOVE = BehaviourType.of(SpongeTools.key("remove"));
 	
 	/**
 	 * Called when {@link BlockState} is interacted with by the explosion.

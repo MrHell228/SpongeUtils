@@ -383,7 +383,7 @@ public final class MutableVector4d implements Vectord {
 	
 	@Override
 	public Vector4d toDouble() {
-		return new Vector4d((double) this.x, (double) this.y, (double) this.z, (double) this.w);
+		return new Vector4d(this.x, this.y, this.z, this.w);
 	}
 	
 	@Override

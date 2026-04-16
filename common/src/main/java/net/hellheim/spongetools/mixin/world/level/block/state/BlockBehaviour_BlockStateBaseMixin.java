@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.hellheim.spongetools.bridge.BlockStateBaseBridge;
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.common.behaviour.BlockStateArgs;
+import net.hellheim.spongetools.common.behaviour.BlockStateArgs.SignalPower;
 import net.hellheim.spongetools.common.behaviour.CommonArgs;
 import net.hellheim.spongetools.common.util.BucketUtil;
 import net.hellheim.spongetools.common.util.Converter;
@@ -241,7 +242,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                                 Converter.asVanilla(args.position()),
                                 Converter.asVanilla(args.direction().opposite())
                                 ),
-                        new BlockStateArgs.SignalPower(
+                        new BlockStateArgs.SignalPower<>(
                                 Converter.asSponge(getter),
                                 Converter.asSponge(pos),
                                 Converter.asSponge(dir).opposite()
@@ -264,7 +265,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                                 Converter.asVanilla(args.position()),
                                 Converter.asVanilla(args.direction().opposite())
                                 ),
-                        new BlockStateArgs.SignalPower(
+                        new BlockStateArgs.SignalPower<>(
                                 Converter.asSponge(getter),
                                 Converter.asSponge(pos),
                                 Converter.asSponge(dir).opposite()
@@ -282,7 +283,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
 
     @WrapMethod(method = "getAnalogOutputSignal")
     private int spongetools$wrap$getAnalogOutputSignal(
-            final Level level, final BlockPos pos,
+            final Level level, final BlockPos pos, final Direction dir,
             final Operation<Integer> original
     ) {
         final var callback = this.spongetools$impl$callback(BlockStateBehaviours.ANALOG_SIGNAL);
@@ -292,11 +293,13 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                         this,
                         args -> original.call(
                                 Converter.asVanilla(args.volume()),
-                                Converter.asVanilla(args.position())
+                                Converter.asVanilla(args.position()),
+                                Converter.asVanilla(args.direction())
                                 ),
-                        new BlockStateArgs.Locatable<>(
+                        new SignalPower<>(
                                 Converter.asSponge(level),
-                                Converter.asSponge(pos)
+                                Converter.asSponge(pos),
+                                Converter.asSponge(dir).opposite()
                                 )
                         );
     }
@@ -451,7 +454,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                             Converter.asVanilla(args.otherState()),
                             args.movedByPiston()
                             ),
-                    new BlockStateArgs.Replace(
+                    new BlockStateArgs.Place(
                             Converter.asSponge(level),
                             Converter.asSponge(pos),
                             Converter.asSponge(newState),
@@ -463,25 +466,23 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
 
     @WrapMethod(method = "onRemove")
     private void spongetools$warp$onRemove(
-            final Level level, final BlockPos pos, final BlockState newState, final boolean movedByPiston,
+            final Level level, final BlockPos pos, final boolean movedByPiston,
             final Operation<Void> original
     ) {
         final var callback = this.spongetools$impl$callback(BlockStateBehaviours.REMOVE);
         if (callback == null) {
-            original.call(level, pos, newState, movedByPiston);
+            original.call(level, pos, movedByPiston);
         } else {
             callback.call(
                     this,
                     args -> original.call(
                             Converter.asVanilla(args.volume()),
                             Converter.asVanilla(args.position()),
-                            Converter.asVanilla(args.otherState()),
                             args.movedByPiston()
                             ),
-                    new BlockStateArgs.Replace(
+                    new BlockStateArgs.Remove(
                             Converter.asSponge(level),
                             Converter.asSponge(pos),
-                            Converter.asSponge(newState),
                             movedByPiston
                             )
                     );

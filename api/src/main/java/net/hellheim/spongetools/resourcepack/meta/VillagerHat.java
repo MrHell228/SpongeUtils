@@ -1,14 +1,12 @@
-package net.hellheim.spongetools.resourcepack.util;
+package net.hellheim.spongetools.resourcepack.meta;
 
 import org.spongepowered.api.data.type.StringRepresentable;
 
 import com.mojang.serialization.Codec;
 
 import net.hellheim.spongetools.codec.StringRepresentableCodec;
-import net.hellheim.spongetools.resourcepack.meta.MetadataSection;
-import net.hellheim.spongetools.resourcepack.meta.MetadataSectionLike;
 
-public enum VillagerHat implements StringRepresentable, MetadataSectionLike {
+public enum VillagerHat implements StringRepresentable, MetadataSectionLike.ClientSection {
 	
 	NONE,
 	

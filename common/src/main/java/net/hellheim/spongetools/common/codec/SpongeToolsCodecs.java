@@ -34,11 +34,17 @@ public final class SpongeToolsCodecs {
 	}
 	
 	private static void metadataSections() {
-		MetadataSection.ID_MAPPER.put("pack", MetadataSection.Pack.CODEC.codec());
-		MetadataSection.ID_MAPPER.put("villager", MetadataSection.Villager.CODEC.codec());
-		MetadataSection.ID_MAPPER.put("gui", MetadataSection.Gui.CODEC.codec());
-		MetadataSection.ID_MAPPER.put("texture", MetadataSection.Texture.CODEC.codec());
-		MetadataSection.ID_MAPPER.put("animation", MetadataSection.Animation.CODEC.codec());
+		MetadataSection.ID_MAPPER_CLIENT.put("pack", MetadataSection.Pack.CODEC_CLIENT);
+		MetadataSection.ID_MAPPER_CLIENT.put("overlays", MetadataSection.Overlays.CODEC_CLIENT);
+		MetadataSection.ID_MAPPER_SERVER.put("filter", MetadataSection.Filter.CODEC);
+		MetadataSection.ID_MAPPER_CLIENT.put("villager", MetadataSection.Villager.CODEC);
+		MetadataSection.ID_MAPPER_CLIENT.put("gui", MetadataSection.Gui.CODEC);
+		MetadataSection.ID_MAPPER_CLIENT.put("texture", MetadataSection.Texture.CODEC);
+		MetadataSection.ID_MAPPER_CLIENT.put("animation", MetadataSection.Animation.CODEC);
+		
+		MetadataSection.ID_MAPPER_SERVER.put("pack", MetadataSection.Pack.CODEC_SERVER);
+		MetadataSection.ID_MAPPER_SERVER.put("overlays", MetadataSection.Overlays.CODEC_SERVER);
+		MetadataSection.ID_MAPPER_SERVER.put("filter", MetadataSection.Filter.CODEC);
 	}
 	
 	private static void specialModels() {

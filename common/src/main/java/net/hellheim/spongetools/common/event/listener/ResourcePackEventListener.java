@@ -40,6 +40,7 @@ import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
 
 public final class ResourcePackEventListener {
 	
@@ -84,10 +85,12 @@ public final class ResourcePackEventListener {
 		
 		// TODO figure out what this TODO means
 		try (final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(this.packResult))) {
+			final PackFormat format = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES);
 			final MetadataSection packmeta = MetadataSection.pack(
+					org.spongepowered.api.resource.pack.PackType.client(),
 					Component.text("Resource pack made with SpongeTools"),
-					SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
-			this.writeEntry(out, Metadata.CODEC, "pack.mcmeta", "pack.mcmeta", packmeta.asMetadata());
+					new net.hellheim.spongetools.resourcepack.meta.PackFormat(format.major(), format.minor()));
+			this.writeEntry(out, Metadata.CODEC_CLIENT, "pack.mcmeta", "pack.mcmeta", packmeta.asMetadata());
 			
 			final File copy = this.assetsToCopy;
 			if (copy.exists() && copy.isDirectory()) {

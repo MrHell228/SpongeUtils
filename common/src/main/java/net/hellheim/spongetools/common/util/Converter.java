@@ -41,7 +41,7 @@ import net.hellheim.spongetools.custom.behaviour.util.SwingType;
 import net.hellheim.spongetools.custom.behaviour.util.UseContext;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -68,7 +68,7 @@ import net.minecraft.world.phys.Vec3;
 
 public final class Converter {
 	
-	public static ResourceKey asSponge(final ResourceLocation location) {
+	public static ResourceKey asSponge(final Identifier location) {
 		return (ResourceKey) (Object) location;
 	}
 	
@@ -230,8 +230,8 @@ public final class Converter {
 	}
 	
 	
-	public static ResourceLocation asVanilla(final ResourceKey key) {
-		return (ResourceLocation) (Object) key;
+	public static Identifier asVanilla(final ResourceKey key) {
+		return (Identifier) (Object) key;
 	}
 	
 	public static BlockGetter asVanilla(final PrimitiveGameVolume volume) {

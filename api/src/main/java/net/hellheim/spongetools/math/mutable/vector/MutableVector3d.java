@@ -344,7 +344,7 @@ public final class MutableVector3d implements Vectord {
 	
 	@Override
 	public Vector3d toDouble() {
-		return new Vector3d((double) this.x, (double) this.y, (double) this.z);
+		return new Vector3d(this.x, this.y, this.z);
 	}
 	
 	@Override

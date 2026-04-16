@@ -73,7 +73,7 @@ public interface DataOperator<B extends DataOperator<B>> {
 	 * @return This builder, for chaining
 	 */
 	default <V> B add(final Value<V> value) {
-		return (B) this.add(value.key(), value.get());
+		return this.add(value.key(), value.get());
 	}
 	
 	/**

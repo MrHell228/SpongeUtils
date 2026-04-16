@@ -16,6 +16,7 @@ import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviours;
 import net.hellheim.spongetools.event.RegisterBehaviourDataEvent;
 import net.hellheim.spongetools.mixin.world.level.block.state.BlockBehaviourAccessor;
 import net.hellheim.spongetools.mixin.world.level.block.state.BlockBehaviour_PropertiesAccessor;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -72,9 +73,10 @@ public final class BehaviourEventListener {
 								Converter.asVanilla(direction).getOpposite()
 								))
 				.register(BlockStateBehaviours.ANALOG_SIGNAL,
-						(state) -> (volume, position) -> state.getAnalogOutputSignal(
+						(state) -> (volume, position, direction) -> state.getAnalogOutputSignal(
 								Converter.asVanilla(volume),
-								Converter.asVanilla(position)
+								Converter.asVanilla(position),
+								Converter.asVanilla(direction).getOpposite()
 								))
 				.register(BlockStateBehaviours.DESTRUCTION_RESISTANCE,
 						(state) -> (volume, position) -> (double) state.getDestroySpeed(
@@ -106,7 +108,10 @@ public final class BehaviourEventListener {
 							state.entityInside(
 									Converter.asVanilla(volume),
 									Converter.asVanilla(position),
-									Converter.asVanilla(entity)
+									Converter.asVanilla(entity),
+									// TODO expose
+									InsideBlockEffectApplier.NOOP,
+									true
 									);
 							return null;
 						})
@@ -118,10 +123,9 @@ public final class BehaviourEventListener {
 								movedByPiston
 								))
 				.register(BlockStateBehaviours.REMOVE,
-						(state) -> (volume, position, otherState, movedByPiston) -> state.onRemove(
+						(state) -> (volume, position, movedByPiston) -> state.affectNeighborsAfterRemoval(
 								Converter.asVanilla(volume),
 								Converter.asVanilla(position),
-								Converter.asVanilla(otherState),
 								movedByPiston
 								))
 				.register(BlockStateBehaviours.EXPLOSION,

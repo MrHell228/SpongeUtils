@@ -15,7 +15,7 @@ import net.hellheim.spongetools.codec.LateBoundIdMapper;
 import net.hellheim.spongetools.codec.list.ExtraCodecs;
 import net.hellheim.spongetools.proxy.solid.codec.MapCodecProxy;
 
-public interface GuiScaling extends MapCodecProxy<GuiScaling>, MetadataSectionLike {
+public interface GuiScaling extends MapCodecProxy<GuiScaling>, MetadataSectionLike.ClientSection {
 	
 	GuiScaling DEFAULT = GuiScaling.stretch();
 	

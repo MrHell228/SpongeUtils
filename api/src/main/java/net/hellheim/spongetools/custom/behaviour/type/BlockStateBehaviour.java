@@ -18,7 +18,6 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.explosion.Explosion;
 import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.api.world.volume.Volume;
-import org.spongepowered.api.world.volume.game.PrimitiveGameVolume;
 import org.spongepowered.api.world.volume.game.Region;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
 import org.spongepowered.math.vector.Vector3i;
@@ -67,19 +66,19 @@ public interface BlockStateBehaviour<R, A extends BehaviourArgs> extends Behavio
 	}
 	
 	@FunctionalInterface
-	interface SignalPower extends BlockStateBehaviour<Integer, SignalPower.Args> {
+	interface SignalPower<V extends Volume> extends BlockStateBehaviour<Integer, SignalPower.Args<V>> {
 		
 		@Override
-		default Integer call(final Args args) {
+		default Integer call(final Args<V> args) {
 			return this.call(args.volume(), args.position(), args.direction());
 		}
 		
-		int call(PrimitiveGameVolume volume, Vector3i position, Direction direction);
+		int call(V volume, Vector3i position, Direction direction);
 		
-		interface Args extends
-				BehaviourArgs.Volumed<PrimitiveGameVolume, Args>,
-				BehaviourArgs.Positional<Args>,
-				BehaviourArgs.Directional<Args> {
+		interface Args<V extends Volume> extends
+				BehaviourArgs.Volumed<V, Args<V>>,
+				BehaviourArgs.Positional<Args<V>>,
+				BehaviourArgs.Directional<Args<V>> {
 		}
 	}
 	
@@ -102,7 +101,7 @@ public interface BlockStateBehaviour<R, A extends BehaviourArgs> extends Behavio
 	}
 	
 	@FunctionalInterface
-	interface Replace extends BlockStateBehaviour<Void, Replace.Args> {
+	interface Place extends BlockStateBehaviour<Void, Place.Args> {
 		
 		@Override
 		default Void call(final Args args) {
@@ -118,9 +117,30 @@ public interface BlockStateBehaviour<R, A extends BehaviourArgs> extends Behavio
 			
 			BlockState otherState();
 			
+			Args withOtherState(BlockState otherState);
+			
 			boolean movedByPiston();
 			
-			Args withOtherState(BlockState otherState);
+			Args withMovedByPiston(boolean movedByPiston);
+		}
+	}
+	
+	@FunctionalInterface
+	interface Remove extends BlockStateBehaviour<Void, Remove.Args> {
+		
+		@Override
+		default Void call(final Args args) {
+			this.call(args.volume(), args.position(), args.movedByPiston());
+			return null;
+		}
+		
+		void call(ServerWorld volume, Vector3i position, boolean movedByPiston);
+		
+		interface Args extends
+				BehaviourArgs.Volumed<ServerWorld, Args>,
+				BehaviourArgs.Positional<Args> {
+			
+			boolean movedByPiston();
 			
 			Args withMovedByPiston(boolean movedByPiston);
 		}

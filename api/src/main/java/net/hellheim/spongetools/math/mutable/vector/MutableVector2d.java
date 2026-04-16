@@ -307,7 +307,7 @@ public final class MutableVector2d implements Vectord {
 	
 	@Override
 	public Vector2d toDouble() {
-		return new Vector2d((double) this.x, (double) this.y);
+		return new Vector2d(this.x, this.y);
 	}
 	
 	@Override

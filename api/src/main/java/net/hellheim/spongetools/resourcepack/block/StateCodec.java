@@ -191,8 +191,7 @@ interface StateCodec<A> extends Codec<A> {
 			
 			final @Nullable T part = ops.get(input, StateCodec.KEY_PART).result().orElse(null);
 			if (part != null) {
-				return (DataResult<Pair<BlockDefinition, T>>) (Object)
-						BlockDefinition.MultiPart.CODEC.decode(ops, input);
+				return (DataResult<Pair<BlockDefinition, T>>) BlockDefinition.MultiPart.CODEC.decode(ops, input);
 			}
 			
 			return DataResult.error(() -> "Unknown BlockDefinition");

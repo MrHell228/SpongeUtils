@@ -157,7 +157,7 @@ public final class RegistryEventListener {
 					.asImmutable(Block.class)
 						.create(BlockTypeKeys.LOOT_TABLE)
 							.get(v -> v.getLootTable()
-								.map(net.minecraft.resources.ResourceKey::location)
+								.map(net.minecraft.resources.ResourceKey::identifier)
 								.map(Converter::asSponge)
 								.orElse(null))
 						.create(BlockTypeKeys.MAP_COLOR)

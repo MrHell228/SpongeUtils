@@ -17,12 +17,12 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.explosion.Explosion;
 import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.api.world.volume.Volume;
-import org.spongepowered.api.world.volume.game.PrimitiveGameVolume;
 import org.spongepowered.api.world.volume.game.Region;
 import org.spongepowered.api.world.volume.game.UpdatableVolume;
 import org.spongepowered.math.vector.Vector3i;
 
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour;
+import net.hellheim.spongetools.custom.behaviour.type.BlockStateBehaviour.Place.Args;
 import net.hellheim.spongetools.custom.behaviour.util.HitResult;
 import net.hellheim.spongetools.custom.behaviour.util.SignalOrientation;
 import net.hellheim.spongetools.custom.behaviour.util.UseContext;
@@ -63,22 +63,22 @@ public final class BlockStateArgs {
 		}
 	}
 	
-	public record SignalPower(PrimitiveGameVolume volume, Vector3i position, Direction direction)
-			implements BlockStateBehaviour.SignalPower.Args {
+	public record SignalPower<V extends Volume>(V volume, Vector3i position, Direction direction)
+			implements BlockStateBehaviour.SignalPower.Args<V> {
 		
 		@Override
-		public SignalPower withVolume(final PrimitiveGameVolume volume) {
-			return new SignalPower(Objects.requireNonNull(volume, "volume"), this.position, this.direction);
+		public SignalPower<V> withVolume(final V volume) {
+			return new SignalPower<>(Objects.requireNonNull(volume, "volume"), this.position, this.direction);
 		}
 		
 		@Override
-		public SignalPower withPosition(final Vector3i position) {
-			return new SignalPower(this.volume, Objects.requireNonNull(position, "position"), this.direction);
+		public SignalPower<V> withPosition(final Vector3i position) {
+			return new SignalPower<>(this.volume, Objects.requireNonNull(position, "position"), this.direction);
 		}
 		
 		@Override
-		public SignalPower withDirection(final Direction direction) {
-			return new SignalPower(this.volume, this.position, Objects.requireNonNull(direction, "direction"));
+		public SignalPower<V> withDirection(final Direction direction) {
+			return new SignalPower<>(this.volume, this.position, Objects.requireNonNull(direction, "direction"));
 		}
 	}
 	
@@ -101,27 +101,46 @@ public final class BlockStateArgs {
 		}
 	}
 	
-	public record Replace(World<?, ?> volume, Vector3i position, BlockState otherState, boolean movedByPiston)
-			implements BlockStateBehaviour.Replace.Args {
+	public record Place(World<?, ?> volume, Vector3i position, BlockState otherState, boolean movedByPiston)
+			implements BlockStateBehaviour.Place.Args {
 		
 		@Override
-		public Replace withVolume(final World<?, ?> volume) {
-			return new Replace(Objects.requireNonNull(volume, "volume"), this.position, this.otherState, this.movedByPiston);
+		public Place withVolume(final World<?, ?> volume) {
+			return new Place(Objects.requireNonNull(volume, "volume"), this.position, this.otherState, this.movedByPiston);
 		}
 		
 		@Override
-		public Replace withPosition(final Vector3i position) {
-			return new Replace(this.volume, Objects.requireNonNull(position, "position"), this.otherState, this.movedByPiston);
+		public Place withPosition(final Vector3i position) {
+			return new Place(this.volume, Objects.requireNonNull(position, "position"), this.otherState, this.movedByPiston);
 		}
 		
 		@Override
-		public Replace withOtherState(final BlockState otherState) {
-			return new Replace(this.volume, this.position, Objects.requireNonNull(otherState, "otherState"), this.movedByPiston);
+		public Args withOtherState(final BlockState otherState) {
+			return new Place(this.volume, this.position, Objects.requireNonNull(otherState, "otherState"), this.movedByPiston);
 		}
 		
 		@Override
-		public Replace withMovedByPiston(final boolean movedByPiston) {
-			return new Replace(this.volume, this.position, this.otherState, movedByPiston);
+		public Place withMovedByPiston(final boolean movedByPiston) {
+			return new Place(this.volume, this.position, this.otherState, movedByPiston);
+		}
+	}
+	
+	public record Remove(ServerWorld volume, Vector3i position, boolean movedByPiston)
+			implements BlockStateBehaviour.Remove.Args {
+		
+		@Override
+		public Remove withVolume(final ServerWorld volume) {
+			return new Remove(Objects.requireNonNull(volume, "volume"), this.position, this.movedByPiston);
+		}
+		
+		@Override
+		public Remove withPosition(final Vector3i position) {
+			return new Remove(this.volume, Objects.requireNonNull(position, "position"), this.movedByPiston);
+		}
+		
+		@Override
+		public Remove withMovedByPiston(final boolean movedByPiston) {
+			return new Remove(this.volume, this.position, movedByPiston);
 		}
 	}
 	
