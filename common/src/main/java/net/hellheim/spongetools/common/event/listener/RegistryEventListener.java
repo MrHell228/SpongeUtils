@@ -236,7 +236,6 @@ public final class RegistryEventListener {
 			map.put(EntityArchetypes.ENTITY.location(), EntityTypeUtil.Archetypes.ENTITY);
 			map.put(EntityArchetypes.LIVING.location(), EntityTypeUtil.Archetypes.LIVING);
 			map.put(EntityArchetypes.AGENT.location(), EntityTypeUtil.Archetypes.AGENT);
-			map.put(EntityArchetypes.AERIAL.location(), EntityTypeUtil.Archetypes.AERIAL);
 			map.put(EntityArchetypes.PATHFINDER_AGENT.location(), EntityTypeUtil.Archetypes.PATHFINDER_AGENT);
 			map.put(EntityArchetypes.MONSTER.location(), EntityTypeUtil.Archetypes.MONSTER);
 			return map;

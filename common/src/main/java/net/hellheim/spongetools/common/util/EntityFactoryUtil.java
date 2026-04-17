@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.entity.Aerial;
 import org.spongepowered.api.entity.Angerable;
 import org.spongepowered.api.entity.living.Agent;
 import org.spongepowered.api.entity.living.Living;
@@ -43,7 +44,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PlayerRideableJumping;
-import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.animal.FlyingAnimal;
@@ -65,10 +65,10 @@ final class EntityFactoryUtil {
 	@SuppressWarnings("unused")
 	private static final Map<?, ?> GROUPS = Map.of(
 			org.spongepowered.api.entity.Leashable.class, Leashable.class, // A lot of behaviour
-			org.spongepowered.api.entity.Saddleable.class, Saddleable.class, // Some behaviour
 			Angerable.class, NeutralMob.class, // A lot of behaviour
 			null, Bucketable.class,
-			null, ItemSteerable.class // #boost
+			null, ItemSteerable.class, // #boost
+			Aerial.class, null
 			);
 	
 	protected static <E extends Entity> EntityType.EntityFactory<E> create(

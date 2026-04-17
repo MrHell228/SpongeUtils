@@ -27,7 +27,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -107,8 +106,6 @@ public final class EntityTypeUtil {
 		public static final EntityTypeArchetype LIVING = EntityTypeUtil.archetype(ENTITY, LivingEntity.class);
 		
 		public static final EntityTypeArchetype AGENT = EntityTypeUtil.archetype(LIVING, Mob.class);
-		
-		public static final EntityTypeArchetype AERIAL = EntityTypeUtil.archetype(AGENT, FlyingMob.class);
 		
 		public static final EntityTypeArchetype PATHFINDER_AGENT = EntityTypeUtil.archetype(AGENT, PathfinderMob.class);
 		

@@ -116,8 +116,8 @@ public final class BlockTypeUtil {
 					context.set(BlockTypeKeys.STATE_PROPERTIES, block.defaultBlockState().getProperties().stream()
 							.map(Converter::asSponge)
 							.collect(Collectors.toSet()));
-					context.set(BlockTypeKeys.DEFAULT_STATE, block.defaultBlockState().getValues().entrySet().stream()
-							.map(e -> StatePropertyValueFactory.ofRawVanilla(e.getKey(), e.getValue()))
+					context.set(BlockTypeKeys.DEFAULT_STATE, block.defaultBlockState().getValues()
+							.map(e -> StatePropertyValueFactory.ofRawVanilla(e.property(), e.value()))
 							.map(Converter::asSponge)
 							.collect(Collectors.toList()));
 				},

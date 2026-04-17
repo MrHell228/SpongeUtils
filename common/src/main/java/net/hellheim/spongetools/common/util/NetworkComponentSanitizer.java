@@ -1,8 +1,6 @@
 package net.hellheim.spongetools.common.util;
 
-import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.spongepowered.common.SpongeCommon;
@@ -15,12 +13,15 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.HoverEvent.EntityTooltipInfo;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.NbtContents;
+import net.minecraft.network.chat.contents.ObjectContents;
 import net.minecraft.network.chat.contents.SelectorContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 // If only there were proper StreamCodec for Component...
 public final class NetworkComponentSanitizer {
@@ -40,79 +41,76 @@ public final class NetworkComponentSanitizer {
 	}
 	
 	private static ComponentContents componentContents(final ComponentContents contents) {
-		if (contents instanceof final TranslatableContents translatable) {
-			final Object[] oldArgs = translatable.getArgs();
-			final Object[] newArgs = new Object[oldArgs.length];
-			boolean containsComponent = false;
-			for (int i = 0; i < oldArgs.length; ++i) {
-				Object arg = oldArgs[i];
-				if (arg instanceof final Component componentArg) {
-					containsComponent = true;
-					arg = NetworkComponentSanitizer.component(componentArg);
+		switch (contents) {
+			case final TranslatableContents translatable -> {
+				final Object[] oldArgs = translatable.getArgs();
+				final Object[] newArgs = new Object[oldArgs.length];
+				boolean containsComponent = false;
+				for (int i = 0; i < oldArgs.length; ++i) {
+					Object arg = oldArgs[i];
+					if (arg instanceof final Component componentArg) {
+						containsComponent = true;
+						arg = NetworkComponentSanitizer.component(componentArg);
+					}
+					newArgs[i] = arg;
 				}
-				newArgs[i] = arg;
+				
+				if (containsComponent) {
+					return new TranslatableContents(
+							translatable.getKey(),
+							translatable.getFallback(),
+							newArgs);
+				}
 			}
-			
-			if (containsComponent) {
-				return new TranslatableContents(
-						translatable.getKey(),
-						translatable.getFallback(),
-						newArgs);
+			case SelectorContents(final var selector, final var separator) -> {
+				if (separator.isPresent()) {
+					return new SelectorContents(
+							selector,
+							separator.map(NetworkComponentSanitizer::component));
+				}
 			}
-		} else if (contents instanceof final SelectorContents selector) {
-			final Optional<Component> separator = selector.separator();
-			if (separator.isPresent()) {
-				return new SelectorContents(
-						selector.selector(),
-						separator.map(NetworkComponentSanitizer::component));
+			case NbtContents(var nbtPath, var interpreting, var plain, var separator, var dataSource) -> {
+				if (separator.isPresent()) {
+					return new NbtContents(
+							nbtPath,
+							interpreting,
+							plain,
+							separator.map(NetworkComponentSanitizer::component),
+							dataSource);
+				}
 			}
-		} else if (contents instanceof final NbtContents nbt) {
-			final Optional<Component> separator = nbt.getSeparator();
-			if (separator.isPresent()) {
-				return new NbtContents(
-						nbt.getNbtPath(),
-						nbt.isInterpreting(),
-						separator.map(NetworkComponentSanitizer::component),
-						nbt.getDataSource());
+			case ObjectContents(var objectInfo, var fallback) -> {
+				if (fallback.isPresent()) {
+					return new ObjectContents(objectInfo, fallback.map(NetworkComponentSanitizer::component));
+				}
 			}
+			default -> {}
 		}
 		
 		return contents;
 	}
 	
 	private static @PolyNull HoverEvent hoverEvent(final @PolyNull HoverEvent event) {
-		if (event == null) {
-			return null;
-		}
-		
-		final HoverEvent.Action<?> action = event.getAction();
-		if (action == HoverEvent.Action.SHOW_ITEM) {
-			return NetworkComponentSanitizer.hoverEventWithInfo(event, HoverEvent.Action.SHOW_ITEM, info -> {
-				final ItemStack originalStack = info.getItemStack();
+		return switch (event) {
+			case null -> null;
+			case HoverEvent.ShowItem(final ItemStackTemplate info) -> {
+				final ItemStack originalStack = info.create();
 				final RegistryFriendlyByteBuf byteBuf = NetworkComponentSanitizer.BYTE_BUF.get();
 				ItemStack.OPTIONAL_STREAM_CODEC.encode(byteBuf, originalStack);
 				final ItemStack sanitizedStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(byteBuf);
 				byteBuf.clear();
-				return new HoverEvent.ItemStackInfo(sanitizedStack);
-			});
-		} else if (action == HoverEvent.Action.SHOW_ENTITY) {
-			return NetworkComponentSanitizer.hoverEventWithInfo(event, HoverEvent.Action.SHOW_ENTITY, info ->
-				new HoverEvent.EntityTooltipInfo(
-					FakeableNetworkValueBridge.asNetworkValue(info.type),
-					info.id,
-					info.name.map(NetworkComponentSanitizer::component)));
-		} else if (action == HoverEvent.Action.SHOW_TEXT) {
-			return NetworkComponentSanitizer.hoverEventWithInfo(event, HoverEvent.Action.SHOW_TEXT,
-				NetworkComponentSanitizer::component);
-		}
-		
-		throw new IllegalArgumentException("Unknown HoverEvent Action: " + action.getSerializedName());
-	}
-	
-	private static <T> HoverEvent hoverEventWithInfo(
-		final HoverEvent event, final HoverEvent.Action<T> action, final UnaryOperator<T> mapper
-	) {
-		return new HoverEvent(action, mapper.apply(event.getValue(action)));
+				yield new HoverEvent.ShowItem(ItemStackTemplate.fromNonEmptyStack(sanitizedStack));
+			}
+			case HoverEvent.ShowEntity(final EntityTooltipInfo info) ->
+				new HoverEvent.ShowEntity(new EntityTooltipInfo(
+						FakeableNetworkValueBridge.asNetworkValue(info.type),
+						info.uuid,
+						info.name.map(NetworkComponentSanitizer::component)));
+			case HoverEvent.ShowText(final Component info) ->
+				new HoverEvent.ShowText(NetworkComponentSanitizer.component(info));
+			default -> throw new IllegalArgumentException(String.format(
+					"Unknown HoverEvent with action %s: %s", event.action().getSerializedName(), event));
+		};
 	}
 	
 	private NetworkComponentSanitizer() {

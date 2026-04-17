@@ -88,8 +88,8 @@ public final class ItemTypeUtil {
 				Set.of(ItemTypeKeys.TRANSLATION_KEY),
 				(item, context) -> {
 					final var remainder = item.getCraftingRemainder();
-					if (!remainder.isEmpty()) {
-						context.set(ItemTypeKeys.CONTAINER, Converter.asSponge(remainder.getItem()));
+					if (remainder != null) {
+						context.set(ItemTypeKeys.CONTAINER, Converter.asSponge(remainder.item().value()));
 					}
 					
 					context.set(ItemTypeKeys.TRANSLATION_KEY, item.getDescriptionId());

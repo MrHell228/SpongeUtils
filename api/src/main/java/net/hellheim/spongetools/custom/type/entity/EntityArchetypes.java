@@ -1,7 +1,6 @@
 package net.hellheim.spongetools.custom.type.entity;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.Aerial;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Agent;
 import org.spongepowered.api.entity.living.Living;
@@ -14,12 +13,6 @@ import org.spongepowered.api.registry.RegistryKey;
 import net.hellheim.spongetools.SpongeTools;
 
 public final class EntityArchetypes {
-	
-	/**
-	 * {@link Aerial}-based archetype. <br>
-	 * Parent archetype: {@link #AGENT}.
-	 */
-	public static final DefaultedRegistryReference<EntityTypeArchetype> AERIAL = EntityArchetypes.key("aerial");
 	
 	/**
 	 * {@link Agent}-based archetype. <br>

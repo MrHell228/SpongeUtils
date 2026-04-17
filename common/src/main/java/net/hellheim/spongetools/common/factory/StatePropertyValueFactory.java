@@ -49,7 +49,7 @@ public final class StatePropertyValueFactory implements StatePropertyValue.Facto
 	@SuppressWarnings({ "unchecked", "unlikely-arg-type" })
 	public static <ApiT extends Comparable<ApiT>, T extends Comparable<T>, V extends T> V mapFromApi(
 			final StateProperty<ApiT> stateProperty, final ApiT value) {
-		return (V) (Object) switch (value) {
+		return (V) switch (value) {
 			case final Axis axis -> AxisUtil.getFor(axis);
 			case final org.spongepowered.api.util.Direction dir -> {
 				final Direction mappedValue = DirectionUtil.getFor(dir);

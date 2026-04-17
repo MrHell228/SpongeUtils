@@ -35,7 +35,7 @@ public final class SpongeTypeItemList extends SpongeItemList {
 				SpongeTypeItemList.TYPE_ITEM,
 				new SpongeTypeItemList(set, stacks),
 				set.stream()
-						.map(holder -> holder.unwrapKey().orElseThrow().location().toString())
+						.map(holder -> holder.unwrapKey().orElseThrow().identifier().toString())
 						.collect(Collectors.joining(";")));
 	}
 	
@@ -91,6 +91,6 @@ public final class SpongeTypeItemList extends SpongeItemList {
 	
 	@Override
 	public boolean test(final ItemStack stack) {
-		return this.set.contains(stack.getItemHolder());
+		return this.set.contains(stack.typeHolder());
 	}
 }
