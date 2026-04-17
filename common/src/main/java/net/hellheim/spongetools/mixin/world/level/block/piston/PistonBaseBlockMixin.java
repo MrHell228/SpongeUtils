@@ -1,5 +1,6 @@
 package net.hellheim.spongetools.mixin.world.level.block.piston;
 
+import net.bytebuddy.jar.asm.Opcodes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.piston.PistonBaseBlock;
@@ -13,7 +14,8 @@ public abstract class PistonBaseBlockMixin {
     @Redirect(method = "isPushable",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/level/block/Blocks;OBSIDIAN:Lnet/minecraft/world/level/block/Block;"
+                    target = "Lnet/minecraft/world/level/block/Blocks;OBSIDIAN:Lnet/minecraft/world/level/block/Block;",
+                    opcode = Opcodes.GETSTATIC
             )
     )
     private static Block spongetools$unhardcodePushReaction$obsidian() {
@@ -23,7 +25,8 @@ public abstract class PistonBaseBlockMixin {
     @Redirect(method = "isPushable",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/level/block/Blocks;CRYING_OBSIDIAN:Lnet/minecraft/world/level/block/Block;"
+                    target = "Lnet/minecraft/world/level/block/Blocks;CRYING_OBSIDIAN:Lnet/minecraft/world/level/block/Block;",
+                    opcode = Opcodes.GETSTATIC
             )
     )
     private static Block spongetools$unhardcodePushReaction$cryingObsidian() {
@@ -33,7 +36,8 @@ public abstract class PistonBaseBlockMixin {
     @Redirect(method = "isPushable",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/level/block/Blocks;RESPAWN_ANCHOR:Lnet/minecraft/world/level/block/Block;"
+                    target = "Lnet/minecraft/world/level/block/Blocks;RESPAWN_ANCHOR:Lnet/minecraft/world/level/block/Block;",
+                    opcode = Opcodes.GETSTATIC
             )
     )
     private static Block spongetools$unhardcodePushReaction$respawnAnchor() {
@@ -43,7 +47,8 @@ public abstract class PistonBaseBlockMixin {
     @Redirect(method = "isPushable",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/level/block/Blocks;REINFORCED_DEEPSLATE:Lnet/minecraft/world/level/block/Block;"
+                    target = "Lnet/minecraft/world/level/block/Blocks;REINFORCED_DEEPSLATE:Lnet/minecraft/world/level/block/Block;",
+                    opcode = Opcodes.GETSTATIC
             )
     )
     private static Block spongetools$unhardcodePushReaction$reinforcedDeepslate() {

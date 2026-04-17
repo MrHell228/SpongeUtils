@@ -29,7 +29,7 @@ public abstract class IngredientMixin {
             final HolderSet<Item> set, final Operation<Ingredient> original
     ) {
         if (set.stream()
-                .map(holder -> holder.unwrapKey().orElseThrow().location().getNamespace())
+                .map(holder -> holder.unwrapKey().orElseThrow().identifier().getNamespace())
                 .allMatch(ResourceKey.MINECRAFT_NAMESPACE::equals)) {
             return original.call(set);
         }

@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -38,7 +39,7 @@ public interface BlockBehaviourAccessor {
 
     @Invoker("getDirectSignal") int invoker$getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction);
 
-    @Invoker("getAnalogOutputSignal") int invoker$getAnalogOutputSignal(BlockState state, Level level, BlockPos pos);
+    @Invoker("getAnalogOutputSignal") int invoker$getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction);
 
     @Invoker("canBeReplaced") boolean invoker$canBeReplaced(BlockState state, BlockPlaceContext useContext);
 
@@ -52,11 +53,11 @@ public interface BlockBehaviourAccessor {
 
     @Invoker("isRandomlyTicking") boolean invoker$isRandomlyTicking(BlockState state);
 
-    @Invoker("entityInside") void invoker$entityInside(BlockState state, Level level, BlockPos pos, Entity entity);
+    @Invoker("entityInside") void invoker$entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effect, boolean precise);
 
     @Invoker("onPlace") void invoker$onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston);
 
-    @Invoker("onRemove") void invoker$onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston);
+    @Invoker("affectNeighborsAfterRemoval") void invoker$onRemove(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston);
 
     @Invoker("onExplosionHit") void invoker$onExplosionHit(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer);
 

@@ -66,6 +66,6 @@ public abstract class MappedRegistryMixin<T> implements RegistryBridge<T> {
 
     @Unique
     private boolean spongetools$impl$isBuiltinRegistry() {
-        return BuiltInRegistries.REGISTRY.containsKey(this.key.location());
+        return BuiltInRegistries.REGISTRY.containsKey(this.key.identifier());
     }
 }

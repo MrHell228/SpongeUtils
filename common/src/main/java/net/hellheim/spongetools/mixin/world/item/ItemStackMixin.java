@@ -18,10 +18,10 @@ public abstract class ItemStackMixin {
 
     @Shadow public abstract Item shadow$getItem();
 
-    @Shadow @Final PatchedDataComponentMap components;
+    @Shadow @Final private PatchedDataComponentMap components;
 
     @Inject(
-            method = "<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/core/component/PatchedDataComponentMap;)V",
+            method = "<init>(Lnet/minecraft/core/Holder;ILnet/minecraft/core/component/PatchedDataComponentMap;)V",
             // Maybe it should be before Item's component validation
             at = @At("RETURN")
     )

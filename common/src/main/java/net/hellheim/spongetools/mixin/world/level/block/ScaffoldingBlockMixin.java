@@ -2,6 +2,7 @@ package net.hellheim.spongetools.mixin.world.level.block;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.bytebuddy.jar.asm.Opcodes;
 import net.hellheim.spongetools.bridge.BlockPropertiesBridge;
 import net.hellheim.spongetools.bridge.ScaffoldingBlockBridge;
 import net.hellheim.spongetools.common.util.BlockTypeUtil;
@@ -72,7 +73,8 @@ public abstract class ScaffoldingBlockMixin implements ScaffoldingBlockBridge {
             },
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/level/block/ScaffoldingBlock;DISTANCE:Lnet/minecraft/world/level/block/state/properties/IntegerProperty;"
+                    target = "Lnet/minecraft/world/level/block/ScaffoldingBlock;DISTANCE:Lnet/minecraft/world/level/block/state/properties/IntegerProperty;",
+                    opcode = Opcodes.GETSTATIC
             )
     )
     private IntegerProperty spongetools$useCustomDistanceProperty(final Operation<IntegerProperty> original) {

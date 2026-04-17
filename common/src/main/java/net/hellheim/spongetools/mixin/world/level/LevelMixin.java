@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Orientation;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.World;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class LevelMixin<W extends World<?, ?>> implements WorldExtension<W> {
 
     @Shadow public abstract void shadow$neighborChanged(BlockPos $$0, Block $$1, @Nullable Orientation $$2);
-    @Shadow public abstract void shadow$updateNeighborsAt(BlockPos $$0, Block $$1);
+    @Shadow public abstract void shadow$updateNeighborsAt(BlockPos $$0, Block $$1, @Nullable Orientation $$2);
     @Shadow public abstract void shadow$updateNeighborsAtExceptFromFacing(BlockPos $$0, Block $$1, net.minecraft.core.Direction $$2, @Nullable Orientation $$3);
 
     @Override
@@ -32,7 +32,7 @@ public abstract class LevelMixin<W extends World<?, ?>> implements WorldExtensio
 
     @Override
     public void updateAround(final int x, final int y, final int z, final BlockType notifier) {
-        this.shadow$updateNeighborsAt(new BlockPos(x, y, z), (Block) notifier);
+        this.shadow$updateNeighborsAt(new BlockPos(x, y, z), (Block) notifier, null);
     }
 
     @Override

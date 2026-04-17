@@ -3,6 +3,7 @@ package net.hellheim.spongetools.bridge;
 import net.hellheim.spongetools.custom.behaviour.BehaviourCallbackHolderLogic;
 import net.hellheim.spongetools.custom.behaviour.type.BlockStateExtension;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -23,7 +24,7 @@ public interface BlockStateBaseBridge {
 	
 	@Nullable BlockEntity spongetools$bridge$newBlockEntity(BlockGetter getter, BlockPos pos);
 
-    ItemStack spongetools$bridge$bucketPickup$item(LevelAccessor accessor, BlockPos pos, @Nullable Player player);
+    ItemStack spongetools$bridge$bucketPickup$item(LevelAccessor accessor, BlockPos pos, @Nullable LivingEntity user);
 
     Optional<SoundEvent> spongetools$bridge$bucketPickup$sound();
 }

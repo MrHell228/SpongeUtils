@@ -28,6 +28,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -116,13 +118,13 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
 
     @Override
     public ItemStack spongetools$bridge$bucketPickup$item(
-            final LevelAccessor accessor, final BlockPos pos, final @Nullable Player player
+            final LevelAccessor accessor, final BlockPos pos, final @Nullable LivingEntity user
     ) {
         final var callback = this.spongetools$impl$callback(BlockStateBehaviours.BUCKET_PICKUP_ITEM);
         final var state = this.shadow$asState();
         final var original = BucketUtil.bucketPickup(state.getBlock());
         return callback == null
-                ? original.pickupBlock(player, accessor, pos, state)
+                ? original.pickupBlock(user, accessor, pos, state)
                 : Converter.asVanilla(callback.call(
                         this,
                         args -> Converter.asSponge(original.pickupBlock(
@@ -134,7 +136,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
                         new BlockStateArgs.LocatableEntity<>(
                                 Converter.asSponge(accessor),
                                 Converter.asSponge(pos),
-                                Optional.ofNullable(Converter.asSponge(player))
+                                Optional.ofNullable(Converter.asSponge(user))
                                 )
                         ));
     }
@@ -288,7 +290,7 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
     ) {
         final var callback = this.spongetools$impl$callback(BlockStateBehaviours.ANALOG_SIGNAL);
         return callback == null
-                ? original.call(level, pos)
+                ? original.call(level, pos, dir)
                 : callback.call(
                         this,
                         args -> original.call(
@@ -412,21 +414,24 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
         }
     }
 
+    // TODO expose more args to behaviour
     @WrapMethod(method = "entityInside")
     private void spongetools$wrap$entityInside(
-            final Level level, final BlockPos pos, final Entity entity,
+            final Level level, final BlockPos pos, final Entity entity, InsideBlockEffectApplier effect, boolean precise,
             final Operation<Void> original
     ) {
         final var callback = this.spongetools$impl$callback(BlockStateBehaviours.ENTITY_INSIDE);
         if (callback == null) {
-            original.call(level, pos, entity);
+            original.call(level, pos, entity, effect, precise);
         } else {
             callback.call(
                     this,
                     args -> original.call(
                             Converter.asVanilla(args.volume()),
                             Converter.asVanilla(args.position()),
-                            Converter.asVanilla(args.entity())
+                            Converter.asVanilla(args.entity()),
+                            effect,
+                            precise
                             ),
                     new BlockStateArgs.LocatableEntity<>(
                             Converter.asSponge(level),
@@ -464,9 +469,9 @@ public abstract class BlockBehaviour_BlockStateBaseMixin implements
         }
     }
 
-    @WrapMethod(method = "onRemove")
+    @WrapMethod(method = "affectNeighborsAfterRemoval")
     private void spongetools$warp$onRemove(
-            final Level level, final BlockPos pos, final boolean movedByPiston,
+            final ServerLevel level, final BlockPos pos, final boolean movedByPiston,
             final Operation<Void> original
     ) {
         final var callback = this.spongetools$impl$callback(BlockStateBehaviours.REMOVE);

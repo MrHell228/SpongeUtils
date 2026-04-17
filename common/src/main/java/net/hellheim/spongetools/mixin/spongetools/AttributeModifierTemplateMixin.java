@@ -1,7 +1,7 @@
 package net.hellheim.spongetools.mixin.spongetools;
 
+import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.object.AttributeModifierTemplate;
-import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.entity.attribute.AttributeModifier;
 import org.spongepowered.api.entity.attribute.AttributeOperation;
@@ -24,7 +24,7 @@ public abstract class AttributeModifierTemplateMixin {
     @Overwrite
     public AttributeModifier build(final int amplifier) {
         return (AttributeModifier) (Object) new net.minecraft.world.entity.ai.attributes.AttributeModifier(
-                (ResourceLocation) (Object) this.key,
+                Converter.asVanilla(this.key),
                 this.amountPerLevel * (amplifier + 1),
                 (net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation) (Object) this.operation
         );

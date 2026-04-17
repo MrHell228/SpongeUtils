@@ -2,6 +2,7 @@ package net.hellheim.spongetools.mixin.world.level.block;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.bytebuddy.jar.asm.Opcodes;
 import net.hellheim.spongetools.bridge.BlockPropertiesBridge;
 import net.hellheim.spongetools.bridge.BlockStateBaseBridge;
 import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

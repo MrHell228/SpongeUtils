@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,11 +33,11 @@ public abstract class ServerLevelMixin {
             )
     )
     private void spongetools$sendBlockBreakEffectsToBreaker(
-            final PlayerList instance, final @Nullable Player player,
+            final PlayerList instance, final @Nullable Player except,
             final double x, final double y, final double z, final double distance,
             final ResourceKey<Level> dimension, final Packet<?> packet,
             final Operation<Void> original,
-            final @Nullable Player originalPlayer, final int eventType,
+            final @Nullable Entity source, final int eventType,
             final BlockPos pos, final int data
     ) {
         if (eventType == LevelEvent.PARTICLES_DESTROY_BLOCK && SpongeToolsPlugin.customMiningEnabled()) {
@@ -60,7 +61,7 @@ public abstract class ServerLevelMixin {
             }
             original.call(instance, null, x, y, z, distance, dimension, finalPacket);
         } else {
-            original.call(instance, player, x, y, z, distance, dimension, packet);
+            original.call(instance, except, x, y, z, distance, dimension, packet);
         }
     }
 }

@@ -10,6 +10,7 @@ import org.spongepowered.api.data.type.PushReaction;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.fluid.FluidState;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -188,7 +189,7 @@ public final class BlockStateBehaviours {
 	/**
 	 * TODO Can do something and return item filled "bucket".
 	 */
-	public static final BehaviourType<LocatableEntity<ItemStack, WorldLike<?>, Optional<Player>>> BUCKET_PICKUP_ITEM = BehaviourType.of(SpongeTools.key("bucket_pickup_item"));
+	public static final BehaviourType<LocatableEntity<ItemStack, WorldLike<?>, Optional<Living>>> BUCKET_PICKUP_ITEM = BehaviourType.of(SpongeTools.key("bucket_pickup_item"));
 	
 	public static final BehaviourType<SimpleObject<Optional<SoundType>>> BUCKET_PICKUP_SOUND = BehaviourType.of(SpongeTools.key("bucket_pickup_sound"));
 	
