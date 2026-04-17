@@ -95,7 +95,13 @@ public final class SpongeTools {
 		
 		public static final Key<Value<Boolean>> EQUIPMENT_DISPENSABLE = Keys.key("equipment_dispensable", Boolean.class);
 		
-		public static final Key<Value<SoundType>> EQUIPMENT_SOUND = Keys.key("equipment_sound", SoundType.class);
+		public static final Key<Value<SoundType>> EQUIPMENT_EQUIP_SOUND = Keys.key("equipment_equip_sound", SoundType.class);
+		
+		public static final Key<Value<Boolean>> EQUIPMENT_INTERACTABLE = Keys.key("equipment_interactable", Boolean.class);
+		
+		public static final Key<Value<Boolean>> EQUIPMENT_SHEARABLE = Keys.key("equipment_shearable", Boolean.class);
+		
+		public static final Key<Value<SoundType>> EQUIPMENT_SHEAR_SOUND = Keys.key("equipment_shear_sound", SoundType.class);
 		
 		public static final Key<Value<Boolean>> EQUIPMENT_SWAPPABLE = Keys.key("equipment_swappable", Boolean.class);
 		

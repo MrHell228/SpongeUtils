@@ -7,7 +7,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.item.inventory.equipment.EquipmentType;
-import org.spongepowered.common.SpongeCommon;
 import org.spongepowered.common.adventure.SpongeAdventure;
 import org.spongepowered.common.data.provider.DataProviderRegistrator;
 
@@ -17,8 +16,8 @@ import net.hellheim.spongetools.SpongeTools;
 import net.hellheim.spongetools.common.util.Converter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -48,11 +47,14 @@ public final class EquipmentData {
 									eq.allowedEntities(),
 									eq.dispensable(),
 									eq.swappable(),
-									eq.damageOnHurt()));
+									eq.damageOnHurt(),
+									eq.equipOnInteract(),
+									eq.canBeSheared(),
+									eq.shearingSound()));
 						}
 					})
 					.resetOnDelete((EquipmentType) null)
-				.create(SpongeTools.Keys.EQUIPMENT_SOUND)
+				.create(SpongeTools.Keys.EQUIPMENT_EQUIP_SOUND)
 					.get(h -> {
 						final @Nullable Equippable equip = h.get(DataComponents.EQUIPPABLE);
 						return equip == null
@@ -68,7 +70,32 @@ public final class EquipmentData {
 								eq.allowedEntities(),
 								eq.dispensable(),
 								eq.swappable(),
-								eq.damageOnHurt()));
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								eq.shearingSound()));
+					})
+					.resetOnDelete((SoundType) null)
+				.create(SpongeTools.Keys.EQUIPMENT_SHEAR_SOUND)
+					.get(h -> {
+						final @Nullable Equippable equip = h.get(DataComponents.EQUIPPABLE);
+						return equip == null
+								? null
+								: Converter.asSponge(equip.shearingSound().value());
+					})
+					.set((h, v) -> {
+						h.update(DataComponents.EQUIPPABLE, DEFAULT.get(), eq -> new Equippable(
+								eq.slot(),
+								eq.equipSound(),
+								eq.assetId(),
+								eq.cameraOverlay(),
+								eq.allowedEntities(),
+								eq.dispensable(),
+								eq.swappable(),
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								Optional.ofNullable(v).map(sound -> resolveSoundEvent(sound)).orElseGet(() -> DEFAULT.get().equipSound())));
 					})
 					.resetOnDelete((SoundType) null)
 				.create(SpongeTools.Keys.EQUIPMENT_ASSET)
@@ -76,7 +103,7 @@ public final class EquipmentData {
 						final @Nullable Equippable equip = h.get(DataComponents.EQUIPPABLE);
 						return equip == null
 								? null
-								: equip.assetId().map(key -> Converter.asSponge(key.location())).orElse(null);
+								: equip.assetId().map(key -> Converter.asSponge(key.identifier())).orElse(null);
 					})
 					.set((h, v) -> {
 						h.update(DataComponents.EQUIPPABLE, DEFAULT.get(), eq -> new Equippable(
@@ -89,7 +116,10 @@ public final class EquipmentData {
 								eq.allowedEntities(),
 								eq.dispensable(),
 								eq.swappable(),
-								eq.damageOnHurt()));
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								eq.shearingSound()));
 					})
 					.resetOnDelete((ResourceKey) null)
 				.create(SpongeTools.Keys.EQUIPMENT_CAMERA_OVERLAY)
@@ -108,7 +138,10 @@ public final class EquipmentData {
 								eq.allowedEntities(),
 								eq.dispensable(),
 								eq.swappable(),
-								eq.damageOnHurt()));
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								eq.shearingSound()));
 					})
 					.resetOnDelete((ResourceKey) null)
 				.create(SpongeTools.Keys.EQUIPMENT_DISPENSABLE)
@@ -125,7 +158,10 @@ public final class EquipmentData {
 								eq.allowedEntities(),
 								Optional.ofNullable(v).orElseGet(() -> DEFAULT.get().dispensable()),
 								eq.swappable(),
-								eq.damageOnHurt()));
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								eq.shearingSound()));
 					})
 					.resetOnDelete((Boolean) null)
 				.create(SpongeTools.Keys.EQUIPMENT_SWAPPABLE)
@@ -142,7 +178,10 @@ public final class EquipmentData {
 								eq.allowedEntities(),
 								eq.dispensable(),
 								Optional.ofNullable(v).orElseGet(() -> DEFAULT.get().swappable()),
-								eq.damageOnHurt()));
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								eq.shearingSound()));
 					})
 					.resetOnDelete((Boolean) null)
 				.create(SpongeTools.Keys.EQUIPMENT_DAMAGEABLE)
@@ -159,14 +198,57 @@ public final class EquipmentData {
 								eq.allowedEntities(),
 								eq.dispensable(),
 								eq.swappable(),
-								Optional.ofNullable(v).orElseGet(() -> DEFAULT.get().damageOnHurt())));
+								Optional.ofNullable(v).orElseGet(() -> DEFAULT.get().damageOnHurt()),
+								eq.equipOnInteract(),
+								eq.canBeSheared(),
+								eq.shearingSound()));
+					})
+					.resetOnDelete((Boolean) null)
+				.create(SpongeTools.Keys.EQUIPMENT_INTERACTABLE)
+					.get(h -> {
+						final @Nullable Equippable equip = h.get(DataComponents.EQUIPPABLE);
+						return equip == null ? null : equip.equipOnInteract();
+					})
+					.set((h, v) -> {
+						h.update(DataComponents.EQUIPPABLE, DEFAULT.get(), eq -> new Equippable(
+								eq.slot(),
+								eq.equipSound(),
+								eq.assetId(),
+								eq.cameraOverlay(),
+								eq.allowedEntities(),
+								eq.dispensable(),
+								eq.swappable(),
+								eq.damageOnHurt(),
+								Optional.ofNullable(v).orElseGet(() -> DEFAULT.get().equipOnInteract()),
+								eq.canBeSheared(),
+								eq.shearingSound()));
+					})
+					.resetOnDelete((Boolean) null)
+				.create(SpongeTools.Keys.EQUIPMENT_SHEARABLE)
+					.get(h -> {
+						final @Nullable Equippable equip = h.get(DataComponents.EQUIPPABLE);
+						return equip == null ? null : equip.canBeSheared();
+					})
+					.set((h, v) -> {
+						h.update(DataComponents.EQUIPPABLE, DEFAULT.get(), eq -> new Equippable(
+								eq.slot(),
+								eq.equipSound(),
+								eq.assetId(),
+								eq.cameraOverlay(),
+								eq.allowedEntities(),
+								eq.dispensable(),
+								eq.swappable(),
+								eq.damageOnHurt(),
+								eq.equipOnInteract(),
+								Optional.ofNullable(v).orElseGet(() -> DEFAULT.get().canBeSheared()),
+								eq.shearingSound()));
 					})
 					.resetOnDelete((Boolean) null);
 	}
 	
 	private static Holder<SoundEvent> resolveSoundEvent(final SoundType sound) {
-		final ResourceLocation soundKey = SpongeAdventure.asVanilla(sound.key());
-		final var registry = SpongeCommon.vanillaRegistry(Registries.SOUND_EVENT);
+		final Identifier soundKey = SpongeAdventure.asVanilla(sound.key());
+		final var registry = BuiltInRegistries.SOUND_EVENT;
 		final SoundEvent event = registry.getOptional(soundKey)
 				.orElseGet(() -> SoundEvent.createVariableRangeEvent(soundKey));
 		return registry.wrapAsHolder(event);
