@@ -57,28 +57,13 @@ public abstract class BucketItemMixin {
     }
 
     @Redirect(
-            require = 0,
             method = "use",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/BucketPickup;getPickupSound()Ljava/util/Optional;"
             )
     )
-    private Optional<SoundEvent> spongetools$redirect$bucketPickupSound$vanilla(
-            final BucketPickup instance, final @Local(name = "blockState") BlockState state
-    ) {
-        return ((BlockStateBaseBridge) state).spongetools$bridge$bucketPickup$sound();
-    }
-
-    @Redirect(
-            require = 0,
-            method = "use",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/BucketPickup;getPickupSound()Ljava/util/Optional;"
-            )
-    )
-    private Optional<SoundEvent> spongetools$redirect$bucketPickupSound$neo(
+    private Optional<SoundEvent> spongetools$redirect$bucketPickupSound(
             final BucketPickup instance, final @Local(name = "blockState") BlockState state
     ) {
         return ((BlockStateBaseBridge) state).spongetools$bridge$bucketPickup$sound();

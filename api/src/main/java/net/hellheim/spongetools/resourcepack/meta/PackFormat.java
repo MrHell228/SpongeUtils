@@ -69,15 +69,6 @@ public record PackFormat(int major, int minor) implements Comparable<PackFormat>
 	
 	public static interface Factory {
 		
-		default int lastPreMinorVersion(final PackType type) {
-			if (type == PackType.client()) {
-				// TODO
-				return 64;
-			} else if (type == PackType.server()) {
-				return 81;
-			} else {
-				throw new IllegalArgumentException("Unknown PackType: " + type);
-			}
-		}
+		int lastPreMinorVersion(PackType type);
 	}
 }

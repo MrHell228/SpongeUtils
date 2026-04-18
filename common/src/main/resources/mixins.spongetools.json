@@ -19,6 +19,7 @@
     "world.effect.MobEffectMixin",
     "world.entity.EntityMixin",
     "world.entity.EntityType_BuilderAccessor",
+    "world.entity.EntityTypeMixin",
     "world.entity.ai.attributes.AttributeMixin",
     "world.entity.ai.attributes.AttributesMixin",
     "world.entity.ai.attributes.AttributeSupplierAccessor",

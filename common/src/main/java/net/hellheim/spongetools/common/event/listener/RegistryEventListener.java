@@ -55,6 +55,7 @@ import net.hellheim.spongetools.common.event.listener.data.EquipmentData;
 import net.hellheim.spongetools.common.factory.EffectUtilFactory;
 import net.hellheim.spongetools.common.factory.HitResultFactory;
 import net.hellheim.spongetools.common.factory.InteractionResultFactory;
+import net.hellheim.spongetools.common.factory.PackFactory;
 import net.hellheim.spongetools.common.factory.SignalOrientationFactory;
 import net.hellheim.spongetools.common.factory.StatePropertiesFactory;
 import net.hellheim.spongetools.common.factory.StatePropertyValueFactory;
@@ -96,6 +97,7 @@ import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
+import net.hellheim.spongetools.resourcepack.meta.PackFormat;
 import net.hellheim.spongetools.util.EffectUtil;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -127,6 +129,7 @@ public final class RegistryEventListener {
 		event.register(AdventureCodecs.Factory.class, new AdventureCodecsFactory());
 		event.register(StringRepresentableCodecs.Factory.class, new StringRepresentableCodecsFactory());
 		event.register(EntityTypeArchetype.Factory.class, new EntityTypeUtil.ContextFactory());
+		event.register(PackFormat.Factory.class, new PackFactory());
 	}
 	
 	@Listener

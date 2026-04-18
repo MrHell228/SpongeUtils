@@ -15,15 +15,15 @@ public class VariableAmountCodecs {
 	
 	public static final CodecDispatcher<ResourceKey, VariableAmount> DISPATCHER = new CodecDispatcher<>();
 	
-	public static final Codec<VariableAmount> CODEC = Codec.withAlternative(VariableAmountCodecs.INLINE, VariableAmountCodecs.FULL);
+	private static final Codec<VariableAmount> FULL = VariableAmountCodecs.DISPATCHER.codec(SpongeCodecs.SPONGE_RESOURCE_KEY);
 	
-	public static final Codec<VariableAmount> FULL = VariableAmountCodecs.DISPATCHER.codec(SpongeCodecs.SPONGE_RESOURCE_KEY);
-	
-	public static final Codec<VariableAmount> INLINE = Codec.DOUBLE.xmap(
+	private static final Codec<VariableAmount> INLINE = Codec.DOUBLE.xmap(
 			amount -> (Fixed) VariableAmount.fixed(amount),
 			fixed -> fixed.amount(null));
 	
-	public static final MapCodec<Fixed> FIXED = RecordCodecBuilder.mapCodec(
+	public static final Codec<VariableAmount> CODEC = Codec.withAlternative(VariableAmountCodecs.INLINE, VariableAmountCodecs.FULL);
+	
+	private static final MapCodec<Fixed> FIXED = RecordCodecBuilder.mapCodec(
 			instance -> instance.group(
 					Codec.DOUBLE.fieldOf("amount").forGetter(fixed -> fixed.amount(null))
 					)

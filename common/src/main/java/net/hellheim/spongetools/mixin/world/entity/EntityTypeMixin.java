@@ -11,10 +11,12 @@ import net.hellheim.spongetools.custom.type.entity.EntityTypeExtension;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
 
+@Mixin(net.minecraft.world.entity.EntityType.class)
 public abstract class EntityTypeMixin implements
         EntityTypeBridge,
         FakeableNetworkValueBridge,
