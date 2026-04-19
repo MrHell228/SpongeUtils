@@ -4,7 +4,9 @@ import net.hellheim.spongetools.bridge.FakeableNetworkValueBridge;
 import net.hellheim.spongetools.bridge.ItemBridge;
 import net.hellheim.spongetools.bridge.ItemPropertiesBridge;
 import net.hellheim.spongetools.common.util.ItemTypeUtil;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,12 +23,41 @@ public abstract class ItemMixin implements ItemBridge, FakeableNetworkValueBridg
     @Shadow @Final @Mutable protected String descriptionId;
 
     private @Unique ItemTypeUtil.@Nullable AdditionalData spongetools$data;
+    private @Unique @MonotonicNonNull ResourceKey<Item> spongetools$id;
 
-    @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void spongetools$applyData(final Item.Properties properties, final CallbackInfo ci) {
+    @Inject(
+            method = "<init>",
+            at = @At(
+                    value = "CTOR_HEAD",
+                    unsafe = true
+            )
+    )
+    private void spongetools$applyData(
+            final Item.Properties properties, final CallbackInfo ci
+    ) {
         this.spongetools$data = ((ItemPropertiesBridge) properties).spongetools$bridge$getData();
+        if (this.spongetools$data == null) {
+            this.spongetools$id = ((Item_PropertiesAccessor) properties).invoker$itemIdOrThrow();
+        } else {
+            properties.setId(((ItemBridge) this.spongetools$data.networkType()).spongetools$bridge$id());
+            this.spongetools$id = this.spongetools$data.id();
+        }
+    }
+
+    @Inject(
+            method = "<init>",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/Item$Properties;itemIdOrThrow()Lnet/minecraft/resources/ResourceKey;",
+                    unsafe = true
+            )
+    )
+    private void spongetools$useCorrectIdForRegisteringComponentInializer(
+            final Item.Properties properties, final CallbackInfo ci
+    ) {
         if (this.spongetools$data != null) {
-            this.descriptionId = this.spongetools$data.translationKey();
+            properties.setId(this.spongetools$id);
+            this.descriptionId = ((Item_PropertiesAccessor) properties).invoker$effectiveDescriptionId();
         }
     }
 
@@ -38,5 +69,10 @@ public abstract class ItemMixin implements ItemBridge, FakeableNetworkValueBridg
     @Override
     public @Nullable Object spongetools$bridge$asNetworkValue() {
         return this.spongetools$data == null ? null : this.spongetools$data.networkType();
+    }
+
+    @Override
+    public ResourceKey<Item> spongetools$bridge$id() {
+        return this.spongetools$id;
     }
 }

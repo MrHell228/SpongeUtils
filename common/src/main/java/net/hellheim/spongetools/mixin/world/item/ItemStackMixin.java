@@ -22,13 +22,12 @@ public abstract class ItemStackMixin {
 
     @Inject(
             method = "<init>(Lnet/minecraft/core/Holder;ILnet/minecraft/core/component/PatchedDataComponentMap;)V",
-            // Maybe it should be before Item's component validation
             at = @At("RETURN")
     )
     private void spongetools$applyPatch(final CallbackInfo ci) {
         final ItemTypeUtil.@Nullable AdditionalData data = ((ItemBridge) this.shadow$getItem()).spongetools$bridge$getData();
         if (data != null) {
-            this.components.applyPatch(data.patch());
+            this.components.applyPatch(data.patch().get());
         }
     }
 }

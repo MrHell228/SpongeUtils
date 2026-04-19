@@ -29,7 +29,7 @@ public final class ItemArchetypes {
 	 * Regular item without any specific behaviour. <br>
 	 * <br>
 	 * Required Context: <br>
-	 * - {@link ItemTypeKeys#TRANSLATION_KEY} <br>
+	 * - {@link ItemTypeKeys#ID} <br>
 	 * <br>
 	 * Supported Context: <br>
 	 * - {@link ItemTypeKeys#CONTAINER} <br>

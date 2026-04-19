@@ -34,7 +34,6 @@ public abstract class IngredientMixin {
             return original.call(set);
         }
 
-        final ItemStack[] display = set.stream().map(ItemStack::new).toArray(ItemStack[]::new);
-        return SpongeTypeItemList.ingredient(set, display);
+        return SpongeTypeItemList.ingredient(set, () -> set.stream().map(ItemStack::new).toList());
     }
 }

@@ -1,5 +1,6 @@
 package net.hellheim.spongetools.custom.type.item;
 
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.item.ItemType;
 
@@ -22,9 +23,9 @@ public final class ItemTypeKeys {
 	public static final TypedKey<ItemType> CONTAINER = TypedKey.of(SpongeTools.key("container"), ItemType.class);
 	
 	/**
-	 * @see ItemType#asComponent()
+	 * The {@link ResourceKey} the built {@link ItemType} will be registered with.
 	 */
-	public static final TypedKey<String> TRANSLATION_KEY = TypedKey.of(SpongeTools.key("translation_key"), String.class);
+	public static final TypedKey<ResourceKey> ID = TypedKey.of(SpongeTools.key("translation_key"), ResourceKey.class);
 	
 	private ItemTypeKeys() {
 	}

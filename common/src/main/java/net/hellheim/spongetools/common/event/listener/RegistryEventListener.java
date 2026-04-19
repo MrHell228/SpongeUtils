@@ -269,19 +269,19 @@ public final class RegistryEventListener {
 			modeledItems.get().stream().forEach(item ->
 				item.models().forEach((key, model) ->
 					step.register(key, model)));
-		}, modeledBlocks, modeledItems);
+		},  modeledBlocks, modeledItems);
 		
-		event.registry(RegistryTypes.ENTITY_TYPE, ($, step) ->
-			modeledEntities.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
-			modeledEntities);
+		event.registry(RegistryTypes.ENTITY_TYPE, ($, step) -> {
+			modeledEntities.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type()));
+		},  modeledEntities);
 		
-		event.registry(RegistryTypes.BLOCK_TYPE, ($, step) ->
-			modeledBlocks.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
-			modeledBlocks);
+		event.registry(RegistryTypes.BLOCK_TYPE, ($, step) -> {
+			modeledBlocks.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type()));
+		},  modeledBlocks);
 		
-		event.registry(RegistryTypes.ITEM_TYPE, ($, step) ->
-			modeledItems.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type())),
-			modeledItems);
+		event.registry(RegistryTypes.ITEM_TYPE, ($, step) -> {
+			modeledItems.get().streamEntries().forEach(e -> step.register(e.key(), e.value().type()));
+		},  modeledItems);
 		
 		event.registry(BlockDefinition.registry(), ($, step) ->
 			BlockStateEventListener.fireEvents(event.game(), event.cause(), this.logger)

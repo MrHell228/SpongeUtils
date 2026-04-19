@@ -27,6 +27,7 @@
     "world.entity.ai.attributes.RangedAttributeMixin",
     "world.item.BlockItemMixin",
     "world.item.BucketItemMixin",
+    "world.item.Item_PropertiesAccessor",
     "world.item.Item_PropertiesMixin",
     "world.item.ItemMixin",
     "world.item.ItemStackMixin",

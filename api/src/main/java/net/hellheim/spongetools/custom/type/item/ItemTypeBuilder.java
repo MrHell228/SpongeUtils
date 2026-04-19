@@ -63,12 +63,11 @@ public interface ItemTypeBuilder extends
 	}
 	
 	/**
-	 * Sets the {@link ItemTypeKeys#TRANSLATION_KEY} context, {@link Keys#ITEM_NAME} and {@link Keys#MODEL} data.
+	 * Sets the {@link ItemTypeKeys#ID} context, {@link Keys#ITEM_NAME} and {@link Keys#MODEL} data.
 	 */
 	default ItemTypeBuilder id(final ResourceKey id) {
-		final var component = TranslationUtil.item(id);
-		this.set(ItemTypeKeys.TRANSLATION_KEY, component.key());
-		this.add(Keys.ITEM_NAME, component);
+		this.set(ItemTypeKeys.ID, id);
+		this.add(Keys.ITEM_NAME, TranslationUtil.item(id));
 		this.add(Keys.MODEL, id);
 		return this;
 	}

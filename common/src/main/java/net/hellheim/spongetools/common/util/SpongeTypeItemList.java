@@ -1,11 +1,14 @@
 package net.hellheim.spongetools.common.util;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.base.Suppliers;
 import org.spongepowered.common.item.recipe.ingredient.SpongeIngredient;
 import org.spongepowered.common.item.recipe.ingredient.SpongeItemList;
 
@@ -24,16 +27,18 @@ public final class SpongeTypeItemList extends SpongeItemList {
 	public static final String TYPE_ITEM = "spongetools:item";
 	
 	private final HolderSet<Item> set;
+    private final Supplier<List<ItemStack>> display;
 	
-	public SpongeTypeItemList(final HolderSet<Item> set, final ItemStack... stacks) {
-		super(stacks);
+	public SpongeTypeItemList(final HolderSet<Item> set, final Supplier<List<ItemStack>> display) {
+		super();
 		this.set = set;
+        this.display = Suppliers.memoize(display::get);
 	}
 	
-	public static SpongeIngredient ingredient(final HolderSet<Item> set, final ItemStack... stacks) {
+	public static SpongeIngredient ingredient(final HolderSet<Item> set, final Supplier<List<ItemStack>> display) {
 		return new SpongeIngredient(
 				SpongeTypeItemList.TYPE_ITEM,
-				new SpongeTypeItemList(set, stacks),
+				new SpongeTypeItemList(set, display),
 				set.stream()
 						.map(holder -> holder.unwrapKey().orElseThrow().identifier().toString())
 						.collect(Collectors.joining(";")));
@@ -93,4 +98,9 @@ public final class SpongeTypeItemList extends SpongeItemList {
 	public boolean test(final ItemStack stack) {
 		return this.set.contains(stack.typeHolder());
 	}
+
+    @Override
+    public Collection<ItemStack> getItems() {
+        return this.display.get();
+    }
 }

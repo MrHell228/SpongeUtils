@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.value.ValueContainer;
@@ -14,6 +15,9 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.common.item.util.ItemStackUtil;
 
+import com.google.common.base.Suppliers;
+
+import net.hellheim.spongetools.bridge.ItemBridge;
 import net.hellheim.spongetools.bridge.ItemPropertiesBridge;
 import net.hellheim.spongetools.custom.type.item.ItemTypeArchetype;
 import net.hellheim.spongetools.custom.type.item.ItemTypeKeys;
@@ -33,23 +37,23 @@ public final class ItemTypeUtil {
 	
 	private static final DefaultedRegistryReference<ItemType> NETWORK_ITEM = ItemTypes.RABBIT_FOOT;
 	
-	public static DataComponentPatch componentPatch(final ItemType baseType, final ValueContainer data) {
-		final ItemStack stack = ItemStack.of(baseType);
-		stack.copyFrom(data);
-		return ItemStackUtil.toNative(stack).getComponentsPatch();
+	public static Supplier<DataComponentPatch> componentPatch(final ItemType baseType, final ValueContainer data) {
+		return Suppliers.memoize(() -> {
+			final ItemStack stack = ItemStack.of(baseType);
+			stack.copyFrom(data);
+			return ItemStackUtil.toNative(stack).getComponentsPatch();
+		});
 	}
 	
 	public static Item.Properties properties(
 		final DefaultedRegistryReference<ItemType> networkItemKey,
 		final ValueContainer data, final TypedKeyMap context, final Object behaviour
 	) {
-		final Item.Properties properties = new Item.Properties()
-				.setId(ResourceKey.create(Registries.ITEM, Converter.asVanilla(networkItemKey.location())));
-		
+		final Item.Properties properties = new Item.Properties();
 		final ItemType networkItem = networkItemKey.get();
 		((ItemPropertiesBridge) properties).spongetools$bridge$applyData(new AdditionalData(
 				networkItem,
-				context.require(ItemTypeKeys.TRANSLATION_KEY),
+				ResourceKey.create(Registries.ITEM, Converter.asVanilla(context.require(ItemTypeKeys.ID))),
 				componentPatch(networkItem, data)
 				));
 		
@@ -85,14 +89,14 @@ public final class ItemTypeUtil {
 		public static final ItemTypeArchetype DEFAULT = archetype(
 				Optional.empty(),
 				Item.class,
-				Set.of(ItemTypeKeys.TRANSLATION_KEY),
+				Set.of(ItemTypeKeys.ID),
 				(item, context) -> {
 					final var remainder = item.getCraftingRemainder();
 					if (remainder != null) {
 						context.set(ItemTypeKeys.CONTAINER, Converter.asSponge(remainder.item().value()));
 					}
 					
-					context.set(ItemTypeKeys.TRANSLATION_KEY, item.getDescriptionId());
+					context.set(ItemTypeKeys.ID, Converter.asSponge(((ItemBridge) item).spongetools$bridge$id().identifier()));
 				},
 				(context, properties) -> new Item(properties));
 		
@@ -124,7 +128,7 @@ public final class ItemTypeUtil {
 		}
 	}
 	
-	public record AdditionalData(ItemType networkType, String translationKey, DataComponentPatch patch) {
+	public record AdditionalData(ItemType networkType, ResourceKey<Item> id, Supplier<DataComponentPatch> patch) {
 	}
 	
 	private ItemTypeUtil() {
