@@ -1,1 +1,39 @@
-rootProject.name = "SpongeToolsAPI"
+pluginManagement {
+    repositories {
+        jcenter()
+		maven {
+			name = 'sponge'
+			url = 'https://repo.spongepowered.org/repository/maven-public/'
+		}
+		maven {
+			name = "sonatype-oss-snapshots1"
+			url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+		}
+		mavenLocal()
+    }
+
+	plugins {
+	    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
+	    id 'com.gradleup.shadow' version '9.2.2'
+	    id 'org.spongepowered.gradle.plugin' version '2.3.0'
+	    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+	}
+}
+
+
+rootProject.name = "$plugin_name"
+
+include sub_api
+project(":$sub_api").projectDir = file("api")
+
+include sub_common
+project(":$sub_common").projectDir = file("common")
+
+include sub_vanilla
+project(":$sub_vanilla").projectDir = file("vanilla")
+
+include sub_forge
+project(":$sub_forge").projectDir = file("forge")
+
+include sub_neoforge
+project(":$sub_neoforge").projectDir = file("neoforge")
