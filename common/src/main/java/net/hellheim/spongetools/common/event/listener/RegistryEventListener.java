@@ -96,6 +96,7 @@ import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
 import net.hellheim.spongetools.resourcepack.block.StatePropertyValue;
+import net.hellheim.spongetools.resourcepack.equipment.EquipmentAsset;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.resourcepack.meta.PackFormat;
 import net.hellheim.spongetools.util.EffectUtil;
@@ -199,6 +200,7 @@ public final class RegistryEventListener {
 		event.register(ModeledBlock.registry().location(), true);
 		event.register(ModeledItem.registry().location(), true);
 		event.register(Model.registry().location(), true);
+		event.register(EquipmentAsset.registry().location(), true);
 		event.register(BlockDefinition.registry().location(), true);
 		event.register(ItemDefinition.registry().location(), true);
 		

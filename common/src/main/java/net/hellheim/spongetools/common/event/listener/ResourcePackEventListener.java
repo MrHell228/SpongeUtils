@@ -32,6 +32,7 @@ import com.mojang.serialization.JsonOps;
 import net.hellheim.spongetools.common.SpongeToolsPlugin;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
+import net.hellheim.spongetools.resourcepack.equipment.EquipmentAsset;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 import net.hellheim.spongetools.resourcepack.meta.Metadata;
 import net.hellheim.spongetools.resourcepack.meta.MetadataSection;
@@ -83,6 +84,10 @@ public final class ResourcePackEventListener {
 				.streamEntries()
 				.collect(Collectors.toMap(RegistryEntry::key, RegistryEntry::value));
 		
+		final Map<ResourceKey, EquipmentAsset> equipment = holder.registry(EquipmentAsset.registry())
+				.streamEntries()
+				.collect(Collectors.toMap(RegistryEntry::key, RegistryEntry::value));
+		
 		// TODO figure out what this TODO means
 		try (final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(this.packResult))) {
 			final PackFormat format = SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES);
@@ -108,6 +113,10 @@ public final class ResourcePackEventListener {
 			
 			for (final Map.Entry<ResourceKey, Model> e : models.entrySet()) {
 				this.writeEntry(out, Model.CODEC, "Model", "models", e.getKey(), e.getValue());
+			}
+			
+			for (final Map.Entry<ResourceKey, EquipmentAsset> e : equipment.entrySet()) {
+				this.writeEntry(out, EquipmentAsset.CODEC, "EquipmentAsset", "equipment", e.getKey(), e.getValue());
 			}
 		}
 	}

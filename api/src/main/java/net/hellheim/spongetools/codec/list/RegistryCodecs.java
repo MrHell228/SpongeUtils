@@ -178,6 +178,7 @@ import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
+import net.hellheim.spongetools.resourcepack.equipment.EquipmentAsset;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 
 /**
@@ -196,6 +197,8 @@ public final class RegistryCodecs {
 	public static final Codec<BlockDefinition> BLOCK_DEFINITION = RegistryCodecs.register(BlockDefinition.class, BlockDefinition.registry());
 	
 	public static final Codec<Model> MODEL = RegistryCodecs.register(Model.class, Model.registry());
+	
+	public static final Codec<EquipmentAsset> EQUIPMENT_ASSET = RegistryCodecs.register(EquipmentAsset.class, EquipmentAsset.registry());
 	
 	public static final Codec<MapCodec<? extends LoreProcessor>> LORE_PROCESSOR_TYPE = RegistryCodecs.of(SpongeTools.Registries.LORE_PROCESSOR_TYPE);
 	

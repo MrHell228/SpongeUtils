@@ -26,6 +26,7 @@ import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.ModeledItem;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
+import net.hellheim.spongetools.resourcepack.equipment.EquipmentAsset;
 import net.hellheim.spongetools.resourcepack.item.ItemDefinition;
 
 public final class SpongeTools {
@@ -68,6 +69,11 @@ public final class SpongeTools {
 		 * Models from this registry will be included in built ResourcePack.
 		 */
 		public static final DefaultedRegistryType<Model> MODEL = Registries.key("models");
+		
+		/**
+		 * Assets from this registry will be included in built ResourcePack.
+		 */
+		public static final DefaultedRegistryType<EquipmentAsset> EQUIPMENT_ASSET = Registries.key("equipment");
 		
 		public static final DefaultedRegistryType<MapCodec<? extends LoreProcessor>> LORE_PROCESSOR_TYPE = Registries.key("lore_processor_type");
 		
