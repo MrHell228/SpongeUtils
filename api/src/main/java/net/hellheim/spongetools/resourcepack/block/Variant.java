@@ -46,7 +46,7 @@ public final class Variant implements VariantListLike {
 	}
 	
 	public static Variant prefixedModel(final ResourceKey model) {
-		return Variant.model(ModelUtil.withBlockPrefix(model));
+		return Variant.model(ModelUtil.blockPrefix(model));
 	}
 	
 	public Set<VariantProperty<?>> properties() {

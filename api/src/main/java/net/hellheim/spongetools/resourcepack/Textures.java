@@ -140,7 +140,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot, final String suffix
 	) {
 		return Textures.of(
-				slot, ModelUtil.withSuffix(texture, suffix)
+				slot, ModelUtil.suffix(texture, suffix)
 				);
 	}
 	
@@ -150,8 +150,8 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot2, final String suffix2
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withSuffix(texture, suffix1),
-				slot2, ModelUtil.withSuffix(texture, suffix2)
+				slot1, ModelUtil.suffix(texture, suffix1),
+				slot2, ModelUtil.suffix(texture, suffix2)
 				);
 	}
 	
@@ -162,9 +162,9 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot3, final String suffix3
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withSuffix(texture, suffix1),
-				slot2, ModelUtil.withSuffix(texture, suffix2),
-				slot3, ModelUtil.withSuffix(texture, suffix3)
+				slot1, ModelUtil.suffix(texture, suffix1),
+				slot2, ModelUtil.suffix(texture, suffix2),
+				slot3, ModelUtil.suffix(texture, suffix3)
 				);
 	}
 	
@@ -176,10 +176,10 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot4, final String suffix4
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withSuffix(texture, suffix1),
-				slot2, ModelUtil.withSuffix(texture, suffix2),
-				slot3, ModelUtil.withSuffix(texture, suffix3),
-				slot4, ModelUtil.withSuffix(texture, suffix4)
+				slot1, ModelUtil.suffix(texture, suffix1),
+				slot2, ModelUtil.suffix(texture, suffix2),
+				slot3, ModelUtil.suffix(texture, suffix3),
+				slot4, ModelUtil.suffix(texture, suffix4)
 				);
 	}
 	
@@ -192,11 +192,11 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot5, final String suffix5
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withSuffix(texture, suffix1),
-				slot2, ModelUtil.withSuffix(texture, suffix2),
-				slot3, ModelUtil.withSuffix(texture, suffix3),
-				slot4, ModelUtil.withSuffix(texture, suffix4),
-				slot5, ModelUtil.withSuffix(texture, suffix5)
+				slot1, ModelUtil.suffix(texture, suffix1),
+				slot2, ModelUtil.suffix(texture, suffix2),
+				slot3, ModelUtil.suffix(texture, suffix3),
+				slot4, ModelUtil.suffix(texture, suffix4),
+				slot5, ModelUtil.suffix(texture, suffix5)
 				);
 	}
 	
@@ -210,12 +210,12 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot6, final String suffix6
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withSuffix(texture, suffix1),
-				slot2, ModelUtil.withSuffix(texture, suffix2),
-				slot3, ModelUtil.withSuffix(texture, suffix3),
-				slot4, ModelUtil.withSuffix(texture, suffix4),
-				slot5, ModelUtil.withSuffix(texture, suffix5),
-				slot6, ModelUtil.withSuffix(texture, suffix6)
+				slot1, ModelUtil.suffix(texture, suffix1),
+				slot2, ModelUtil.suffix(texture, suffix2),
+				slot3, ModelUtil.suffix(texture, suffix3),
+				slot4, ModelUtil.suffix(texture, suffix4),
+				slot5, ModelUtil.suffix(texture, suffix5),
+				slot6, ModelUtil.suffix(texture, suffix6)
 				);
 	}
 	
@@ -230,13 +230,13 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot7, final String suffix7
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withSuffix(texture, suffix1),
-				slot2, ModelUtil.withSuffix(texture, suffix2),
-				slot3, ModelUtil.withSuffix(texture, suffix3),
-				slot4, ModelUtil.withSuffix(texture, suffix4),
-				slot5, ModelUtil.withSuffix(texture, suffix5),
-				slot6, ModelUtil.withSuffix(texture, suffix6),
-				slot7, ModelUtil.withSuffix(texture, suffix7)
+				slot1, ModelUtil.suffix(texture, suffix1),
+				slot2, ModelUtil.suffix(texture, suffix2),
+				slot3, ModelUtil.suffix(texture, suffix3),
+				slot4, ModelUtil.suffix(texture, suffix4),
+				slot5, ModelUtil.suffix(texture, suffix5),
+				slot6, ModelUtil.suffix(texture, suffix6),
+				slot7, ModelUtil.suffix(texture, suffix7)
 				);
 	}
 	
@@ -246,7 +246,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot, final ResourceKey texture
 	) {
 		return Textures.of(
-				slot, ModelUtil.withBlockPrefix(texture)
+				slot, ModelUtil.blockPrefix(texture)
 				);
 	}
 	
@@ -255,8 +255,8 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot2, final ResourceKey texture2
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withBlockPrefix(texture1),
-				slot2, ModelUtil.withBlockPrefix(texture2)
+				slot1, ModelUtil.blockPrefix(texture1),
+				slot2, ModelUtil.blockPrefix(texture2)
 				);
 	}
 	
@@ -266,9 +266,9 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot3, final ResourceKey texture3
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withBlockPrefix(texture1),
-				slot2, ModelUtil.withBlockPrefix(texture2),
-				slot3, ModelUtil.withBlockPrefix(texture3)
+				slot1, ModelUtil.blockPrefix(texture1),
+				slot2, ModelUtil.blockPrefix(texture2),
+				slot3, ModelUtil.blockPrefix(texture3)
 				);
 	}
 	
@@ -279,10 +279,10 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot4, final ResourceKey texture4
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withBlockPrefix(texture1),
-				slot2, ModelUtil.withBlockPrefix(texture2),
-				slot3, ModelUtil.withBlockPrefix(texture3),
-				slot4, ModelUtil.withBlockPrefix(texture4)
+				slot1, ModelUtil.blockPrefix(texture1),
+				slot2, ModelUtil.blockPrefix(texture2),
+				slot3, ModelUtil.blockPrefix(texture3),
+				slot4, ModelUtil.blockPrefix(texture4)
 				);
 	}
 	
@@ -294,11 +294,11 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot5, final ResourceKey texture5
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withBlockPrefix(texture1),
-				slot2, ModelUtil.withBlockPrefix(texture2),
-				slot3, ModelUtil.withBlockPrefix(texture3),
-				slot4, ModelUtil.withBlockPrefix(texture4),
-				slot5, ModelUtil.withBlockPrefix(texture5)
+				slot1, ModelUtil.blockPrefix(texture1),
+				slot2, ModelUtil.blockPrefix(texture2),
+				slot3, ModelUtil.blockPrefix(texture3),
+				slot4, ModelUtil.blockPrefix(texture4),
+				slot5, ModelUtil.blockPrefix(texture5)
 				);
 	}
 	
@@ -311,12 +311,12 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot6, final ResourceKey texture6
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withBlockPrefix(texture1),
-				slot2, ModelUtil.withBlockPrefix(texture2),
-				slot3, ModelUtil.withBlockPrefix(texture3),
-				slot4, ModelUtil.withBlockPrefix(texture4),
-				slot5, ModelUtil.withBlockPrefix(texture5),
-				slot6, ModelUtil.withBlockPrefix(texture6)
+				slot1, ModelUtil.blockPrefix(texture1),
+				slot2, ModelUtil.blockPrefix(texture2),
+				slot3, ModelUtil.blockPrefix(texture3),
+				slot4, ModelUtil.blockPrefix(texture4),
+				slot5, ModelUtil.blockPrefix(texture5),
+				slot6, ModelUtil.blockPrefix(texture6)
 				);
 	}
 	
@@ -330,13 +330,13 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot7, final ResourceKey texture7
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withBlockPrefix(texture1),
-				slot2, ModelUtil.withBlockPrefix(texture2),
-				slot3, ModelUtil.withBlockPrefix(texture3),
-				slot4, ModelUtil.withBlockPrefix(texture4),
-				slot5, ModelUtil.withBlockPrefix(texture5),
-				slot6, ModelUtil.withBlockPrefix(texture6),
-				slot7, ModelUtil.withBlockPrefix(texture7)
+				slot1, ModelUtil.blockPrefix(texture1),
+				slot2, ModelUtil.blockPrefix(texture2),
+				slot3, ModelUtil.blockPrefix(texture3),
+				slot4, ModelUtil.blockPrefix(texture4),
+				slot5, ModelUtil.blockPrefix(texture5),
+				slot6, ModelUtil.blockPrefix(texture6),
+				slot7, ModelUtil.blockPrefix(texture7)
 				);
 	}
 	
@@ -344,7 +344,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final ResourceKey texture,
 		final TextureSlot slot, final String suffix
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot, suffix
 				);
 	}
@@ -354,7 +354,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot1, final String suffix1,
 		final TextureSlot slot2, final String suffix2
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2
 				);
@@ -366,7 +366,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot2, final String suffix2,
 		final TextureSlot slot3, final String suffix3
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3
@@ -380,7 +380,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot3, final String suffix3,
 		final TextureSlot slot4, final String suffix4
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -396,7 +396,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot4, final String suffix4,
 		final TextureSlot slot5, final String suffix5
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -414,7 +414,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot5, final String suffix5,
 		final TextureSlot slot6, final String suffix6
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -434,7 +434,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot6, final String suffix6,
 		final TextureSlot slot7, final String suffix7
 	) {
-		return Textures.of(ModelUtil.withBlockPrefix(texture),
+		return Textures.of(ModelUtil.blockPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -451,7 +451,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot, final ResourceKey texture
 	) {
 		return Textures.of(
-				slot, ModelUtil.withItemPrefix(texture)
+				slot, ModelUtil.itemPrefix(texture)
 				);
 	}
 	
@@ -460,8 +460,8 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot2, final ResourceKey texture2
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withItemPrefix(texture1),
-				slot2, ModelUtil.withItemPrefix(texture2)
+				slot1, ModelUtil.itemPrefix(texture1),
+				slot2, ModelUtil.itemPrefix(texture2)
 				);
 	}
 	
@@ -471,9 +471,9 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot3, final ResourceKey texture3
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withItemPrefix(texture1),
-				slot2, ModelUtil.withItemPrefix(texture2),
-				slot3, ModelUtil.withItemPrefix(texture3)
+				slot1, ModelUtil.itemPrefix(texture1),
+				slot2, ModelUtil.itemPrefix(texture2),
+				slot3, ModelUtil.itemPrefix(texture3)
 				);
 	}
 	
@@ -484,10 +484,10 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot4, final ResourceKey texture4
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withItemPrefix(texture1),
-				slot2, ModelUtil.withItemPrefix(texture2),
-				slot3, ModelUtil.withItemPrefix(texture3),
-				slot4, ModelUtil.withItemPrefix(texture4)
+				slot1, ModelUtil.itemPrefix(texture1),
+				slot2, ModelUtil.itemPrefix(texture2),
+				slot3, ModelUtil.itemPrefix(texture3),
+				slot4, ModelUtil.itemPrefix(texture4)
 				);
 	}
 	
@@ -499,11 +499,11 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot5, final ResourceKey texture5
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withItemPrefix(texture1),
-				slot2, ModelUtil.withItemPrefix(texture2),
-				slot3, ModelUtil.withItemPrefix(texture3),
-				slot4, ModelUtil.withItemPrefix(texture4),
-				slot5, ModelUtil.withItemPrefix(texture5)
+				slot1, ModelUtil.itemPrefix(texture1),
+				slot2, ModelUtil.itemPrefix(texture2),
+				slot3, ModelUtil.itemPrefix(texture3),
+				slot4, ModelUtil.itemPrefix(texture4),
+				slot5, ModelUtil.itemPrefix(texture5)
 				);
 	}
 	
@@ -516,12 +516,12 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot6, final ResourceKey texture6
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withItemPrefix(texture1),
-				slot2, ModelUtil.withItemPrefix(texture2),
-				slot3, ModelUtil.withItemPrefix(texture3),
-				slot4, ModelUtil.withItemPrefix(texture4),
-				slot5, ModelUtil.withItemPrefix(texture5),
-				slot6, ModelUtil.withItemPrefix(texture6)
+				slot1, ModelUtil.itemPrefix(texture1),
+				slot2, ModelUtil.itemPrefix(texture2),
+				slot3, ModelUtil.itemPrefix(texture3),
+				slot4, ModelUtil.itemPrefix(texture4),
+				slot5, ModelUtil.itemPrefix(texture5),
+				slot6, ModelUtil.itemPrefix(texture6)
 				);
 	}
 	
@@ -535,13 +535,13 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot7, final ResourceKey texture7
 	) {
 		return Textures.of(
-				slot1, ModelUtil.withItemPrefix(texture1),
-				slot2, ModelUtil.withItemPrefix(texture2),
-				slot3, ModelUtil.withItemPrefix(texture3),
-				slot4, ModelUtil.withItemPrefix(texture4),
-				slot5, ModelUtil.withItemPrefix(texture5),
-				slot6, ModelUtil.withItemPrefix(texture6),
-				slot7, ModelUtil.withItemPrefix(texture7)
+				slot1, ModelUtil.itemPrefix(texture1),
+				slot2, ModelUtil.itemPrefix(texture2),
+				slot3, ModelUtil.itemPrefix(texture3),
+				slot4, ModelUtil.itemPrefix(texture4),
+				slot5, ModelUtil.itemPrefix(texture5),
+				slot6, ModelUtil.itemPrefix(texture6),
+				slot7, ModelUtil.itemPrefix(texture7)
 				);
 	}
 	
@@ -549,7 +549,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final ResourceKey texture,
 		final TextureSlot slot, final String suffix
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot, suffix
 				);
 	}
@@ -559,7 +559,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot1, final String suffix1,
 		final TextureSlot slot2, final String suffix2
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2
 				);
@@ -571,7 +571,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot2, final String suffix2,
 		final TextureSlot slot3, final String suffix3
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3
@@ -585,7 +585,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot3, final String suffix3,
 		final TextureSlot slot4, final String suffix4
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -601,7 +601,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot4, final String suffix4,
 		final TextureSlot slot5, final String suffix5
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -619,7 +619,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot5, final String suffix5,
 		final TextureSlot slot6, final String suffix6
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,
@@ -639,7 +639,7 @@ public record Textures(Map<TextureSlot, ResourceKey> textures) {
 		final TextureSlot slot6, final String suffix6,
 		final TextureSlot slot7, final String suffix7
 	) {
-		return Textures.of(ModelUtil.withItemPrefix(texture),
+		return Textures.of(ModelUtil.itemPrefix(texture),
 				slot1, suffix1,
 				slot2, suffix2,
 				slot3, suffix3,

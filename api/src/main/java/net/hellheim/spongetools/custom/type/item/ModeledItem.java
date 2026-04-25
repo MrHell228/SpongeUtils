@@ -63,11 +63,11 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		}
 		
 		public Builder itemDefinition(final Function<ResourceKey, ItemDefinitionLike> definition) {
-			return this.definition(definition.compose(ModelUtil::withItemPrefix));
+			return this.definition(definition.compose(ModelUtil::itemPrefix));
 		}
 		
 		public Builder blockDefinition(final Function<ResourceKey, ItemDefinitionLike> definition) {
-			return this.definition(definition.compose(ModelUtil::withBlockPrefix));
+			return this.definition(definition.compose(ModelUtil::blockPrefix));
 		}
 		
 		public Builder simpleItemDefinition() {
@@ -83,19 +83,19 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		}
 		
 		public Builder itemModel(final UnaryOperator<ResourceKey> key, final ModelLike model) {
-			return this.model(k -> ModelUtil.withItemPrefix(key.apply(k)), model);
+			return this.model(k -> ModelUtil.itemPrefix(key.apply(k)), model);
 		}
 		
 		public Builder itemModel(final String keySuffix, final ModelLike model) {
-			return this.itemModel(key -> ModelUtil.withSuffix(key, keySuffix), model);
+			return this.itemModel(key -> ModelUtil.suffix(key, keySuffix), model);
 		}
 		
 		public Builder blockModel(final UnaryOperator<ResourceKey> key, final ModelLike model) {
-			return this.model(k -> ModelUtil.withBlockPrefix(key.apply(k)), model);
+			return this.model(k -> ModelUtil.blockPrefix(key.apply(k)), model);
 		}
 		
 		public Builder blockModel(final String keySuffix, final ModelLike model) {
-			return this.blockModel(key -> ModelUtil.withSuffix(key, keySuffix), model);
+			return this.blockModel(key -> ModelUtil.suffix(key, keySuffix), model);
 		}
 		
 		public Builder simpleItemModel(final ModelLike model) {
@@ -104,7 +104,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		}
 		
 		public Builder simpleItemModel(final Function<ResourceKey, ? extends ModelLike> model) {
-			return this.simpleItemModel(model.apply(ModelUtil.withItemPrefix(this.key)));
+			return this.simpleItemModel(model.apply(ModelUtil.itemPrefix(this.key)));
 		}
 		
 		public Builder simpleItemModel(final ModelTemplateProvider.T1 templateProvider) {
@@ -117,7 +117,7 @@ public record ModeledItem(ItemType type, ItemDefinition definition, Map<Resource
 		}
 		
 		public Builder simpleBlockModel(final Function<ResourceKey, ? extends ModelLike> model) {
-			return this.simpleBlockModel(model.apply(ModelUtil.withBlockPrefix(this.key)));
+			return this.simpleBlockModel(model.apply(ModelUtil.blockPrefix(this.key)));
 		}
 		
 		public Builder simpleBlockModel(final ModelTemplateProvider.T1 templateProvider) {

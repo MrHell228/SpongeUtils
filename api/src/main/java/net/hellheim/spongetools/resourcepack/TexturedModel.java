@@ -125,7 +125,7 @@ public record TexturedModel(ModelTemplate parent, Textures textures) implements 
 		}
 		
 		default TexturedModel block(final ResourceKey key) {
-			return this.get(ModelUtil.withBlockPrefix(key));
+			return this.get(ModelUtil.blockPrefix(key));
 		}
 		
 		default TexturedModel block(final RegistryKey<?> key) {
@@ -133,7 +133,7 @@ public record TexturedModel(ModelTemplate parent, Textures textures) implements 
 		}
 		
 		default TexturedModel item(final ResourceKey key) {
-			return this.get(ModelUtil.withItemPrefix(key));
+			return this.get(ModelUtil.itemPrefix(key));
 		}
 		
 		default TexturedModel item(final RegistryKey<?> key) {

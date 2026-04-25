@@ -69,7 +69,7 @@ public interface BlockTypeBuilder extends
 	 * Sets {@link #translationKey(ResourceKey)} and {@link #lootTable(ResourceKey)}.
 	 */
 	default BlockTypeBuilder id(final ResourceKey key) {
-		return this.translationKey(key).lootTable(ModelUtil.withPrefix(key, "blocks/"));
+		return this.translationKey(key).lootTable(ModelUtil.prefix(key, "blocks/"));
 	}
 	
 	/**

@@ -505,19 +505,19 @@ public final class ModelTemplates {
 	}
 	
 	public static ModelTemplate block(final String name, final TextureSlot... slots) {
-		return ModelTemplates.of(ModelUtil.withBlockPrefix(name), Optional.empty(), slots);
+		return ModelTemplates.of(ModelUtil.blockPrefix(name), Optional.empty(), slots);
 	}
 	
 	public static ModelTemplate block(final String name, final String suffix, final TextureSlot... slots) {
-		return ModelTemplates.of(ModelUtil.withBlockPrefix(name), Optional.of(suffix), slots);
+		return ModelTemplates.of(ModelUtil.blockPrefix(name), Optional.of(suffix), slots);
 	}
 	
 	public static ModelTemplate item(final String name, final TextureSlot... slots) {
-		return ModelTemplates.of(ModelUtil.withItemPrefix(name), Optional.empty(), slots);
+		return ModelTemplates.of(ModelUtil.itemPrefix(name), Optional.empty(), slots);
 	}
 	
 	public static ModelTemplate item(final String name, final String suffix, final TextureSlot... slots) {
-		return ModelTemplates.of(ModelUtil.withItemPrefix(name), Optional.of(suffix), slots);
+		return ModelTemplates.of(ModelUtil.itemPrefix(name), Optional.of(suffix), slots);
 	}
 	
 	private ModelTemplates() {

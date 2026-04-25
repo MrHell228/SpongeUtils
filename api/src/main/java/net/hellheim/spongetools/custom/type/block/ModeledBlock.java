@@ -78,7 +78,7 @@ public record ModeledBlock(
 		
 		public Builder(final ResourceKey key) {
 			super(key);
-			this.prefixedKey = ModelUtil.withBlockPrefix(this.key);
+			this.prefixedKey = ModelUtil.blockPrefix(this.key);
 			this.reset();
 		}
 		
@@ -117,7 +117,7 @@ public record ModeledBlock(
 		}
 		
 		public Builder model(final String keySuffix, final ModelLike model) {
-			return this.model(key -> ModelUtil.withSuffix(key, keySuffix), model);
+			return this.model(key -> ModelUtil.suffix(key, keySuffix), model);
 		}
 		
 		public Builder simpleModel(final ModelLike model) {

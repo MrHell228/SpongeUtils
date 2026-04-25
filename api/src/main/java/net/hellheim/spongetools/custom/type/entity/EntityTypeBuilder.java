@@ -28,7 +28,7 @@ public interface EntityTypeBuilder extends
 	 * and {@link #lootTable(ResourceKey)}.
 	 */
 	default EntityTypeBuilder id(final ResourceKey key) {
-		return this.serializationKey(key).translationKey(key).lootTable(ModelUtil.withPrefix(key, "entities/"));
+		return this.serializationKey(key).translationKey(key).lootTable(ModelUtil.prefix(key, "entities/"));
 	}
 	
 	/**
