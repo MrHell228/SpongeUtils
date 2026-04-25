@@ -31,7 +31,7 @@ public abstract class Palette_TraitMixin<T> implements Palette<T> {
     }*/
 
     @WrapOperation(
-            method = "write",
+            method = {"write", "getSerializedSize"},
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/core/IdMap;getId(Ljava/lang/Object;)I"
