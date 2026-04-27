@@ -7,9 +7,14 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.type.HandType;
 import org.spongepowered.api.data.type.InstrumentType;
 import org.spongepowered.api.data.type.PushReaction;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.attribute.AttributeModifier;
+import org.spongepowered.api.entity.attribute.AttributeOperation;
+import org.spongepowered.api.entity.attribute.type.AttributeType;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.fluid.FluidState;
@@ -17,6 +22,7 @@ import org.spongepowered.api.fluid.FluidType;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.equipment.EquipmentType;
+import org.spongepowered.api.item.potion.PotionType;
 import org.spongepowered.api.map.color.MapColorType;
 import org.spongepowered.api.state.StateProperty;
 import org.spongepowered.api.util.Direction;
@@ -46,9 +52,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -229,6 +239,31 @@ public final class Converter {
 		return (EquipmentType) (Object) equipment;
 	}
 	
+	public static AttributeModifier asSponge(final net.minecraft.world.entity.ai.attributes.AttributeModifier modifier) {
+		return (AttributeModifier) (Object) modifier;
+	}
+	
+	public static AttributeOperation asSponge(final net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation operation) {
+		return (AttributeOperation) (Object) operation;
+	}
+	
+	public static AttributeType asSponge(final Attribute attribute) {
+		return (AttributeType) attribute;
+	}
+	
+	public static PotionType asSponge(final Potion potion) {
+		return (PotionType) potion;
+	}
+	
+	public static PotionEffect asSponge(final MobEffectInstance effect) {
+		return (PotionEffect) effect;
+	}
+	
+	public static PotionEffectType asSponge(final MobEffect effect) {
+		return (PotionEffectType) effect;
+	}
+	
+	
 	
 	public static Identifier asVanilla(final ResourceKey key) {
 		return (Identifier) (Object) key;
@@ -390,6 +425,31 @@ public final class Converter {
 	public static EquipmentSlot asVanilla(final EquipmentType equipment) {
 		return (EquipmentSlot) (Object) equipment;
 	}
+	
+	public static net.minecraft.world.entity.ai.attributes.AttributeModifier asVanilla(final AttributeModifier modifier) {
+		return (net.minecraft.world.entity.ai.attributes.AttributeModifier) (Object) modifier;
+	}
+	
+	public static net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation asVanilla(final AttributeOperation operation) {
+		return (net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation) (Object) operation;
+	}
+	
+	public static Attribute asVanilla(final AttributeType attribute) {
+		return (Attribute) attribute;
+	}
+	
+	public static Potion asVanilla(final PotionType potion) {
+		return (Potion) potion;
+	}
+	
+	public static MobEffectInstance asVanilla(final PotionEffect effect) {
+		return (MobEffectInstance) effect;
+	}
+	
+	public static MobEffect asVanilla(final PotionEffectType effect) {
+		return (MobEffect) effect;
+	}
+	
 	
 	private Converter() {
 	}

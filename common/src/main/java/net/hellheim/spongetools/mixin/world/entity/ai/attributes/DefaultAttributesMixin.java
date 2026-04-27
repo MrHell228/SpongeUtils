@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.hellheim.spongetools.bridge.EntityTypeBridge;
-import net.hellheim.spongetools.common.event.AttributeEventImpl;
+import net.hellheim.spongetools.common.event.ModifyRegistryValueEventImpl;
 import net.hellheim.spongetools.common.util.Converter;
 import net.hellheim.spongetools.common.util.EntityTypeUtil;
 import net.minecraft.core.Holder;
@@ -30,7 +30,7 @@ import java.util.Map;
 @Mixin(DefaultAttributes.class)
 public abstract class DefaultAttributesMixin {
 
-    @Unique private static Map<EntityType<?>, AttributeEventImpl.RegisterToEntityImpl.EntityStepImpl> SPONGETOOLS$ENTITIES;
+    @Unique private static Map<EntityType<?>, ModifyRegistryValueEventImpl.RegisterAttributeToEntityImpl.EntityStepImpl> SPONGETOOLS$ENTITIES;
 
     @Inject(
             method = "<clinit>",
@@ -39,11 +39,11 @@ public abstract class DefaultAttributesMixin {
     private static void spongetools$fireAttributeEvents(final CallbackInfo ci) {
         final Game game = Sponge.game();
         final Cause cause = Cause.of(EventContext.empty(), game);
-        game.eventManager().post(new AttributeEventImpl.ModifyImpl(cause, game));
-
-        final var event = new AttributeEventImpl.RegisterToEntityImpl(cause, game);
+        game.eventManager().post(new ModifyRegistryValueEventImpl.ModifyAttributeImpl(cause, game));
+        
+        final var event = new ModifyRegistryValueEventImpl.RegisterAttributeToEntityImpl(cause, game);
         game.eventManager().post(event);
-        SPONGETOOLS$ENTITIES = (Map<EntityType<?>, AttributeEventImpl.RegisterToEntityImpl.EntityStepImpl>) (Object) event.entities;
+        SPONGETOOLS$ENTITIES = (Map<EntityType<?>, ModifyRegistryValueEventImpl.RegisterAttributeToEntityImpl.EntityStepImpl>) (Object) event.entities;
     }
 
     @WrapOperation(

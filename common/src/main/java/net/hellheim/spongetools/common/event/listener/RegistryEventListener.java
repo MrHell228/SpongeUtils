@@ -3,6 +3,7 @@ package net.hellheim.spongetools.common.event.listener;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -13,7 +14,11 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSoundGroup;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.type.ItemActionType;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
+import org.spongepowered.api.entity.attribute.AttributeOperations;
+import org.spongepowered.api.entity.attribute.type.AttributeTypes;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.lifecycle.FreezeRegistryEvent;
 import org.spongepowered.api.event.lifecycle.RegisterBuilderEvent;
 import org.spongepowered.api.event.lifecycle.RegisterDataEvent;
@@ -52,6 +57,7 @@ import net.hellheim.spongetools.common.codec.ExtraCodecsFactory;
 import net.hellheim.spongetools.common.codec.SpongeToolsCodecs;
 import net.hellheim.spongetools.common.codec.StringRepresentableCodecsFactory;
 import net.hellheim.spongetools.common.event.listener.data.EquipmentData;
+import net.hellheim.spongetools.common.factory.AttributeModifierTemplateFactory;
 import net.hellheim.spongetools.common.factory.EffectUtilFactory;
 import net.hellheim.spongetools.common.factory.HitResultFactory;
 import net.hellheim.spongetools.common.factory.InteractionResultFactory;
@@ -91,7 +97,9 @@ import net.hellheim.spongetools.custom.type.item.ItemTypeBuilder;
 import net.hellheim.spongetools.custom.type.item.LoreProcessor;
 import net.hellheim.spongetools.custom.type.item.LoreProvider;
 import net.hellheim.spongetools.custom.type.item.ModeledItem;
+import net.hellheim.spongetools.event.ModifyRegistryValueEvent;
 import net.hellheim.spongetools.mixin.world.level.block.state.BlockBehaviourAccessor;
+import net.hellheim.spongetools.object.AttributeModifierTemplate;
 import net.hellheim.spongetools.resourcepack.Model;
 import net.hellheim.spongetools.resourcepack.block.BlockDefinition;
 import net.hellheim.spongetools.resourcepack.block.StateOps;
@@ -124,6 +132,7 @@ public final class RegistryEventListener {
 		event.register(SignalOrientation.Factory.class, new SignalOrientationFactory());
 		event.register(SignalBias.Factory.class, new SignalOrientationFactory.BiasFactory());
 		event.register(EffectUtil.Factory.class, new EffectUtilFactory());
+		event.register(AttributeModifierTemplate.Factory.class, new AttributeModifierTemplateFactory());
 		event.register(BehaviourManager.class, new BehaviourManagerImpl());
 		event.register(BlockStateDispatcher.class, new BlockStateDispatcherImpl());
 		event.register(ExtraCodecs.Factory.class, new ExtraCodecsFactory());
@@ -314,6 +323,33 @@ public final class RegistryEventListener {
 	@Listener
 	public void freezeRegistries(final FreezeRegistryEvent.Post.GameScoped event) {
 		EntityEventListener.fireEvents(event.game(), event.cause());
+	}
+	
+	@Listener(order = Order.PRE)
+	public void modifyPotionEffects(final ModifyRegistryValueEvent.ModifyPotionEffect event) {
+		// Use attributes to emulate how vanilla affects mining speed when those effects are present.
+		if (SpongeToolsPlugin.customMiningEnabled()) {
+			List.of(PotionEffectTypes.HASTE, PotionEffectTypes.CONDUIT_POWER).forEach(digSpeedEffect -> {
+				event.effect(digSpeedEffect).attributes(map -> map.put(
+						AttributeTypes.BLOCK_BREAK_SPEED.get(),
+						AttributeModifierTemplate.of(
+								SpongeTools.key("effect.dig_speed"),
+								AttributeOperations.MULTIPLY_TOTAL,
+								+0.2D)));
+			});
+			
+			event.effect(PotionEffectTypes.MINING_FATIGUE).attributes(map -> map.put(
+					AttributeTypes.BLOCK_BREAK_SPEED.get(),
+					AttributeModifierTemplate.of(
+							SpongeTools.key("effect.mining_fatigue"),
+							AttributeOperations.MULTIPLY_TOTAL,
+							amplifier -> switch (amplifier) {
+								case 0 -> -1 + 0.3D;
+								case 1 -> -1 + 0.09D;
+								case 2 -> -1 + 0.0027D;
+								default -> -1 + 8.1E-4D;
+							})));
+		}
 	}
 	
 	/* TODO Is this needed?

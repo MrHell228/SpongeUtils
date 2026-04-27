@@ -1,14 +1,16 @@
 package net.hellheim.spongetools.object;
 
 import java.util.Objects;
+import java.util.function.IntToDoubleFunction;
 import java.util.function.Supplier;
 
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.ResourceKeyed;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.attribute.AttributeModifier;
 import org.spongepowered.api.entity.attribute.AttributeOperation;
 
-public record AttributeModifierTemplate(ResourceKey key, AttributeOperation operation, double amountPerLevel) implements ResourceKeyed {
+public interface AttributeModifierTemplate extends ResourceKeyed {
 	
 	public static AttributeModifierTemplate of(
 		final ResourceKey key, final Supplier<? extends AttributeOperation> operation, final double amountPerLevel
@@ -19,22 +21,35 @@ public record AttributeModifierTemplate(ResourceKey key, AttributeOperation oper
 	public static AttributeModifierTemplate of(
 		final ResourceKey key, final AttributeOperation operation, final double amountPerLevel
 	) {
-		return new AttributeModifierTemplate(key, operation, amountPerLevel);
+		return AttributeModifierTemplate.factory().of(key, operation, amountPerLevel);
 	}
 	
-	public AttributeModifierTemplate(
-		final ResourceKey key, final AttributeOperation operation, final double amountPerLevel
+	public static AttributeModifierTemplate of(
+		final ResourceKey key, final Supplier<? extends AttributeOperation> operation, final IntToDoubleFunction curve
 	) {
-		this.key = Objects.requireNonNull(key, "key");
-		this.operation = Objects.requireNonNull(operation, "operation");
-		this.amountPerLevel = amountPerLevel;
+		return AttributeModifierTemplate.of(key, Objects.requireNonNull(operation, "operation").get(), curve);
 	}
 	
-	public AttributeModifier build(final int amplifier) {
-		return AttributeModifier.builder()
-				.key(this.key)
-				.operation(this.operation)
-				.amount(this.amountPerLevel * (amplifier + 1))
-				.build();
+	public static AttributeModifierTemplate of(
+		final ResourceKey key, final AttributeOperation operation, final IntToDoubleFunction curve
+	) {
+		return AttributeModifierTemplate.factory().of(key, operation, curve);
+	}
+	
+	private static Factory factory() {
+		return Sponge.game().factoryProvider().provide(Factory.class);
+	}
+	
+	AttributeOperation operation();
+	
+	IntToDoubleFunction curve();
+	
+	AttributeModifier build(int amplifier);
+	
+	interface Factory {
+		
+		AttributeModifierTemplate of(ResourceKey key, AttributeOperation operation, double amountPerLevel);
+		
+		AttributeModifierTemplate of(ResourceKey key, AttributeOperation operation, IntToDoubleFunction curve);
 	}
 }
